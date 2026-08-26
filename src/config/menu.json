@@ -1,0 +1,80 @@
+{
+  "main": [
+    {
+      "name": "Inicio",
+      "url": "/"
+    },
+    {
+      "name": "Productos",
+      "url": "/productos"
+    },
+    {
+      "name": "Soluciones",
+      "url": "/soluciones"
+    },
+    {
+      "name": "Kits",
+      "url": "/kits"
+    },
+    {
+      "name": "Ofertas",
+      "url": "/ofertas"
+    },
+    {
+      "name": "Guías",
+      "url": "/guias"
+    },
+    {
+      "name": "FAQ",
+      "url": "/faq"
+    },
+    {
+      "name": "Contacto",
+      "url": "/contacto"
+    }
+  ],
+  "footer": [
+    {
+      "name": "Productos",
+      "url": "/productos"
+    },
+    {
+      "name": "Soluciones",
+      "url": "/soluciones"
+    },
+    {
+      "name": "Kits",
+      "url": "/kits"
+    },
+    {
+      "name": "Ofertas",
+      "url": "/ofertas"
+    },
+    {
+      "name": "Guías",
+      "url": "/guias"
+    },
+    {
+      "name": "FAQ",
+      "url": "/faq"
+    },
+    {
+      "name": "Políticas",
+      "url": "/politicas"
+    },
+    {
+      "name": "Garantía",
+      "url": "/garantia"
+    }
+  ],
+  "footerCopyright": [
+    {
+      "name": "Privacidad",
+      "url": "/privacidad"
+    },
+    {
+      "name": "Términos",
+      "url": "/terminos"
+    }
+  ]
+}

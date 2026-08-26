@@ -1,0 +1,86 @@
+---
+import config from "@/config/config.json";
+import Header from "@/layouts/partials/Header.astro";
+import Footer from "@/layouts/partials/Footer.astro";
+import "@/styles/main.css";
+
+export interface Props {
+  title?: string;
+  meta_title?: string;
+  description?: string;
+  image?: string;
+  noindex?: boolean;
+  canonical?: string;
+}
+
+const { title, meta_title, description, image, noindex, canonical } = Astro.props;
+
+const pageTitle = meta_title || (title ? `${title} | ${config.site.title}` : config.site.title);
+const pageDescription = description || config.metadata.meta_description;
+const pageImage = `${config.site.base_url}${image || config.metadata.meta_image}`;
+const pageUrl = `${config.site.base_url}${Astro.url.pathname === "/" ? "" : Astro.url.pathname}`;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <!-- favicon -->
+    <link rel="shortcut icon" href={config.site.favicon} />
+    <meta name="generator" content={Astro.generator} />
+    <meta charset="utf-8" />
+
+    <!-- responsive meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+
+    <!-- font preload -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    />
+
+    <!-- title -->
+    <title>{pageTitle}</title>
+
+    <!-- canonical url -->
+    {canonical && <link rel="canonical" href={canonical} />}
+
+    <!-- noindex robots -->
+    {noindex && <meta name="robots" content="noindex,nofollow" />}
+
+    <!-- meta-description -->
+    <meta name="description" content={pageDescription} />
+
+    <!-- author -->
+    <meta name="author" content={config.metadata.meta_author} />
+
+    <!-- og:title -->
+    <meta property="og:title" content={pageTitle} />
+
+    <!-- og:description -->
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={pageUrl} />
+
+    <!-- og:image -->
+    <meta property="og:image" content={pageImage} />
+
+    <!-- twitter:title -->
+    <meta name="twitter:title" content={pageTitle} />
+
+    <!-- twitter:description -->
+    <meta name="twitter:description" content={pageDescription} />
+
+    <!-- twitter:image -->
+    <meta name="twitter:image" content={pageImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+  <body class="flex flex-col min-h-screen bg-body font-primary text-text">
+    <Header />
+    <main class="grow" id="main-content">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

@@ -1,0 +1,23 @@
+{
+  "site": {
+    "title": "EnergíaTotal",
+    "base_url": "https://energiatotal.cu",
+    "favicon": "/favicon.svg",
+    "logo": "/images/logo.png",
+    "logo_width": "150",
+    "logo_height": "40",
+    "logo_text": "EnergíaTotal"
+  },
+  "settings": {
+    "search": false,
+    "sticky_header": true
+  },
+  "params": {
+    "copyright": "© 2026 EnergíaTotal. Todos los derechos reservados."
+  },
+  "metadata": {
+    "meta_author": "EnergíaTotal",
+    "meta_description": "Soluciones de energía, respaldo eléctrico, energía solar e iluminación eficiente para hogares y negocios en Cuba.",
+    "meta_image": "/images/og-image.png"
+  }
+}

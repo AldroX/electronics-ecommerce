@@ -1,0 +1,85 @@
+/* section style */
+.section {
+  @apply py-14 xl:py-28;
+}
+
+/* container */
+.container {
+  @apply mx-auto !max-w-[1320px] px-4;
+}
+
+/* form style */
+.form-input {
+  @apply w-full rounded border border-border bg-transparent px-3 py-2 md:px-6 md:py-4 text-text-dark placeholder:text-text-light focus:border-dark focus:ring-transparent;
+}
+
+.form-label {
+  @apply mb-2 block text-xl max-md:text-base font-normal text-text-dark;
+}
+
+/* accordion */
+.accordion {
+  @apply overflow-hidden border-b-2 border-border bg-light;
+}
+
+.accordion-header {
+  @apply flex w-full cursor-pointer items-center justify-between px-0 py-3 text-lg text-text-light text-start;
+}
+
+.accordion-icon {
+  @apply h-[0.8em] w-[0.8em] rotate-[-90deg] transition-transform duration-200;
+}
+
+.accordion-content {
+  @apply max-h-0 overflow-hidden px-0 py-0;
+}
+
+.accordion.active .accordion-header {
+  @apply text-text-dark font-medium;
+}
+
+.accordion.active .accordion-icon {
+  @apply rotate-0;
+}
+
+.accordion.active .accordion-content {
+  @apply max-h-screen pb-3;
+}
+
+.accordion:last-child {
+  @apply border-b-0;
+}
+
+/* tab */
+.tab {
+  @apply overflow-hidden;
+}
+
+.tab-nav {
+  @apply flex m-0! list-none!;
+}
+
+.tab-nav-item {
+  @apply cursor-pointer border-b py-2 text-lg text-text-dark opacity-80;
+  @apply my-0! px-8!;
+}
+
+.tab-nav-item.active {
+  @apply border border-b-0 border-border rounded-tr-lg rounded-tl-lg opacity-100;
+}
+
+.tab-content {
+  @apply p-5;
+}
+
+.tab-content-panel {
+  @apply p-8;
+}
+
+.tab-content-panel p {
+  @apply m-0;
+}
+
+.tab-content-panel.active {
+  @apply block;
+}

@@ -1,0 +1,12 @@
+@import "tailwindcss";
+@import "./generated-theme.css";
+@import "./utilities.css";
+
+@layer base {
+  @import "./base.css";
+}
+
+@layer components {
+  @import "./components.css";
+  @import "./buttons.css";
+}

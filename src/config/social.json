@@ -1,0 +1,14 @@
+{
+  "main": [
+    {
+      "name": "Facebook",
+      "icon": "facebook",
+      "link": "https://facebook.com/energiatotal"
+    },
+    {
+      "name": "Instagram",
+      "icon": "instagram",
+      "link": "https://instagram.com/energiatotal"
+    }
+  ]
+}
