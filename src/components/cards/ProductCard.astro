@@ -1,0 +1,119 @@
+---
+/**
+ * ProductCard — Product display card (molecule).
+ *
+ * Implements REQ-PC-001..007 / SCN-PC-001..005:
+ *  - image: responsive `<picture>`/`<img>` with `srcset` on public/ paths
+ *    (no @astrojs/image integration is installed), lazy unless `priority`.
+ *  - missing image -> /images/placeholder-product.svg fallback via the native
+ *    `onerror` image-fallback mechanism with descriptive Spanish alt.
+ *  - name (`<h3>`), conditional short description, prominent price, compare-at
+ *    price with strikethrough, availability badge, inline WhatsApp CTA.
+ *  - whole card links to /producto/{slug} for the future detail route.
+ *
+ * Zero framework JS: `onerror` is the standard HTML image-fallback attribute,
+ * not a client script or framework bundle.
+ */
+import type { Product } from "@/data/types";
+import CTAWhatsApp from "../ui/CTAWhatsApp.astro";
+
+export interface Props {
+  product: Product;
+  /** Above-fold images load eagerly (e.g. in the Hero); others stay lazy. */
+  priority?: boolean;
+}
+
+const { product, priority = false } = Astro.props;
+
+// Real placeholders created in WU-1 are SVG files (public/images/placeholder-product.svg),
+// NOT the .webp naming used in design.md/tasks.md — use the actual files.
+const PLACEHOLDER = "/images/placeholder-product.svg";
+
+// srcset width hints for the card grid (col-6 md:col-4 lg:col-3). Without
+// @astrojs/image the hints point at the same public/ URL; a real integration
+// would emit generated widths per format (WebP/AVIF).
+const CARD_SRC_WIDTHS = [480, 640, 800] as const;
+const SIZES = "(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw";
+
+const primary = product.images[0] ?? PLACEHOLDER;
+const hasImages = product.images.length > 0;
+const srcset = hasImages
+  ? CARD_SRC_WIDTHS.map((w) => `${primary} ${w}w`).join(", ")
+  : undefined;
+
+// Descriptive Spanish alt (REQ-PC-002 / SCN-PC-003).
+const imageAlt = hasImages ? product.name : `Imagen no disponible para ${product.name}`;
+
+// Availability badge mapping (REQ-PC-004) — Spanish labels, green/amber/red.
+const availabilityMap = {
+  "in-stock": { label: "Disponible", class: "bg-emerald-100 text-emerald-700" },
+  limited: { label: "Pocas unidades", class: "bg-amber-100 text-amber-700" },
+  "out-of-stock": { label: "Agotado", class: "bg-red-100 text-red-700" },
+} as const;
+const stockKey = product.availability as keyof typeof availabilityMap;
+const badge = availabilityMap[stockKey] ?? availabilityMap["in-stock"];
+
+// Out-of-stock: keep the WhatsApp CTA but append a repo-availability notice
+// (REQ-PC-004 / SCN-PC-004). Overrides the config template when set.
+const isOutOfStock = product.availability === "out-of-stock";
+const whatsappMessage = isOutOfStock
+  ? `${product.whatsappMessage} (Producto agotado, consultar reposición)`
+  : undefined;
+
+// Price formatting from the product currency; site locale is Spanish (REQ-PC-003).
+const formatter = new Intl.NumberFormat("es", {
+  style: "currency",
+  currency: product.currency,
+});
+const showCompareAt = Boolean(
+  product.compareAtPrice && product.compareAtPrice > product.price
+);
+const price = formatter.format(product.price);
+const compareAt = showCompareAt ? formatter.format(product.compareAtPrice!) : null;
+---
+
+<a
+  href={`/producto/${product.slug}`}
+  class="group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-white shadow transition hover:shadow-lg scroll-mt-24 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+  aria-label={`Ver ${product.name}`}
+>
+  <div class="relative aspect-[4/3] w-full overflow-hidden bg-light">
+    <picture>
+      <img
+        src={primary}
+        srcset={srcset}
+        sizes={SIZES}
+        alt={imageAlt}
+        loading={priority ? "eager" : "lazy"}
+        width="400"
+        height="300"
+        decoding="async"
+        class="h-full w-full object-cover transition-transform duration-300 motion-safe:group-hover:scale-105"
+        onerror={`this.onerror=null;this.src='${PLACEHOLDER}';this.srcset='';this.alt='Imagen no disponible para ${product.name}';`}
+      />
+    </picture>
+  </div>
+
+  <div class="flex flex-1 flex-col gap-2 p-4">
+    <span
+      class={`inline-flex w-fit items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${badge.class}`}
+    >
+      {badge.label}
+    </span>
+
+    <h3 class="text-h6 font-bold leading-snug text-text-dark">{product.name}</h3>
+
+    {product.shortDescription && (
+      <p class="line-clamp-2 text-sm text-text-light">{product.shortDescription}</p>
+    )}
+
+    <div class="mt-auto flex items-baseline gap-2 pt-2">
+      <span class="text-lg font-bold text-primary">{price}</span>
+      {showCompareAt && (
+        <span class="text-sm text-text-light line-through">{compareAt}</span>
+      )}
+    </div>
+
+    <CTAWhatsApp variant="inline" productName={product.name} messageTemplate={whatsappMessage} class="mt-2" />
+  </div>
+</a>

@@ -1,0 +1,57 @@
+---
+/**
+ * CategoryCard — Category navigation card (molecule).
+ *
+ * Implements REQ-CC-001..006 / SCN-CC-001..005:
+ *  - icon/image with descriptive alt, name (`<h3>`), conditional description.
+ *  - whole card is a single `<a>` to /categoria/{slug} (full-card link).
+ *  - missing icon -> /images/placeholder-category.svg with
+ *    alt "Categoría: [name]" (native `onerror` fallback).
+ *  - visible :focus-visible outline + scroll-margin so focus is not hidden by
+ *    the sticky header during keyboard navigation.
+ *  - the full-card link exceeds the 44x44px touch target minimum.
+ *
+ * Zero framework JS.
+ */
+import type { Category } from "@/data/types";
+
+export interface Props {
+  category: Category;
+}
+
+const { category } = Astro.props;
+
+// Real placeholder created in WU-1 is an SVG (public/images/placeholder-category.svg),
+// NOT the .webp naming used in design.md/tasks.md — use the actual file.
+const PLACEHOLDER = "/images/placeholder-category.svg";
+
+// Category.image is a single public/ path. Guard against an empty string so we
+// fall back to the placeholder (REQ-CC-002 / SCN-CC-002).
+const src = category.image?.trim() ? category.image : PLACEHOLDER;
+const imageAlt = src === PLACEHOLDER ? `Categoría: ${category.name}` : category.name;
+---
+
+<a
+  href={`/categoria/${category.slug}`}
+  class="group flex h-full flex-col items-center gap-3 rounded-lg border border-border bg-white p-6 text-center shadow transition hover:shadow-lg scroll-mt-24 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+  aria-label={`Ver categoría ${category.name}`}
+>
+  <picture class="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full bg-light">
+    <img
+      src={src}
+      alt={imageAlt}
+      loading="lazy"
+      width="96"
+      height="96"
+      decoding="async"
+      class="h-20 w-20 object-contain transition-transform duration-300 motion-safe:group-hover:scale-110"
+      onerror={`this.onerror=null;this.src='${PLACEHOLDER}';this.alt='Categoría: ${category.name}';`}
+    />
+  </picture>
+
+  <h3 class="text-h6 font-bold leading-snug text-text-dark">{category.name}</h3>
+
+  {category.description && (
+    <p class="text-sm text-text-light">{category.description}</p>
+  )}
+</a>
