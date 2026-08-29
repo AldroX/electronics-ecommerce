@@ -1,0 +1,25 @@
+---
+/**
+ * FloatingWhatsApp — global fixed bottom-right WhatsApp button.
+ *
+ * Thin wrapper around CTAWhatsApp variant="floating". No props.
+ * Rendered exactly once per page (design: TrustSection renders it globally).
+ *
+ * Reduced motion (SCN-CW-005): this wrapper owns the
+ * @media (prefers-reduced-motion: reduce) guard that disables the floating
+ * button's transitions, so the button appears instantly for users who prefer
+ * reduced motion. The CTAWhatsApp floating anchor carries the
+ * `.cta-whatsapp-floating` class this rule targets.
+ */
+import CTAWhatsApp from "./CTAWhatsApp.astro";
+---
+
+<CTAWhatsApp variant="floating" />
+
+<style is:global>
+  @media (prefers-reduced-motion: reduce) {
+    .cta-whatsapp-floating {
+      transition: none;
+    }
+  }
+</style>
