@@ -3,7 +3,8 @@
  * FloatingWhatsApp — global fixed bottom-right WhatsApp button.
  *
  * Thin wrapper around CTAWhatsApp variant="floating". No props.
- * Rendered exactly once per page (design: TrustSection renders it globally).
+ * Rendered exactly once per page — HeroSection owns the global instance
+ * (tasks 5.1 dual-CTA; tasks 5.5 "once globally, not per-section").
  *
  * Reduced motion (SCN-CW-005): this wrapper owns the
  * @media (prefers-reduced-motion: reduce) guard that disables the floating

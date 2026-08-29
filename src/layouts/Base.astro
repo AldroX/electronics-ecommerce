@@ -19,6 +19,26 @@ const pageTitle = meta_title || (title ? `${title} | ${config.site.title}` : con
 const pageDescription = description || config.metadata.meta_description;
 const pageImage = `${config.site.base_url}${image || config.metadata.meta_image}`;
 const pageUrl = `${config.site.base_url}${Astro.url.pathname === "/" ? "" : Astro.url.pathname}`;
+
+// Self-referencing canonical by default (REQ-HP-004): every route gets a
+// canonical URL — an explicit `canonical` prop overrides it when needed.
+const canonicalUrl = canonical || pageUrl;
+
+// schema.org WebPage structured data (REQ-HP-004), rendered as JSON-LD in
+// <head>. Single source of truth for the current route.
+const webPageJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: pageTitle,
+  url: pageUrl,
+  description: pageDescription,
+  inLanguage: "es",
+  isPartOf: {
+    "@type": "WebSite",
+    name: config.site.title,
+    url: config.site.base_url,
+  },
+};
 ---
 
 <!doctype html>
@@ -43,8 +63,8 @@ const pageUrl = `${config.site.base_url}${Astro.url.pathname === "/" ? "" : Astr
     <!-- title -->
     <title>{pageTitle}</title>
 
-    <!-- canonical url -->
-    {canonical && <link rel="canonical" href={canonical} />}
+    <!-- canonical url (self-referencing, REQ-HP-004) -->
+    <link rel="canonical" href={canonicalUrl} />
 
     <!-- noindex robots -->
     {noindex && <meta name="robots" content="noindex,nofollow" />}
@@ -75,6 +95,9 @@ const pageUrl = `${config.site.base_url}${Astro.url.pathname === "/" ? "" : Astr
     <!-- twitter:image -->
     <meta name="twitter:image" content={pageImage} />
     <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- schema.org structured data (JSON-LD, REQ-HP-004) -->
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(webPageJsonLd)} />
   </head>
   <body class="flex flex-col min-h-screen bg-body font-primary text-text">
     <Header />

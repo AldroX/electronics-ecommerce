@@ -1,12 +1,41 @@
 ---
+/**
+ * Home route `/` — page assembly (task 6.1, WU-5).
+ *
+ * Renders the 5 MVP sections in spec order (REQ-HP-002):
+ *   HeroSection → CategoriesSection → FeaturedProducts → BestSellers → TrustSection
+ *
+ * Heading contract (REQ-HP-003):
+ *   - exactly one <h1> — owned by HeroSection (page's only h1)
+ *   - section titles are <h2> (rendered inside each section component)
+ *   - card titles are <h3> (rendered inside ProductCard / CategoryCard)
+ *
+ * SEO (task 6.2 / REQ-HP-004):
+ *   - Base.astro provides the HTML shell: schema.org WebPage JSON-LD,
+ *     OG/Twitter tags, and the self-referencing canonical.
+ *   - `meta_title`: descriptive Spanish title for the home route (instead of
+ *     the stub's "Home") — feeds <title>, og:title and twitter:title.
+ *   - `image`: points the shared og:image/twitter:image at the hero
+ *     placeholder (the site's current hero visual) until a real raster
+ *     logo/OG asset exists — see apply-progress risks.
+ *
+ * Zero framework JS: build-time static markup only.
+ */
 import Base from "../layouts/Base.astro";
+import HeroSection from "../components/sections/HeroSection.astro";
+import CategoriesSection from "../components/sections/CategoriesSection.astro";
+import FeaturedProducts from "../components/sections/FeaturedProducts.astro";
+import BestSellers from "../components/sections/BestSellers.astro";
+import TrustSection from "../components/sections/TrustSection.astro";
 ---
 
-<Base title="Home">
-  <section class="section">
-    <div class="container">
-      <h1>Bienvenido a EnergíaTotal</h1>
-      <p class="text-text-light mt-4">Soluciones de energía, respaldo eléctrico, energía solar e iluminación eficiente para hogares y negocios.</p>
-    </div>
-  </section>
+<Base
+  meta_title="EnergíaTotal | Energía solar, respaldo eléctrico e iluminación"
+  image="/images/placeholder-hero.svg"
+>
+  <HeroSection />
+  <CategoriesSection />
+  <FeaturedProducts />
+  <BestSellers />
+  <TrustSection />
 </Base>
