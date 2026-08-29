@@ -1,0 +1,73 @@
+---
+/**
+ * HeroSection — Home page hero (organism), task 5.1.
+ *
+ * Renders the page's single <h1> (REQ-HP-003): headline + subheadline,
+ * a primary inline WhatsApp CTA, and 4 inline trust indicators
+ * (shipping, warranty, support, secure payment — REQ-HP-007/008).
+ *
+ * Dual-CTA per REQ-HP-007: the primary inline CTAWhatsApp button renders
+ * here, and the floating WhatsApp button is rendered EXACTLY once per page,
+ * here in HeroSection — early in the DOM so keyboard users reach the CTA
+ * first (tasks 5.1 dual-CTA + tasks 5.5 "once globally, not per-section";
+ * TrustSection must not duplicate it).
+ *
+ * No props — copy lives in frontmatter so it can move to a data layer
+ * later (swappable-data principle). Above-fold images: this section has no
+ * <img> elements, so the priority=true rule is N/A here; it applies to
+ * ProductCards mounted above the fold in WU-5.
+ *
+ * Zero framework JS: build-time static markup only.
+ */
+import CTAWhatsApp from "../ui/CTAWhatsApp.astro";
+import FloatingWhatsApp from "../ui/FloatingWhatsApp.astro";
+
+// Frontmatter data (swappable). Spanish user-facing copy.
+const headline = "Energía limpia para tu hogar y tu negocio";
+const subheadline =
+  "Soluciones de energía solar, respaldo eléctrico e iluminación eficiente. Te asesoramos gratis y sin compromiso por WhatsApp.";
+
+// 24x24 Material-style icon paths (fill="currentColor"), keyed by name.
+const icons = {
+  truck:
+    "M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z",
+  shield:
+    "M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z",
+  support:
+    "M21 12.22C21 6.73 16.74 3 12 3c-4.69 0-9 3.65-9 9.28-.6.34-1 .98-1 1.72v2c0 1.1.9 2 2 2h1v-6.1c0-3.87 3.13-7 7-7s7 3.13 7 7V19h-8v2h8c1.1 0 2-.9 2-2v-1.22c.59-.31 1-.92 1-1.64v-2.3c0-.7-.41-1.31-1-1.52z",
+  lock: "M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z",
+} as const;
+
+const trustItems: { label: string; icon: keyof typeof icons }[] = [
+  { label: "Envío gratis", icon: "truck" },
+  { label: "Garantía 2 años", icon: "shield" },
+  { label: "Soporte técnico", icon: "support" },
+  { label: "Pago seguro", icon: "lock" },
+];
+---
+
+<section class="section bg-gradient" aria-labelledby="hero-title">
+  <div class="container">
+    <div class="max-w-3xl">
+      <h1 id="hero-title">{headline}</h1>
+      <p class="mt-4 max-w-2xl text-base text-text-light md:text-lg">{subheadline}</p>
+
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+        <CTAWhatsApp variant="inline" class="btn-lg w-full sm:w-auto" />
+      </div>
+
+      <ul class="mt-10 flex flex-wrap gap-x-6 gap-y-3">
+        {trustItems.map((item) => (
+          <li class="flex items-center gap-2 text-sm font-medium text-text-dark">
+            <svg class="h-5 w-5 shrink-0 text-primary" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d={icons[item.icon]} />
+            </svg>
+            {item.label}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<FloatingWhatsApp />

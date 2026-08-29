@@ -1,0 +1,32 @@
+---
+/**
+ * BestSellers — Home best sellers grid (organism), task 5.4.
+ *
+ * Calls getBestSellers() from the data layer and renders a responsive
+ * grid of ProductCards with lazy loading (below the fold).
+ *
+ * Renders nothing when no product is a best seller (REQ-HP-002 /
+ * SCN-HP-002). No props. <h2> section title (REQ-HP-003).
+ * Zero framework JS.
+ */
+import { getBestSellers } from "@/data/helpers/products";
+import ProductCard from "../cards/ProductCard.astro";
+
+const bestSellers = getBestSellers();
+---
+
+{bestSellers.length > 0 && (
+    <section class="section" aria-labelledby="best-sellers-title">
+      <div class="container">
+        <div class="mb-8 md:mb-10">
+          <h2 id="best-sellers-title">Más Vendidos</h2>
+        </div>
+
+        <div class="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
+          {bestSellers.map((product) => (
+            <ProductCard product={product} priority={false} />
+          ))}
+        </div>
+      </div>
+    </section>
+  )}

@@ -1,0 +1,31 @@
+---
+/**
+ * CategoriesSection — Home category grid (organism), task 5.2.
+ *
+ * Calls getAllCategories() from the data layer and renders a responsive
+ * grid of CategoryCards. Renders nothing when there are no categories
+ * (REQ-HP-002 / SCN-HP-002: no empty containers in the DOM).
+ *
+ * No props. <h2> section title (REQ-HP-003). Zero framework JS.
+ */
+import { getAllCategories } from "@/data/helpers/categories";
+import CategoryCard from "../cards/CategoryCard.astro";
+
+const categories = getAllCategories();
+---
+
+{categories.length > 0 && (
+    <section class="section" aria-labelledby="categories-title">
+      <div class="container">
+        <div class="mb-8 md:mb-10">
+          <h2 id="categories-title">Categorías</h2>
+        </div>
+
+        <div class="grid grid-cols-2 gap-6 md:grid-cols-4">
+          {categories.map((category) => (
+            <CategoryCard category={category} />
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
