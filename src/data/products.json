@@ -52,7 +52,7 @@
       "Protecciones": "Sobrecarga, cortocircuito, polaridad inversa, sobretemperatura"
     },
     "features": ["MPPT 99.5% eficiencia", "Auto-detección voltaje", "Pantalla LCD", "Múltiples protecciones"],
-    "availability": "in-stock",
+    "availability": "out-of-stock",
     "featured": true,
     "bestSeller": false,
     "kitOnly": false,
