@@ -3,8 +3,9 @@
  * ProductCard — Product display card (molecule).
  *
  * Implements REQ-PC-001..007 / SCN-PC-001..005:
- *  - image: responsive `<picture>`/`<img>` with `srcset` on public/ paths
- *    (no @astrojs/image integration is installed), lazy unless `priority`.
+ *  - image: responsive `<picture>`/`<img>` with real WebP/AVIF variants via
+ *    `astro:assets` `Picture` for importable images (src/assets/), falls back
+ *    to raw `<img>` + `onerror` for public/ placeholder paths.
  *  - missing image -> /images/placeholder-product.svg fallback via the native
  *    `onerror` image-fallback mechanism with descriptive Spanish alt.
  *  - name (`<h3>`), conditional short description, prominent price, compare-at
@@ -16,6 +17,10 @@
  */
 import type { Product } from "@/data/types";
 import CTAWhatsApp from "../ui/CTAWhatsApp.astro";
+import { Picture } from "astro:assets";
+
+// Pre-load all assets in src/assets for dynamic lookup
+const assetGlob = import.meta.glob<{ default: ImageMetadata }>("/src/assets/**/*.{jpg,jpeg,png,webp,avif}", { eager: true });
 
 export interface Props {
   product: Product;
@@ -29,17 +34,32 @@ const { product, priority = false } = Astro.props;
 // NOT the .webp naming used in design.md/tasks.md — use the actual files.
 const PLACEHOLDER = "/images/placeholder-product.svg";
 
-// srcset width hints for the card grid (col-6 md:col-4 lg:col-3). Without
-// @astrojs/image the hints point at the same public/ URL; a real integration
-// would emit generated widths per format (WebP/AVIF).
-const CARD_SRC_WIDTHS = [480, 640, 800] as const;
-const SIZES = "(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw";
+// Helper: check if an image path is an importable asset (in src/assets)
+// vs a public/ placeholder. In the future, real products will use imports.
+function isImportableImage(path: string): boolean {
+  return path.startsWith("@/assets/") || path.startsWith("../assets/");
+}
 
-const primary = product.images[0] ?? PLACEHOLDER;
+// Convert @/assets/ or ../assets/ to the glob key format
+function toGlobKey(path: string): string {
+  if (path.startsWith("@/assets/")) {
+    return "/src/" + path.slice(2); // @/assets/ -> /src/assets/
+  }
+  if (path.startsWith("../assets/")) {
+    return "/src/assets/" + path.slice(10); // ../assets/ -> /src/assets/
+  }
+  return "";
+}
+
 const hasImages = product.images.length > 0;
-const srcset = hasImages
-  ? CARD_SRC_WIDTHS.map((w) => `${primary} ${w}w`).join(", ")
-  : undefined;
+const primaryPublic = product.images[0] ?? PLACEHOLDER;
+
+// Try to resolve as importable asset (future: real product images in src/assets)
+const primaryImportKey = hasImages && isImportableImage(product.images[0])
+  ? toGlobKey(product.images[0])
+  : null;
+
+const primaryImport = primaryImportKey ? assetGlob[primaryImportKey]?.default : null;
 
 // Descriptive Spanish alt (REQ-PC-002 / SCN-PC-003).
 const imageAlt = hasImages ? product.name : `Imagen no disponible para ${product.name}`;
@@ -78,26 +98,35 @@ const compareAt = showCompareAt ? formatter.format(product.compareAtPrice!) : nu
   aria-label={`Ver ${product.name}`}
 >
   <div class="relative aspect-[4/3] w-full overflow-hidden bg-light">
-    <picture>
-      <img
-        src={primary}
-        srcset={srcset}
-        sizes={SIZES}
+    {primaryImport && (
+      <Picture
+        src={primaryImport}
         alt={imageAlt}
         loading={priority ? "eager" : "lazy"}
-        width="400"
-        height="300"
-        decoding="async"
+        widths={[480, 640, 800]}
+        sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
+        formats={["avif", "webp"]}
         class="h-full w-full object-cover transition-transform duration-300 motion-safe:group-hover:scale-105"
-        onerror={`this.onerror=null;this.src='${PLACEHOLDER}';this.srcset='';this.alt='Imagen no disponible para ${product.name}';`}
       />
-    </picture>
+    )}
+    {(!primaryImport || !hasImages) && (
+      <picture>
+        <img
+          src={primaryPublic}
+          alt={imageAlt}
+          loading={priority ? "eager" : "lazy"}
+          width="400"
+          height="300"
+          decoding="async"
+          class="h-full w-full object-cover transition-transform duration-300 motion-safe:group-hover:scale-105"
+          onerror={`this.onerror=null;this.src='${PLACEHOLDER}';this.srcset='';this.alt='Imagen no disponible para ${product.name}';`}
+        />
+      </picture>
+    )}
   </div>
 
   <div class="flex flex-1 flex-col gap-2 p-4">
-    <span
-      class={`inline-flex w-fit items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${badge.class}`}
-    >
+    <span class={`inline-flex w-fit items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${badge.class}`}>
       {badge.label}
     </span>
 
