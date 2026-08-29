@@ -1,7 +1,7 @@
 import type { Category } from '../types';
 import categoriesData from '../categories.json';
 
-const categories: Category[] = categoriesData as Category[];
+const categories: Category[] = categoriesData as unknown as Category[];
 
 export function getAllCategories(): Category[] {
   return categories;

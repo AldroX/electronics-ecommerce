@@ -1,1 +1,58 @@
-[]
+[
+  {
+    "id": "cat-1",
+    "name": "Energía Solar",
+    "slug": "energia-solar",
+    "description": "Paneles solares, controladores e inversores para generar tu propia electricidad.",
+    "image": "/images/placeholder-category.webp",
+    "products": ["prod-1", "prod-2"],
+    "seo": {
+      "title": "Energía Solar | Paneles, Controladores e Inversores",
+      "description": "Compra paneles solares, controladores MPPT e inversores. Envío a toda Cuba. WhatsApp para asesoría.",
+      "image": "/images/placeholder-category.webp",
+      "canonical": "/categoria/energia-solar"
+    }
+  },
+  {
+    "id": "cat-2",
+    "name": "Respaldo y Almacenamiento",
+    "slug": "respaldo-almacenamiento",
+    "description": "Power stations, baterías LiFePO4 y UPS para mantener tus equipos encendidos.",
+    "image": "/images/placeholder-category.webp",
+    "products": ["prod-3", "prod-4"],
+    "seo": {
+      "title": "Respaldo y Almacenamiento | Power Stations y Baterías",
+      "description": "Power stations portátiles, baterías LiFePO4 y UPS. Autonomía para tu hogar o negocio.",
+      "image": "/images/placeholder-category.webp",
+      "canonical": "/categoria/respaldo-almacenamiento"
+    }
+  },
+  {
+    "id": "cat-3",
+    "name": "Iluminación",
+    "slug": "iluminacion",
+    "description": "Lámparas solares, LED de bajo consumo y luces de emergencia.",
+    "image": "/images/placeholder-category.webp",
+    "products": ["prod-5", "prod-6"],
+    "seo": {
+      "title": "Iluminación | Lámparas Solares y LED",
+      "description": "Iluminación eficiente: lámparas solares, bombillas LED y luces de emergencia. Ahorra energía.",
+      "image": "/images/placeholder-category.webp",
+      "canonical": "/categoria/iluminacion"
+    }
+  },
+  {
+    "id": "cat-4",
+    "name": "Accesorios",
+    "slug": "accesorios",
+    "description": "Cables, conectores, adaptadores y componentes para tu instalación.",
+    "image": "/images/placeholder-category.webp",
+    "products": ["prod-7", "prod-8"],
+    "seo": {
+      "title": "Accesorios | Cables, Conectores y Adaptadores",
+      "description": "Todo lo que necesitas para conectar tu sistema: cables MC4, conectores, adaptadores y más.",
+      "image": "/images/placeholder-category.webp",
+      "canonical": "/categoria/accesorios"
+    }
+  }
+]

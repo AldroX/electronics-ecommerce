@@ -1,7 +1,7 @@
 import type { Product } from '../types';
 import productsData from '../products.json';
 
-const products: Product[] = productsData as Product[];
+const products: Product[] = productsData as unknown as Product[];
 
 export function getAllProducts(): Product[] {
   return products;

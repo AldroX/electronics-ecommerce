@@ -1,1 +1,47 @@
-[]
+[
+  {
+    "id": "kit-1",
+    "name": "Kit Respaldo Básico",
+    "slug": "kit-respaldo-basico",
+    "description": "Power Station 1000Wh + Lámpara Solar 200W. Energía y luz inmediata para cortes prolongados. Listo para usar.",
+    "products": ["prod-3", "prod-5"],
+    "price": 729.00,
+    "compareAtPrice": 894.98,
+    "seo": {
+      "title": "Kit Respaldo Básico | Power Station + Lámpara Solar",
+      "description": "Kit: Power Station 1000Wh LiFePO4 + Lámpara Solar 200W. $729 (ahorro $165). WhatsApp para pedir.",
+      "image": "/images/placeholder-category.webp",
+      "canonical": "/kits/kit-respaldo-basico"
+    }
+  },
+  {
+    "id": "kit-2",
+    "name": "Kit Iluminación Solar Completa",
+    "slug": "kit-iluminacion-solar",
+    "description": "Panel 450W + Controlador MPPT 60A + 2 Lámparas Solares + 4 Bombillas LED 12V. Iluminación total off-grid.",
+    "products": ["prod-1", "prod-2", "prod-5", "prod-6", "prod-6", "prod-6", "prod-6"],
+    "price": 365.00,
+    "compareAtPrice": 439.90,
+    "seo": {
+      "title": "Kit Iluminación Solar | Panel + Controlador + Lámparas + LED",
+      "description": "Kit completo iluminación off-grid: Panel 450W + MPPT 60A + 2 lámparas solares + 4 bombillas LED 12V. $365.",
+      "image": "/images/placeholder-category.webp",
+      "canonical": "/kits/kit-iluminacion-solar"
+    }
+  },
+  {
+    "id": "kit-3",
+    "name": "Kit Solar Inicial",
+    "slug": "kit-solar-inicial",
+    "description": "Panel 450W + Controlador MPPT 60A + Batería LiFePO4 100Ah. Base para tu sistema solar escalable.",
+    "products": ["prod-1", "prod-2", "prod-4"],
+    "price": 559.00,
+    "compareAtPrice": 677.97,
+    "seo": {
+      "title": "Kit Solar Inicial | Panel + Controlador + Batería LiFePO4",
+      "description": "Base sistema solar: Panel 450W + MPPT 60A + Batería 12V 100Ah LiFePO4. $559 (ahorro $118). WhatsApp.",
+      "image": "/images/placeholder-category.webp",
+      "canonical": "/kits/kit-solar-inicial"
+    }
+  }
+]

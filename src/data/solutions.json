@@ -1,1 +1,72 @@
-[]
+[
+  {
+    "id": "sol-1",
+    "name": "Respaldo para Hogar",
+    "slug": "respaldo-hogar",
+    "description": "Mantén tus esenciales encendidos durante apagones: nevera, luces, ventilador, cargar celulares. Power Station + panel solar opcional.",
+    "icon": "home",
+    "products": ["prod-3", "prod-1"],
+    "seo": {
+      "title": "Respaldo para Hogar | Soluciones Energía",
+      "description": "Solución respaldo hogar: nevera, luces, ventilador. Power Station + solar. Asesoría WhatsApp gratis.",
+      "image": "/images/placeholder-category.webp",
+      "canonical": "/soluciones/respaldo-hogar"
+    }
+  },
+  {
+    "id": "sol-2",
+    "name": "Iluminación en Cortes de Luz",
+    "slug": "iluminacion-cortes",
+    "description": "Lámparas solares autónomas y bombillas 12V para que nunca te quedes a oscuras. Instalación simple, sin cables.",
+    "icon": "lightbulb",
+    "products": ["prod-5", "prod-6"],
+    "seo": {
+      "title": "Iluminación en Cortes | Lámparas Solares y 12V",
+      "description": "Iluminación sin red: lámparas solares con sensor, bombillas 12V directas a batería. Compra por WhatsApp.",
+      "image": "/images/placeholder-category.webp",
+      "canonical": "/soluciones/iluminacion-cortes"
+    }
+  },
+  {
+    "id": "sol-3",
+    "name": "Iniciarse en Energía Solar",
+    "slug": "energia-solar-inicio",
+    "description": "Kit básico para empezar: panel + controlador + batería. Genera tu propia electricidad paso a paso. Escalable.",
+    "icon": "sun",
+    "products": ["prod-1", "prod-2", "prod-4"],
+    "seo": {
+      "title": "Iniciarse en Solar | Kit Básico Panel + Controlador + Batería",
+      "description": "Primer kit solar: panel 450W + controlador MPPT + batería LiFePO4. Asesoría incluida. WhatsApp para empezar.",
+      "image": "/images/placeholder-category.webp",
+      "canonical": "/soluciones/energia-solar-inicio"
+    }
+  },
+  {
+    "id": "sol-4",
+    "name": "Alimentar Equipos Pequeños",
+    "slug": "equipos-pequenos",
+    "description": "Carga laptops, routers, cámaras, drones. Power Station portátil o batería 12V + inversor. Movilidad total.",
+    "icon": "laptop",
+    "products": ["prod-3", "prod-4"],
+    "seo": {
+      "title": "Equipos Pequeños | Power Station Portátil",
+      "description": "Energía para laptop, router, cámara, dron. Power Station 1000Wh o batería 12V + inversor. Envío Cuba.",
+      "image": "/images/placeholder-category.webp",
+      "canonical": "/soluciones/equipos-pequenos"
+    }
+  },
+  {
+    "id": "sol-5",
+    "name": "Reducir Consumo Eléctrico",
+    "slug": "reduccion-consumo",
+    "description": "Cambia a LED 12V directo, usa lámparas solares exteriores, optimiza con controlador MPPT. Ahorra en la factura.",
+    "icon": "leaf",
+    "products": ["prod-5", "prod-6", "prod-2"],
+    "seo": {
+      "title": "Reducir Consumo | LED 12V y Solar Exterior",
+      "description": "Ahorra electricidad: bombillas LED 12V, lámparas solares, controlador MPPT. Productos eficientes por WhatsApp.",
+      "image": "/images/placeholder-category.webp",
+      "canonical": "/soluciones/reduccion-consumo"
+    }
+  }
+]

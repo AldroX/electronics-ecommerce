@@ -1,7 +1,7 @@
 import type { Solution } from '../types';
 import solutionsData from '../solutions.json';
 
-const solutions: Solution[] = solutionsData as Solution[];
+const solutions: Solution[] = solutionsData as unknown as Solution[];
 
 export function getAllSolutions(): Solution[] {
   return solutions;
