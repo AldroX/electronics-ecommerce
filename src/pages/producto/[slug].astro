@@ -1,0 +1,169 @@
+---
+/**
+ * Product detail page — /producto/[slug]
+ *
+ * Assembles WU-2 components (Gallery, Specs, PowerCalculator, RelatedProducts,
+ * Breadcrumbs) plus inline WhatsApp CTA and Product JSON-LD structured data.
+ *
+ * Zero framework JS: all interactivity lives inside the child components.
+ * UI copy in Spanish. Comments in English.
+ */
+import type { GetStaticPaths } from "astro";
+import type { Product } from "@/data/types";
+import { getAllProducts } from "@/data/helpers/products";
+import { getAllCategories } from "@/data/helpers/categories";
+import config from "@/config/config.json";
+import Base from "@/layouts/Base.astro";
+import Breadcrumbs from "@/components/product/Breadcrumbs.astro";
+import ProductGallery from "@/components/product/ProductGallery.astro";
+import ProductSpecs from "@/components/product/ProductSpecs.astro";
+import PowerCalculator from "@/components/product/PowerCalculator.astro";
+import RelatedProducts from "@/components/product/RelatedProducts.astro";
+import CTAWhatsApp from "@/components/ui/CTAWhatsApp.astro";
+
+export const getStaticPaths: GetStaticPaths = () => {
+  const products = getAllProducts();
+  return products.map((product) => ({
+    params: { slug: product.slug },
+    props: { product },
+  }));
+};
+
+const { product } = Astro.props as { product: Product };
+const allProducts = getAllProducts();
+const categories = getAllCategories();
+
+// SEO
+const siteTitle = config.site.title;
+const baseUrl = config.site.base_url;
+const pageTitle = product.seo?.title || `${product.name} | ${siteTitle}`;
+const pageDescription =
+  product.seo?.description || product.shortDescription || product.description;
+const pageImage = product.seo?.image || product.images[0];
+const canonicalUrl = `${baseUrl}/producto/${product.slug}`;
+
+// Price formatting (matches ProductCard)
+const formatter = new Intl.NumberFormat("es", {
+  style: "currency",
+  currency: product.currency,
+});
+const showCompareAt = Boolean(
+  product.compareAtPrice && product.compareAtPrice > product.price,
+);
+const price = formatter.format(product.price);
+const compareAt = showCompareAt
+  ? formatter.format(product.compareAtPrice!)
+  : null;
+
+// Availability badge (matches ProductCard)
+const availabilityMap = {
+  "in-stock": { label: "Disponible", class: "bg-emerald-100 text-emerald-700" },
+  limited: { label: "Pocas unidades", class: "bg-amber-100 text-amber-700" },
+  "out-of-stock": { label: "Agotado", class: "bg-red-100 text-red-700" },
+} as const;
+const stockKey = product.availability as keyof typeof availabilityMap;
+const badge = availabilityMap[stockKey] ?? availabilityMap["in-stock"];
+
+// WhatsApp: out-of-stock appends repo notice (matches ProductCard)
+const isOutOfStock = product.availability === "out-of-stock";
+const whatsappMessage = isOutOfStock
+  ? `${product.whatsappMessage} (Producto agotado, consultar reposición)`
+  : undefined;
+
+// Product JSON-LD (schema.org Product)
+const availabilitySchemaMap: Record<string, string> = {
+  "in-stock": "https://schema.org/InStock",
+  limited: "https://schema.org/LimitedAvailability",
+  "out-of-stock": "https://schema.org/OutOfStock",
+};
+
+const productSchema = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  name: product.name,
+  description: product.shortDescription || product.description,
+  image: product.images.map((img) =>
+    img.startsWith("http") ? img : `${baseUrl}${img}`,
+  ),
+  sku: product.id,
+  offers: {
+    "@type": "Offer",
+    price: product.price,
+    priceCurrency: product.currency || "USD",
+    availability:
+      availabilitySchemaMap[product.availability] ||
+      "https://schema.org/InStock",
+    url: canonicalUrl,
+  },
+};
+---
+
+<Base meta_title={pageTitle} description={pageDescription} image={pageImage} canonical={canonicalUrl}>
+  {/* Product JSON-LD */}
+  <script
+    type="application/ld+json"
+    is:inline
+    set:html={JSON.stringify(productSchema)}
+  />
+
+  <section class="container py-10">
+    <Breadcrumbs product={product} categories={categories} />
+
+    <div class="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
+      {/* Gallery — left column */}
+      <ProductGallery images={product.images} productName={product.name} />
+
+      {/* Product info — right column */}
+      <div class="flex flex-col gap-5">
+        <h1 class="text-h3 font-bold leading-tight text-text-dark">
+          {product.name}
+        </h1>
+
+        {product.shortDescription && (
+          <p class="text-base text-text-light">{product.shortDescription}</p>
+        )}
+
+        {/* Price */}
+        <div class="flex items-baseline gap-3">
+          <span class="text-2xl font-bold text-primary">{price}</span>
+          {showCompareAt && (
+            <span class="text-base text-text-light line-through">{compareAt}</span>
+          )}
+        </div>
+
+        {/* Availability badge */}
+        <span
+          class:list={[
+            "inline-flex w-fit items-center rounded-full px-2.5 py-0.5 text-xs font-semibold",
+            badge.class,
+          ]}
+        >
+          {badge.label}
+        </span>
+
+        {/* Inline WhatsApp CTA */}
+        <CTAWhatsApp
+          variant="inline"
+          productName={product.name}
+          messageTemplate={whatsappMessage}
+          class="mt-1 w-fit"
+        />
+      </div>
+    </div>
+
+    {/* Specs */}
+    <div class="mt-12">
+      <ProductSpecs specs={product.specs} />
+    </div>
+
+    {/* Power calculator — uses batteryWh when the product stores energy */}
+    <div class="mt-12">
+      <PowerCalculator batteryWh={product.batteryWh} />
+    </div>
+
+    {/* Related products */}
+    <div class="mt-12">
+      <RelatedProducts product={product} allProducts={allProducts} />
+    </div>
+  </section>
+</Base>

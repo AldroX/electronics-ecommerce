@@ -26,6 +26,8 @@ export interface Product {
   tags: string[];
   seo: SEOData;
   relatedProducts: string[];
+  /** Battery capacity in watt-hours, only for products that store energy (power stations, batteries, battery kits). */
+  batteryWh?: number;
 }
 
 export interface Category {

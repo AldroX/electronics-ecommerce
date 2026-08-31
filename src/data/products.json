@@ -92,6 +92,7 @@
     "bestSeller": true,
     "kitOnly": false,
     "whatsappMessage": "Hola, estoy interesado en la Power Station 1000Wh LiFePO4. ¿Está disponible?",
+    "batteryWh": 1000,
     "tags": ["power-station", "lifepo4", "1000wh", "portatil", "respaldos"],
     "seo": {
       "title": "Power Station 1000Wh LiFePO4 | 1000W AC, Solar Ready",
@@ -126,6 +127,7 @@
     "bestSeller": true,
     "kitOnly": false,
     "whatsappMessage": "Hola, estoy interesado en la Batería LiFePO4 12V 100Ah. ¿Está disponible?",
+    "batteryWh": 1280,
     "tags": ["bateria", "lifepo4", "12v", "100ah", "almacenamiento"],
     "seo": {
       "title": "Batería LiFePO4 12V 100Ah | BMS Integrado",
