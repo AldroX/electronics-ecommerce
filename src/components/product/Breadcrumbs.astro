@@ -1,9 +1,9 @@
 ---
 /**
- * Breadcrumbs — Breadcrumb navigation with JSON-LD structured data.
+ * Breadcrumbs — Breadcrumb navigation.
  *
  * Renders: Home > Category > Product (current, no link).
- * Injects BreadcrumbList schema.org JSON-LD for SEO.
+ * JSON-LD structured data is owned by Base.astro <head>.
  */
 import type { Product, Category } from "@/data/types";
 import config from "@/config/config.json";
@@ -33,18 +33,6 @@ if (category) {
 
 // Current product is the last item — no URL (aria-current="page")
 items.push({ name: product.name });
-
-// JSON-LD BreadcrumbList schema
-const breadcrumbSchema = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  itemListElement: items.map((item, index) => ({
-    "@type": "ListItem",
-    position: index + 1,
-    name: item.name,
-    ...(item.url ? { item: item.url } : {}),
-  })),
-};
 ---
 
 <nav aria-label="Miga de pan" class="mb-6 text-sm text-text-light">
@@ -73,9 +61,3 @@ const breadcrumbSchema = {
     })}
   </ol>
 </nav>
-
-<script
-  type="application/ld+json"
-  is:inline
-  set:html={JSON.stringify(breadcrumbSchema)}
-/>

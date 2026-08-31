@@ -5,7 +5,7 @@
  * Renders:
  *  - Prev/Next links
  *  - Page numbers (1, 2, 3... with ellipsis for many pages)
- *  - Static links to /productos or /productos/page/N
+ *  - Static links to /productos/ or /productos/N
  *  - Current page highlighted with aria-current="page"
  *
  * Accessibility: nav with aria-label, proper aria-current,
@@ -45,8 +45,8 @@ if (endPage < totalPages) {
 }
 
 const buildPageUrl = (page: number): string => {
-  if (page === 1) return basePath;
-  return `${basePath}/page/${page}`;
+  if (page <= 1) return `${basePath}/`;
+  return `/productos/${page}`;
 };
 ---
 

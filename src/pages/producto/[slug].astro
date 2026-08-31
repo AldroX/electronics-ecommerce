@@ -42,6 +42,19 @@ const pageDescription =
 const pageImage = product.seo?.image || product.images[0];
 const canonicalUrl = `${baseUrl}/producto/${product.slug}`;
 
+// Breadcrumb items for JSON-LD in Base.astro <head>
+const category = categories.find((c) => c.slug === product.category);
+const breadcrumbItems: Array<{ name: string; url?: string }> = [
+  { name: "Inicio", url: `${baseUrl}/` },
+];
+if (category) {
+  breadcrumbItems.push({
+    name: category.name,
+    url: `${baseUrl}/categoria/${category.slug}`,
+  });
+}
+breadcrumbItems.push({ name: product.name });
+
 // Price formatting (matches ProductCard)
 const formatter = new Intl.NumberFormat("es", {
   style: "currency",
@@ -69,43 +82,9 @@ const isOutOfStock = product.availability === "out-of-stock";
 const whatsappMessage = isOutOfStock
   ? `${product.whatsappMessage} (Producto agotado, consultar reposición)`
   : undefined;
-
-// Product JSON-LD (schema.org Product)
-const availabilitySchemaMap: Record<string, string> = {
-  "in-stock": "https://schema.org/InStock",
-  limited: "https://schema.org/LimitedAvailability",
-  "out-of-stock": "https://schema.org/OutOfStock",
-};
-
-const productSchema = {
-  "@context": "https://schema.org",
-  "@type": "Product",
-  name: product.name,
-  description: product.shortDescription || product.description,
-  image: product.images.map((img) =>
-    img.startsWith("http") ? img : `${baseUrl}${img}`,
-  ),
-  sku: product.id,
-  offers: {
-    "@type": "Offer",
-    price: product.price,
-    priceCurrency: product.currency || "USD",
-    availability:
-      availabilitySchemaMap[product.availability] ||
-      "https://schema.org/InStock",
-    url: canonicalUrl,
-  },
-};
 ---
 
-<Base meta_title={pageTitle} description={pageDescription} image={pageImage} canonical={canonicalUrl}>
-  {/* Product JSON-LD */}
-  <script
-    type="application/ld+json"
-    is:inline
-    set:html={JSON.stringify(productSchema)}
-  />
-
+<Base meta_title={pageTitle} description={pageDescription} image={pageImage} canonical={canonicalUrl} product={product} breadcrumbs={breadcrumbItems}>
   <section class="container py-10">
     <Breadcrumbs product={product} categories={categories} />
 

@@ -1,32 +1,33 @@
 ---
 /**
- * Productos catalog page — /productos (page 1).
+ * Productos catalog page — /productos/ (page 1) and /productos/2, /productos/3, etc.
+ *
+ * Uses Astro's spread rest param ([...page]) so paginate() works correctly.
+ * Page 1 renders at /productos/, subsequent pages at /productos/N.
  *
  * Features:
  *  - Hero section (h1 + subheadline)
  *  - ProductFilters component (sidebar on desktop, collapsible on mobile)
  *  - ProductSort component
- *  - Paginated ProductGrid using getStaticPaths + paginate() with 12 per page
+ *  - Paginated CatalogGrid using getStaticPaths + paginate() with 12 per page
  *  - Client-side filter/sort via vanilla JS (progressive enhancement)
  *  - Server-rendered first paint without JS dependency
  *
  * SEO:
  *  - Base.astro provides HTML shell with WebPage JSON-LD, canonical, OG/Twitter
- *  - Self-referencing canonical for /productos
+ *  - Self-referencing canonical for each paginated URL
  *  - meta_title and description for catalog page
  */
 import type { GetStaticPaths } from "astro";
-import type { Product } from "../data/types";
-import Base from "../layouts/Base.astro";
-import { getAllProducts } from "../data/helpers/products";
-import ProductFilters from "../components/cards/ProductFilters.astro";
-import CatalogGrid from "../components/cards/CatalogGrid.astro";
-
-const PER_PAGE = 12;
+import type { Product } from "../../data/types";
+import Base from "../../layouts/Base.astro";
+import { getAllProducts } from "../../data/helpers/products";
+import ProductFilters from "../../components/cards/ProductFilters.astro";
+import CatalogGrid from "../../components/cards/CatalogGrid.astro";
 
 export const getStaticPaths: GetStaticPaths = ({ paginate }) => {
   const products = getAllProducts();
-  return paginate(products, { pageSize: PER_PAGE });
+  return paginate(products, { pageSize: 12 });
 };
 
 interface CatalogPage {
@@ -49,7 +50,9 @@ interface CatalogPage {
 const { page } = Astro.props as { page: CatalogPage };
 const allProducts = getAllProducts();
 
-const metaTitle = "Catálogo de Productos | Energía Solar, Respaldo e Iluminación";
+const metaTitle = page.currentPage > 1
+  ? `Catálogo de Productos — Página ${page.currentPage}`
+  : "Catálogo de Productos | Energía Solar, Respaldo e Iluminación";
 const description =
   "Explora nuestro catálogo de paneles solares, power stations, baterías LiFePO4, iluminación LED y accesorios. Filtra por categoría, precio y disponibilidad. Compra por WhatsApp.";
 ---
