@@ -1,0 +1,36 @@
+---
+/**
+ * RelatedProducts — Grid of ProductCards from the same category.
+ *
+ * Filters products by the same category, excludes the current product,
+ * and renders up to 4 ProductCards. Renders nothing if fewer than 2
+ * related products exist (avoids a nearly-empty section).
+ */
+import type { Product } from "@/data/types";
+import ProductCard from "../cards/ProductCard.astro";
+
+export interface Props {
+  product: Product;
+  allProducts: Product[];
+}
+
+const { product, allProducts } = Astro.props;
+
+const related = allProducts
+  .filter((p) => p.category === product.category && p.id !== product.id)
+  .slice(0, 4);
+
+// Avoid rendering a nearly-empty related section
+const shouldRender = related.length >= 2;
+---
+
+{shouldRender && (
+  <section>
+    <h2 class="mb-6 text-h5 font-bold text-text-dark">Productos relacionados</h2>
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {related.map((p) => (
+        <ProductCard product={p} />
+      ))}
+    </div>
+  </section>
+)}

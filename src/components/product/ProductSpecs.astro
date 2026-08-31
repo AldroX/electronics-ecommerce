@@ -1,0 +1,30 @@
+---
+/**
+ * ProductSpecs — Renders product specifications as a definition list.
+ *
+ * Pure presentation: takes specs (Record<string, string>) and renders
+ * a styled <dl>. Spanish labels come directly from the data keys.
+ */
+export interface Props {
+  specs: Record<string, string>;
+}
+
+const { specs } = Astro.props;
+const entries = Object.entries(specs);
+---
+
+{entries.length > 0 ? (
+  <div>
+    <h2 class="mb-4 text-h5 font-bold text-text-dark">Especificaciones</h2>
+    <dl class="divide-y divide-border rounded-lg border border-border bg-white">
+      {entries.map(([key, value]) => (
+        <div class="flex flex-col gap-1 px-4 py-3 sm:flex-row sm:items-center sm:gap-6">
+          <dt class="min-w-[180px] font-medium text-text-light">{key}</dt>
+          <dd class="text-text-dark">{value}</dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+) : (
+  <p class="text-sm text-text-light">Sin especificaciones disponibles.</p>
+)}

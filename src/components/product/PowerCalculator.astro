@@ -1,0 +1,91 @@
+---
+/**
+ * PowerCalculator — Estimates runtime for common loads given battery Wh.
+ *
+ * Static presets in Spanish. Vanilla JS computes hours = Math.floor(batteryWh / watts)
+ * and renders result cards. Non-technical users: jargon is explained in plain language.
+ */
+export interface Props {
+  batteryWh: number | null | undefined;
+}
+
+const { batteryWh } = Astro.props;
+
+const validWh = typeof batteryWh === "number" && batteryWh > 0;
+---
+
+{validWh && (
+  <div data-calculator data-battery-wh={batteryWh}>
+    <h2 class="mb-1 text-h5 font-bold text-text-dark">¿Cuánto dura la batería?</h2>
+    <p class="mb-5 text-sm text-text-light">
+      Calculamos cuánto tiempo durará con estos aparatos comunes. Es una estimación
+      aproximada — el consumo real puede variar según el uso.
+    </p>
+
+    <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div class="rounded-lg border border-border bg-white p-4 text-center">
+        <span class="block text-3xl font-bold text-primary" data-calculator-output data-watts="5">—</span>
+        <span class="mt-1 block text-sm font-medium text-text-dark">Router (5W)</span>
+        <span class="block text-xs text-text-light">~ horas</span>
+      </div>
+      <div class="rounded-lg border border-border bg-white p-4 text-center">
+        <span class="block text-3xl font-bold text-primary" data-calculator-output data-watts="65">—</span>
+        <span class="mt-1 block text-sm font-medium text-text-dark">Laptop (65W)</span>
+        <span class="block text-xs text-text-light">~ horas</span>
+      </div>
+      <div class="rounded-lg border border-border bg-white p-4 text-center">
+        <span class="block text-3xl font-bold text-primary" data-calculator-output data-watts="25">—</span>
+        <span class="mt-1 block text-sm font-medium text-text-dark">Ventilador (25W)</span>
+        <span class="block text-xs text-text-light">~ horas</span>
+      </div>
+      <div class="rounded-lg border border-border bg-white p-4 text-center">
+        <span class="block text-3xl font-bold text-primary" data-calculator-output data-watts="10">—</span>
+        <span class="mt-1 block text-sm font-medium text-text-dark">Luces LED (10W)</span>
+        <span class="block text-xs text-text-light">~ horas</span>
+      </div>
+    </div>
+
+    <p class="mt-3 text-xs text-text-light">
+      Resultados estimados. No incluye pérdidas del inversor o temperatura ambiente.
+    </p>
+  </div>
+)}
+
+{!validWh && (
+  <div>
+    <h2 class="mb-1 text-h5 font-bold text-text-dark">¿Cuánto dura la batería?</h2>
+    <p class="text-sm text-text-light">
+      Información de capacidad de batería no disponible para este producto.
+    </p>
+  </div>
+)}
+
+<script>
+  // PowerCalculator — compute hours for each preset on DOM ready.
+  // Uses data attributes on output elements to avoid hardcoding watt values
+  // in the script, keeping it decoupled from the template.
+  function initCalculator() {
+    const outputs = document.querySelectorAll<HTMLElement>("[data-calculator-output]");
+    outputs.forEach((el) => {
+      const watts = Number(el.getAttribute("data-watts"));
+      if (!watts || watts <= 0) return;
+
+      // Walk up to the parent data-gallery-like container and find batteryWh
+      // We embed it as a data attribute on a wrapper element.
+      const container = el.closest("[data-calculator]");
+      if (!container) return;
+      const wh = Number(container.getAttribute("data-battery-wh"));
+      if (!wh || wh <= 0) return;
+
+      const hours = Math.floor(wh / watts);
+      el.textContent = `~${hours}h`;
+      el.setAttribute("aria-label", `Aproximadamente ${hours} horas con carga de ${watts} vatios`);
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initCalculator);
+  } else {
+    initCalculator();
+  }
+</script>

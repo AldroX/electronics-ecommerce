@@ -1,0 +1,81 @@
+---
+/**
+ * Breadcrumbs — Breadcrumb navigation with JSON-LD structured data.
+ *
+ * Renders: Home > Category > Product (current, no link).
+ * Injects BreadcrumbList schema.org JSON-LD for SEO.
+ */
+import type { Product, Category } from "@/data/types";
+import config from "@/config/config.json";
+
+export interface Props {
+  product: Product;
+  categories: Category[];
+}
+
+const { product, categories } = Astro.props;
+
+const baseUrl = config.site.base_url;
+
+// Find the matching category by slug
+const category = categories.find((c) => c.slug === product.category);
+
+const items: Array<{ name: string; url?: string }> = [
+  { name: "Inicio", url: `${baseUrl}/` },
+];
+
+if (category) {
+  items.push({
+    name: category.name,
+    url: `${baseUrl}/categoria/${category.slug}`,
+  });
+}
+
+// Current product is the last item — no URL (aria-current="page")
+items.push({ name: product.name });
+
+// JSON-LD BreadcrumbList schema
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: items.map((item, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    name: item.name,
+    ...(item.url ? { item: item.url } : {}),
+  })),
+};
+---
+
+<nav aria-label="Miga de pan" class="mb-6 text-sm text-text-light">
+  <ol class="flex flex-wrap items-center gap-1.5" role="list">
+    {items.map((item, index) => {
+      const isLast = index === items.length - 1;
+      return (
+        <li class="flex items-center gap-1.5">
+          {index > 0 && (
+            <span class="text-text-light/50" aria-hidden="true">/</span>
+          )}
+          {isLast ? (
+            <span aria-current="page" class="font-medium text-text-dark">
+              {item.name}
+            </span>
+          ) : (
+            <a
+              href={item.url}
+              class="text-primary underline-offset-2 hover:text-primary/80 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            >
+              {item.name}
+            </a>
+          )}
+        </li>
+      );
+    })}
+  </ol>
+</nav>
+
+<script
+  type="application/ld+json"
+  is:inline
+  set:html={JSON.stringify(breadcrumbSchema)}
+/>
