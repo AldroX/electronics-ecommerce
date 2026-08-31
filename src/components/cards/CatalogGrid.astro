@@ -1,0 +1,96 @@
+---
+/**
+ * CatalogGrid — Shared catalog layout for /productos pages.
+ *
+ * Renders: sort bar + product grid + empty state + pagination.
+ * Server-rendered first paint (progressive enhancement).
+ */
+import type { Product } from "@/data/types";
+import ProductCard from "./ProductCard.astro";
+import ProductSort from "./ProductSort.astro";
+import Pagination from "./Pagination.astro";
+
+interface Props {
+  page: {
+    data: Product[];
+    currentPage: number;
+    lastPage: number;
+    total: number;
+    start: number;
+    end: number;
+    size: number;
+    url: {
+      current: string;
+      prev: string | undefined;
+      next: string | undefined;
+      first: string | undefined;
+      last: string | undefined;
+    };
+  };
+}
+
+const { page } = Astro.props;
+const { data: products, currentPage, lastPage, total, start, end } = page;
+---
+
+<!-- Sort + Results Count -->
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+  <p id="catalog-results-count" class="text-sm text-text-light" aria-live="polite">
+    {total === 0
+      ? "No se encontraron productos"
+      : `Mostrando ${start + 1}–${end + 1} de ${total} producto${total !== 1 ? "s" : ""}`}
+  </p>
+  <ProductSort />
+</div>
+
+<!-- Product Grid -->
+<div
+  id="product-grid"
+  class="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4"
+  role="list"
+  aria-label="Lista de productos"
+>
+  {products.length > 0 ? (
+    products.map((product) => (
+      <ProductCard product={product} />
+    ))
+  ) : (
+    <div id="empty-state" class="col-span-full text-center py-16 md:py-24" role="status">
+      <svg
+        class="mx-auto h-16 w-16 text-border"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        aria-hidden="true"
+      >
+        <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+      <h2 class="mt-4 text-xl font-semibold text-text-dark">
+        No hay productos disponibles
+      </h2>
+      <p class="mt-2 text-text-light max-w-md mx-auto">
+        No hay productos que coincidan con los filtros seleccionados.
+      </p>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+        <a href="/productos" class="btn btn-primary">
+          Ver todo el catálogo
+        </a>
+      </div>
+    </div>
+  )}
+  <noscript>
+    <div class="col-span-full text-center py-8">
+      <p class="text-text-light">Filtros y orden disponibles con JavaScript habilitado.</p>
+    </div>
+  </noscript>
+</div>
+
+<!-- Pagination -->
+{lastPage > 1 && (
+  <Pagination
+    currentPage={currentPage}
+    totalPages={lastPage}
+    basePath="/productos"
+  />
+)}

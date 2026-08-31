@@ -1,0 +1,114 @@
+---
+/**
+ * ProductFilters — Catalog page filter sidebar (molecule).
+ *
+ * Renders filter controls that dispatch CustomEvents on change:
+ *  - Category checkboxes (from data categories)
+ *  - Price range: two number inputs (min/max)
+ *  - Availability checkboxes (in-stock, limited, out-of-stock)
+ *  - "Limpiar filtros" button
+ *
+ * No form submission — client-side interactivity via vanilla JS events.
+ *
+ * Accessibility: fieldset + legend for each group, proper labels,
+ * aria-describedby for price inputs, logical tab order.
+ */
+import { getAllCategories } from "@/data/helpers/categories";
+
+const categories = getAllCategories();
+---
+
+<form
+  id="catalog-filters"
+  class="space-y-6"
+  role="search"
+  aria-label="Filtros de productos"
+  onsubmit="return false"
+>
+  <!-- Categories -->
+  <fieldset class="space-y-3">
+    <legend class="text-sm font-semibold text-text-dark">Categorías</legend>
+    {categories.map((cat) => (
+      <label class="flex items-center gap-2 cursor-pointer">
+        <input
+          type="checkbox"
+          name="category"
+          value={cat.slug}
+          data-filter="category"
+          class="h-4 w-4 rounded border-border text-primary focus:ring-primary"
+        />
+        <span class="text-sm text-text-dark">{cat.name}</span>
+      </label>
+    ))}
+  </fieldset>
+
+  <!-- Price range -->
+  <fieldset class="space-y-3">
+    <legend class="text-sm font-semibold text-text-dark">Rango de precio (USD)</legend>
+    <div class="grid grid-cols-2 gap-2">
+      <div>
+        <label class="block text-xs text-text-light mb-1">
+          <span>Mínimo</span>
+          <input
+            type="number"
+            name="priceMin"
+            min="0"
+            step="0.01"
+            placeholder="0"
+            data-scope="price-min"
+            class="form-input text-sm mt-1"
+            aria-label="Precio mínimo"
+          />
+        </label>
+      </div>
+      <div>
+        <label class="block text-xs text-text-light mb-1">
+          <span>Máximo</span>
+          <input
+            type="number"
+            name="priceMax"
+            min="0"
+            step="0.01"
+            placeholder="1000"
+            data-scope="price-max"
+            class="form-input text-sm mt-1"
+            aria-label="Precio máximo"
+          />
+        </label>
+      </div>
+    </div>
+  </fieldset>
+
+  <!-- Availability -->
+  <fieldset class="space-y-3">
+    <legend class="text-sm font-semibold text-text-dark">Disponibilidad</legend>
+    {[
+      { value: "in-stock", label: "Disponible" },
+      { value: "limited", label: "Pocas unidades" },
+      { value: "out-of-stock", label: "Agotado" },
+    ].map((opt) => (
+      <label class="flex items-center gap-2 cursor-pointer">
+        <input
+          type="checkbox"
+          name="availability"
+          value={opt.value}
+          data-filter="availability"
+          class="h-4 w-4 text-primary focus:ring-primary"
+        />
+        <span class="text-sm text-text-dark">{opt.label}</span>
+      </label>
+    ))}
+  </fieldset>
+
+  <!-- Actions -->
+  <div class="flex flex-col gap-2 pt-4 border-t border-border">
+    <button
+      type="button"
+      data-scope="clear-filters"
+      class="btn btn-outline-primary w-full text-center"
+      aria-label="Limpiar todos los filtros"
+    >
+      Limpiar filtros
+    </button>
+  </div>
+</form>

@@ -1,0 +1,32 @@
+---
+/**
+ * ProductSort — Catalog page sort dropdown (molecule).
+ *
+ * Renders a select dropdown that dispatches a sort-change CustomEvent.
+ * No form submission — client-side interactivity via vanilla JS.
+ *
+ * Accessibility: proper label, aria-describedby for current selection.
+ */
+---
+
+<div class="flex items-center gap-2">
+  <label for="sort-select" class="text-sm font-medium text-text-dark hidden sm:block">
+    Ordenar por:
+  </label>
+  <label for="sort-select" class="sr-only sm:hidden">Ordenar productos</label>
+
+  <select
+    id="sort-select"
+    class="w-auto min-w-[200px] rounded border border-border bg-white px-3 py-2 text-sm text-text-dark focus:border-dark focus:ring-transparent"
+    aria-describedby="sort-hint"
+  >
+    <option value="newest">Más nuevos</option>
+    <option value="price-asc">Precio: menor a mayor</option>
+    <option value="price-desc">Precio: mayor a menor</option>
+    <option value="name-asc">Nombre A-Z</option>
+  </select>
+
+  <span id="sort-hint" class="sr-only">
+    Seleccione un criterio de ordenamiento
+  </span>
+</div>

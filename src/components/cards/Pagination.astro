@@ -1,0 +1,110 @@
+---
+/**
+ * Pagination — Catalog page pagination (molecule).
+ *
+ * Renders:
+ *  - Prev/Next links
+ *  - Page numbers (1, 2, 3... with ellipsis for many pages)
+ *  - Static links to /productos or /productos/page/N
+ *  - Current page highlighted with aria-current="page"
+ *
+ * Accessibility: nav with aria-label, proper aria-current,
+ * keyboard focusable links, logical tab order.
+ */
+interface Props {
+  currentPage: number;
+  totalPages: number;
+  basePath?: string;
+}
+
+const { currentPage, totalPages, basePath = "/productos" } = Astro.props;
+
+const maxVisiblePages = 5;
+let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+if (endPage - startPage + 1 < maxVisiblePages) {
+  startPage = Math.max(1, endPage - maxVisiblePages + 1);
+}
+
+const pages: (number | "ellipsis")[] = [];
+if (startPage > 1) {
+  pages.push(1);
+  if (startPage > 2) {
+    pages.push("ellipsis");
+  }
+}
+for (let i = startPage; i <= endPage; i++) {
+  pages.push(i);
+}
+if (endPage < totalPages) {
+  if (endPage < totalPages - 1) {
+    pages.push("ellipsis");
+  }
+  pages.push(totalPages);
+}
+
+const buildPageUrl = (page: number): string => {
+  if (page === 1) return basePath;
+  return `${basePath}/page/${page}`;
+};
+---
+
+<nav
+  aria-label="Paginación de productos"
+  class="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-1 mt-8"
+>
+  {currentPage > 1 && (
+    <a
+      href={buildPageUrl(currentPage - 1)}
+      class="inline-flex items-center justify-center min-h-[44px] min-w-[44px] rounded-md border border-border bg-white text-text-dark px-3 py-2 transition-colors hover:bg-dark hover:text-white"
+      rel="prev"
+      aria-label="Página anterior"
+    >
+      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M15 18l-6-6 6-6" />
+      </svg>
+      <span class="sr-only">Anterior</span>
+    </a>
+  )}
+
+  <div class="flex items-center gap-1" role="group" aria-label="Páginas">
+    {pages.map((page) =>
+      page === "ellipsis" ? (
+        <span
+          class="px-2 py-1 text-text-light"
+          aria-hidden="true"
+        >
+          …
+        </span>
+      ) : (
+        <a
+          href={buildPageUrl(page)}
+          class={`inline-flex h-10 w-10 items-center justify-center rounded-md text-sm font-medium transition-colors min-h-[44px] min-w-[44px] ${
+            page === currentPage
+              ? "bg-primary text-white border border-primary"
+              : "bg-white text-text-dark border border-border hover:bg-light"
+          }`}
+          aria-label={`Página ${page}`}
+          aria-current={page === currentPage ? "page" : undefined}
+        >
+          {page}
+        </a>
+      )
+    )}
+  </div>
+
+  {currentPage < totalPages && (
+    <a
+      href={buildPageUrl(currentPage + 1)}
+      class="inline-flex items-center justify-center min-h-[44px] min-w-[44px] rounded-md border border-border bg-white text-text-dark px-3 py-2 transition-colors hover:bg-dark hover:text-white"
+      rel="next"
+      aria-label="Página siguiente"
+    >
+      <span class="sr-only">Siguiente</span>
+      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M9 6l6 6-6 6" />
+      </svg>
+    </a>
+  )}
+</nav>
