@@ -1,0 +1,45 @@
+---
+/**
+ * SolutionsSection — Home solutions grid (organism), task 7.
+ *
+ * Calls getAllSolutions() from the data layer and renders a responsive
+ * grid of SolutionCards. Renders nothing when there are no solutions
+ * (REQ-HP-002 / SCN-HP-002: no empty containers in the DOM).
+ *
+ * No props. <h2> section title (REQ-HP-003). Zero framework JS.
+ */
+import { getAllSolutions } from "@/data/helpers/solutions";
+import SolutionCard from "../cards/SolutionCard.astro";
+
+const solutions = getAllSolutions();
+---
+
+{solutions.length > 0 && (
+    <section class="section" aria-labelledby="solutions-title">
+      <div class="container">
+        <div class="mb-8 md:mb-10">
+          <h2 id="solutions-title">¿Qué necesitás solucionar?</h2>
+        </div>
+
+        <div class="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-5">
+          {solutions.map((solution) => (
+            <SolutionCard
+              solution={{
+                slug: solution.slug,
+                name: solution.name,
+                description: solution.description,
+                icon: solution.icon,
+                productIds: solution.products,
+              }}
+            />
+          ))}
+        </div>
+
+        <div class="mt-8 text-center">
+          <a href="/soluciones" class="text-primary hover:underline">
+            Ver todas las soluciones
+          </a>
+        </div>
+      </div>
+    </section>
+  )}

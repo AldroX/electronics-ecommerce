@@ -1,0 +1,97 @@
+---
+/**
+ * OfferCard — Promotional offer display card (molecule).
+ *
+ * Displays:
+ *  - discount badge (red, prominent)
+ *  - availability badge (emerald/amber/red)
+ *  - price with original strikethrough and current price in primary color
+ *  - validUntil formatted as "Válido hasta DD/MM"
+ *  - WhatsApp CTA (hidden when out-of-stock)
+ *  - whole card links to /producto/{productSlug}
+ *
+ * Zero framework JS.
+ */
+import type { Offer } from "@/data/types";
+import CTAWhatsApp from "../ui/CTAWhatsApp.astro";
+
+export interface Props {
+  offer: Offer;
+}
+
+const { offer } = Astro.props;
+
+const isOutOfStock = offer.availability === "out-of-stock";
+
+// Price formatting
+const formatter = new Intl.NumberFormat("es", {
+  style: "currency",
+  currency: offer.currency,
+});
+const currentPriceFormatted = formatter.format(offer.currentPrice);
+const originalPriceFormatted = formatter.format(offer.originalPrice);
+
+// Availability badge mapping
+const availabilityMap = {
+  "in-stock": { label: "Disponible", class: "bg-emerald-100 text-emerald-700" },
+  limited: { label: "Pocas unidades", class: "bg-amber-100 text-amber-700" },
+  "out-of-stock": { label: "Agotado", class: "bg-red-100 text-red-700" },
+} as const;
+const stockKey = offer.availability as keyof typeof availabilityMap;
+const badge = availabilityMap[stockKey] ?? availabilityMap["in-stock"];
+
+// Format validUntil as "Válido hasta DD/MM"
+const validUntilDate = new Date(offer.validUntil + "T00:00:00");
+const validUntilFormatted = new Intl.DateTimeFormat("es", {
+  day: "2-digit",
+  month: "2-digit",
+}).format(validUntilDate);
+---
+
+<a
+  href={`/producto/${offer.productSlug}`}
+  class:list={[
+    "group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-white shadow transition hover:shadow-lg scroll-mt-24 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
+    isOutOfStock && "opacity-60",
+  ]}
+  aria-label={`Ver oferta: ${offer.name}`}
+>
+  {/* Discount badge */}
+  <div class="relative bg-red-500 px-3 py-1.5 text-center">
+    <span class="text-sm font-bold text-white">-{offer.discountPercent}%</span>
+  </div>
+
+  <div class="flex flex-1 flex-col gap-3 p-4">
+    {/* Availability badge */}
+    <span class={`inline-flex w-fit items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${badge.class}`}>
+      {badge.label}
+    </span>
+
+    <h3 class="text-h6 font-bold leading-snug text-text-dark">{offer.name}</h3>
+
+    {offer.description && (
+      <p class="line-clamp-2 text-sm text-text-light">{offer.description}</p>
+    )}
+
+    {/* Prices */}
+    <div class="mt-auto flex items-baseline gap-2 pt-2">
+      <span class="text-lg font-bold text-primary">{currentPriceFormatted}</span>
+      <span class="text-sm text-text-light line-through">{originalPriceFormatted}</span>
+    </div>
+
+    {/* Valid until */}
+    <p class="text-xs text-text-light">
+      Válido hasta {validUntilFormatted}
+    </p>
+
+    {/* WhatsApp CTA - hidden when out-of-stock */}
+    {!isOutOfStock && (
+      <CTAWhatsApp
+        variant="inline"
+        productName={offer.name}
+        messageTemplate={offer.whatsappMessage.replace("{PRODUCTO}", offer.name)}
+        class="mt-2"
+      />
+    )}
+  </div>
+</a>

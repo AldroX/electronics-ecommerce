@@ -1,0 +1,37 @@
+---
+/**
+ * OffersSection — Home weekly offers grid (organism), task 8.
+ *
+ * Calls getActiveOffers() from the data layer and renders a responsive
+ * grid of OfferCards. Renders nothing when there are no active offers
+ * (REQ-HP-002 / SCN-HP-002: no empty containers in the DOM).
+ *
+ * No props. <h2> section title (REQ-HP-003). Zero framework JS.
+ */
+import { getActiveOffers } from "@/data/helpers/offers";
+import OfferCard from "../cards/OfferCard.astro";
+
+const offers = getActiveOffers();
+---
+
+{offers.length > 0 && (
+    <section class="section bg-amber-50/30" aria-labelledby="offers-title">
+      <div class="container">
+        <div class="mb-8 md:mb-10">
+          <h2 id="offers-title">Ofertas de la semana</h2>
+        </div>
+
+        <div class="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
+          {offers.map((offer) => (
+            <OfferCard offer={offer} />
+          ))}
+        </div>
+
+        <div class="mt-8 text-center">
+          <a href="/ofertas" class="text-primary hover:underline">
+            Ver todas las ofertas
+          </a>
+        </div>
+      </div>
+    </section>
+  )}

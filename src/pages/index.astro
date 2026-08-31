@@ -2,8 +2,8 @@
 /**
  * Home route `/` — page assembly (task 6.1, WU-5).
  *
- * Renders the 5 MVP sections in spec order (REQ-HP-002):
- *   HeroSection → CategoriesSection → FeaturedProducts → BestSellers → TrustSection
+ * Renders the 8 sections in spec order (REQ-HP-002):
+ *   HeroSection → CategoriesSection → SolutionsSection → FeaturedProducts → BestSellers → OffersSection → KitsSection → TrustSection
  *
  * Heading contract (REQ-HP-003):
  *   - exactly one <h1> — owned by HeroSection (page's only h1)
@@ -24,8 +24,11 @@
 import Base from "../layouts/Base.astro";
 import HeroSection from "../components/sections/HeroSection.astro";
 import CategoriesSection from "../components/sections/CategoriesSection.astro";
+import SolutionsSection from "../components/sections/SolutionsSection.astro";
 import FeaturedProducts from "../components/sections/FeaturedProducts.astro";
 import BestSellers from "../components/sections/BestSellers.astro";
+import OffersSection from "../components/sections/OffersSection.astro";
+import KitsSection from "../components/sections/KitsSection.astro";
 import TrustSection from "../components/sections/TrustSection.astro";
 ---
 
@@ -35,7 +38,10 @@ import TrustSection from "../components/sections/TrustSection.astro";
 >
   <HeroSection />
   <CategoriesSection />
+  <SolutionsSection />
   <FeaturedProducts />
   <BestSellers />
+  <OffersSection />
+  <KitsSection />
   <TrustSection />
 </Base>

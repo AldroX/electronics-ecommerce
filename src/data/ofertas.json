@@ -1,0 +1,82 @@
+[
+  {
+    "id": "offer-1",
+    "name": "Panel Solar 450W Monocristalino",
+    "slug": "oferta-panel-solar-450w",
+    "description": "Panel solar de alta eficiencia con celdas monocristalinas. Ideal para instalaciones residenciales y comerciales. Garantía de 25 años en rendimiento lineal.",
+    "image": "/images/placeholder-product.webp",
+    "originalPrice": 229.99,
+    "currentPrice": 189.99,
+    "discountPercent": 17,
+    "availability": "in-stock",
+    "validUntil": "2026-09-15",
+    "currency": "USD",
+    "whatsappMessage": "Hola, estoy interesado en la oferta de {PRODUCTO}. ¿Está disponible?",
+    "productSlug": "panel-solar-450w-monocristalino",
+    "seo": {
+      "title": "OFERTA Panel Solar 450W Monocristalino | 17% Descuento",
+      "description": "Panel solar 450W monocristalino en oferta: $189.99 (antes $229.99). 17% descuento. Garantía 25 años. WhatsApp para pedir.",
+      "image": "/images/placeholder-product.webp"
+    }
+  },
+  {
+    "id": "offer-2",
+    "name": "Power Station 1000Wh LiFePO4",
+    "slug": "oferta-power-station-1000wh",
+    "description": "Estación de energía portátil con batería LiFePO4 de 1000Wh. Salida AC 1000W (pico 2000W), múltiples puertos USB, carga solar, pared y auto. 3000+ ciclos de vida.",
+    "image": "/images/placeholder-product.webp",
+    "originalPrice": 849.00,
+    "currentPrice": 699.00,
+    "discountPercent": 18,
+    "availability": "in-stock",
+    "validUntil": "2026-09-15",
+    "currency": "USD",
+    "whatsappMessage": "Hola, estoy interesado en la oferta de {PRODUCTO}. ¿Está disponible?",
+    "productSlug": "power-station-1000wh-lifepo4",
+    "seo": {
+      "title": "OFERTA Power Station 1000Wh LiFePO4 | 18% Descuento",
+      "description": "Power Station 1000Wh LiFePO4 en oferta: $699 (antes $849). 18% descuento. 1000W AC, carga solar. WhatsApp.",
+      "image": "/images/placeholder-product.webp"
+    }
+  },
+  {
+    "id": "offer-3",
+    "name": "Kit Iluminación Solar Completa",
+    "slug": "oferta-kit-iluminacion-solar",
+    "description": "Panel 450W + Controlador MPPT 60A + 2 Lámparas Solares + 4 Bombillas LED 12V. Iluminación total off-grid.",
+    "image": "/images/placeholder-category.webp",
+    "originalPrice": 439.90,
+    "currentPrice": 365.00,
+    "discountPercent": 17,
+    "availability": "limited",
+    "validUntil": "2026-09-15",
+    "currency": "USD",
+    "whatsappMessage": "Hola, estoy interesado en la oferta de {PRODUCTO}. ¿Está disponible?",
+    "productSlug": "kit-iluminacion-solar",
+    "seo": {
+      "title": "OFERTA Kit Iluminación Solar | 17% Descuento",
+      "description": "Kit iluminación solar completo en oferta: $365 (antes $439.90). Panel 450W + MPPT + lámparas + LEDs. WhatsApp.",
+      "image": "/images/placeholder-category.webp"
+    }
+  },
+  {
+    "id": "offer-4",
+    "name": "Batería LiFePO4 12V 100Ah",
+    "slug": "oferta-bateria-lifepo4-100ah",
+    "description": "Batería de litio LiFePO4 12V 100Ah con BMS integrado. 2000+ ciclos, ligera, segura. Ideal para sistemas solares, RV, marine y respaldo.",
+    "image": "/images/placeholder-product.webp",
+    "originalPrice": 350.00,
+    "currentPrice": 299.00,
+    "discountPercent": 15,
+    "availability": "out-of-stock",
+    "validUntil": "2026-09-15",
+    "currency": "USD",
+    "whatsappMessage": "Hola, estoy interesado en la oferta de {PRODUCTO}. ¿Está disponible?",
+    "productSlug": "bateria-lifepo4-12v-100ah",
+    "seo": {
+      "title": "OFERTA Batería LiFePO4 12V 100Ah | 15% Descuento",
+      "description": "Batería LiFePO4 12V 100Ah en oferta: $299 (antes $350). 15% descuento. BMS integrado, 2000+ ciclos. WhatsApp.",
+      "image": "/images/placeholder-product.webp"
+    }
+  }
+]

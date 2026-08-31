@@ -60,3 +60,20 @@ export interface Kit {
   compareAtPrice?: number;
   seo: SEOData;
 }
+
+export interface Offer {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  image: string;
+  originalPrice: number;
+  currentPrice: number;
+  discountPercent: number;
+  availability: 'in-stock' | 'limited' | 'out-of-stock';
+  validUntil: string; // ISO date string
+  currency: string;
+  whatsappMessage: string;
+  productSlug: string;
+  seo?: SEOData;
+}

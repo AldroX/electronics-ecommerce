@@ -1,0 +1,80 @@
+---
+/**
+ * KitCard — Kit/bundle display card (molecule).
+ *
+ * Displays:
+ *  - name (<h3>), description, product count badge
+ *  - price with optional compareAt strikethrough
+ *  - WhatsApp CTA
+ *  - whole card links to /kits/{slug} (or /productos as fallback)
+ *
+ * Zero framework JS.
+ */
+import type { Kit } from "@/data/types";
+import CTAWhatsApp from "../ui/CTAWhatsApp.astro";
+
+export interface Props {
+  kit: Kit & {
+    image?: string;
+    whatsappMessage?: string;
+  };
+}
+
+const { kit } = Astro.props;
+
+// Price formatting
+const formatter = new Intl.NumberFormat("es", {
+  style: "currency",
+  currency: "USD",
+});
+const priceFormatted = formatter.format(kit.price);
+const compareAtFormatted = kit.compareAtPrice
+  ? formatter.format(kit.compareAtPrice)
+  : null;
+const hasDiscount = kit.compareAtPrice && kit.compareAtPrice > kit.price;
+
+// Product count
+const productCount = kit.products.length;
+const productLabel = productCount === 1 ? "1 producto" : `${productCount} productos`;
+
+// WhatsApp message - use kit-specific or fallback
+const whatsappMsg = kit.whatsappMessage ?? `Hola, estoy interesado en el kit ${kit.name}. ¿Está disponible?`;
+
+// Fallback link - use /kits/{slug} when that page exists, otherwise /productos
+const href = `/kits/${kit.slug}`;
+---
+
+<a
+  href={href}
+  class="group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-white shadow transition hover:shadow-lg scroll-mt-24 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+  aria-label={`Ver kit ${kit.name}`}
+>
+  <div class="flex flex-1 flex-col gap-3 p-4">
+    {/* Product count badge */}
+    <span class="inline-flex w-fit items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
+      {productLabel}
+    </span>
+
+    <h3 class="text-h6 font-bold leading-snug text-text-dark">{kit.name}</h3>
+
+    {kit.description && (
+      <p class="line-clamp-2 text-sm text-text-light">{kit.description}</p>
+    )}
+
+    {/* Prices */}
+    <div class="mt-auto flex items-baseline gap-2 pt-2">
+      <span class="text-lg font-bold text-primary">{priceFormatted}</span>
+      {hasDiscount && compareAtFormatted && (
+        <span class="text-sm text-text-light line-through">{compareAtFormatted}</span>
+      )}
+    </div>
+
+    {/* WhatsApp CTA */}
+    <CTAWhatsApp
+      variant="inline"
+      productName={kit.name}
+      messageTemplate={whatsappMsg}
+      class="mt-2"
+    />
+  </div>
+</a>

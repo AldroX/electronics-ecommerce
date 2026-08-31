@@ -1,0 +1,37 @@
+---
+/**
+ * KitsSection — Home kits/bundles grid (organism), task 9.
+ *
+ * Calls getAllKits() from the data layer and renders a responsive
+ * grid of KitCards. Renders nothing when there are no kits
+ * (REQ-HP-002 / SCN-HP-002: no empty containers in the DOM).
+ *
+ * No props. <h2> section title (REQ-HP-003). Zero framework JS.
+ */
+import { getAllKits } from "@/data/helpers/kits";
+import KitCard from "../cards/KitCard.astro";
+
+const kits = getAllKits();
+---
+
+{kits.length > 0 && (
+    <section class="section" aria-labelledby="kits-title">
+      <div class="container">
+        <div class="mb-8 md:mb-10">
+          <h2 id="kits-title">Kits</h2>
+        </div>
+
+        <div class="grid grid-cols-2 gap-6 md:grid-cols-3">
+          {kits.map((kit) => (
+            <KitCard kit={kit} />
+          ))}
+        </div>
+
+        <div class="mt-8 text-center">
+          <a href="/kits" class="text-primary hover:underline">
+            Ver todos los kits
+          </a>
+        </div>
+      </div>
+    </section>
+  )}

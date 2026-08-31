@@ -1,0 +1,60 @@
+---
+/**
+ * SolutionCard — Solution navigation card (molecule).
+ *
+ * Implements REQ-SC-001..006:
+ *  - icon (SVG, material-style), name (<h3>), description (<p>).
+ *  - whole card is a single <a> to /productos?category={slug} (full-card link).
+ *  - visible :focus-visible outline + scroll-margin so focus is not hidden by
+ *    the sticky header during keyboard navigation.
+ *  - the full-card link exceeds the 44x44px touch target minimum.
+ *
+ * Zero framework JS.
+ */
+
+export interface Props {
+  solution: {
+    slug: string;
+    name: string;
+    description: string;
+    icon: string;
+    productIds: string[];
+  };
+}
+
+const { solution } = Astro.props;
+
+// Material-style SVG icon paths
+const iconMap: Record<string, string> = {
+  home: "M12 3L4 9v12h5v-7h6v7h5V9l-8-6z",
+  lightbulb: "M9 21c0 .5.4 1 1 1h4c.6 0 1-.5 1-1v-1H9v1zm3-19C8.1 2 5 5.1 5 9c0 2.4 1.2 4.5 3 5.7V17c0 .5.4 1 1 1h6c.6 0 1-.5 1-1v-2.3c1.8-1.3 3-3.4 3-5.7 0-3.9-3.1-7-7-7z",
+  sun: "M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.79 1.42-1.41zM4 10.5H1v2h3v-2zm9-9.95h-2V3.5h2V.55zm7.45 3.91l-1.41-1.41-1.79 1.79 1.41 1.41 1.79-1.79zm-3.21 13.7l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zM20 10.5v2h-3v-2h3zm-8-5c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm-1 16.95h2V19.5h-2v2.95zm-7.45-3.91l1.41 1.41 1.79-1.8-1.41-1.41-1.79 1.8z",
+  laptop: "M20 18c1.1 0 1.99-.9 1.99-2L22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z",
+  leaf: "M17.75 4.09L15.22 6.03 16.13 9.09 13.5 7.28 10.87 9.09 11.78 6.03 9.25 4.09 12.44 4 13.5 1 14.56 4 17.75 4.09zM21.25 11L19.5 14.5 14.5 15.5V21h-3v-6l-1.47-.88L7 16v5h2v-3.5l4-2.5 5 3.5V21h2v-8.5l-2.75-1.5z",
+};
+
+const iconPath = iconMap[solution.icon] ?? iconMap.home;
+---
+
+<a
+  href={`/productos?category=${solution.slug}`}
+  class="group flex h-full flex-col items-center gap-3 rounded-lg border border-border bg-white p-6 text-center shadow transition hover:shadow-md scroll-mt-24 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+  aria-label={`Ver solución ${solution.name}`}
+>
+  <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors duration-300 group-hover:bg-primary/20">
+    <svg
+      class="h-8 w-8"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d={iconPath} />
+    </svg>
+  </div>
+
+  <h3 class="text-h6 font-bold leading-snug text-text-dark">{solution.name}</h3>
+
+  {solution.description && (
+    <p class="text-sm text-text-light">{solution.description}</p>
+  )}
+</a>
