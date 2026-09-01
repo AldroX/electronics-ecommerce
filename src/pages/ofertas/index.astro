@@ -1,0 +1,42 @@
+---
+/**
+ * Offers landing page — /ofertas
+ *
+ * Lists all active weekly offers as cards.
+ *
+ * Zero framework JS.
+ */
+import Base from "@/layouts/Base.astro";
+import { getActiveOffers } from "@/data/helpers/offers";
+import OfferCard from "@/components/cards/OfferCard.astro";
+import config from "@/config/config.json";
+
+const offers = getActiveOffers();
+const siteTitle = config.site.title;
+const baseUrl = config.site.base_url;
+
+const breadcrumbItems = [
+  { name: "Inicio", url: `${baseUrl}/` },
+  { name: "Ofertas" },
+];
+---
+<Base
+  meta_title={`Ofertas de la semana | ${siteTitle}`}
+  description="Descubre las mejores ofertas de la semana en energía solar, respaldo eléctrico e iluminación. Precios especiales por tiempo limitado. Asesoramiento gratis por WhatsApp."
+  canonical={`${baseUrl}/ofertas`}
+  breadcrumbs={breadcrumbItems}
+>
+  <section class="section">
+    <div class="container">
+      <h1 class="text-h2 mb-8">Ofertas de la semana</h1>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {offers.map((offer) => (
+          <OfferCard offer={offer} href={`/ofertas/${offer.slug}`} />
+        ))}
+      </div>
+      {offers.length === 0 && (
+        <p class="text-center text-text-light mt-8">No hay ofertas activas en este momento.</p>
+      )}
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,174 @@
+---
+/**
+ * Offer detail page — /ofertas/[slug]
+ *
+ * Shows offer details with pricing, availability, validity, description,
+ * WhatsApp CTA, and link to full product page.
+ *
+ * Zero framework JS.
+ */
+import type { GetStaticPaths } from "astro";
+import type { Offer } from "@/data/types";
+import { getAllOffers } from "@/data/helpers/offers";
+import config from "@/config/config.json";
+import Base from "@/layouts/Base.astro";
+import CTAWhatsApp from "@/components/ui/CTAWhatsApp.astro";
+
+export const getStaticPaths: GetStaticPaths = () => {
+  return getAllOffers().map((offer) => ({
+    params: { slug: offer.slug },
+    props: { offer },
+  }));
+};
+
+const { offer } = Astro.props as { offer: Offer };
+const siteTitle = config.site.title;
+const baseUrl = config.site.base_url;
+
+// SEO
+const pageTitle = offer.seo?.title || `${offer.name} | ${siteTitle}`;
+const pageDescription = offer.seo?.description || offer.description;
+const pageImage = offer.seo?.image || offer.image;
+const canonicalUrl = `${baseUrl}/ofertas/${offer.slug}`;
+
+// Breadcrumb items
+const breadcrumbItems: Array<{ name: string; url?: string }> = [
+  { name: "Inicio", url: `${baseUrl}/` },
+  { name: "Ofertas", url: `${baseUrl}/ofertas` },
+  { name: offer.name },
+];
+
+// Price formatting (matches OfferCard)
+const formatter = new Intl.NumberFormat("es", {
+  style: "currency",
+  currency: offer.currency,
+});
+const currentPriceFormatted = formatter.format(offer.currentPrice);
+const originalPriceFormatted = formatter.format(offer.originalPrice);
+
+// Availability badge mapping (matches OfferCard and ProductCard)
+const availabilityMap = {
+  "in-stock": { label: "Disponible", class: "bg-emerald-100 text-emerald-700" },
+  limited: { label: "Pocas unidades", class: "bg-amber-100 text-amber-700" },
+  "out-of-stock": { label: "Agotado", class: "bg-red-100 text-red-700" },
+} as const;
+const stockKey = offer.availability as keyof typeof availabilityMap;
+const badge = availabilityMap[stockKey] ?? availabilityMap["in-stock"];
+
+// Format validUntil as "Válido hasta DD/MM" (matches OfferCard)
+const validUntilDate = new Date(offer.validUntil + "T00:00:00");
+const validUntilFormatted = new Intl.DateTimeFormat("es", {
+  day: "2-digit",
+  month: "2-digit",
+}).format(validUntilDate);
+
+// Discount badge text
+const discountBadge = `-${offer.discountPercent}%`;
+
+// WhatsApp CTA message (replace {PRODUCTO} placeholder)
+const whatsappMessage = offer.whatsappMessage.replace("{PRODUCTO}", offer.name);
+---
+
+<Base
+  meta_title={pageTitle}
+  description={pageDescription}
+  image={pageImage}
+  canonical={canonicalUrl}
+  breadcrumbs={breadcrumbItems}
+>
+  <section class="section">
+    <div class="container">
+      {/* Breadcrumbs */}
+      <nav aria-label="Miga de pan" class="mb-6 text-sm text-text-light">
+        <ol class="flex flex-wrap items-center gap-1.5" role="list">
+          {breadcrumbItems.map((item, index) => {
+            const isLast = index === breadcrumbItems.length - 1;
+            return (
+              <li class="flex items-center gap-1.5">
+                {index > 0 && (
+                  <span class="text-text-light/50" aria-hidden="true">/</span>
+                )}
+                {isLast ? (
+                  <span aria-current="page" class="font-medium text-text-dark">
+                    {item.name}
+                  </span>
+                ) : (
+                  <a
+                    href={item.url}
+                    class="text-primary underline-offset-2 hover:text-primary/80 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                  >
+                    {item.name}
+                  </a>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+      </nav>
+
+      {/* Offer content */}
+      <div class="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
+        {/* Image column */}
+        <div>
+          <img
+            src={offer.image}
+            alt={offer.name}
+            class="w-full h-auto rounded-lg"
+          />
+        </div>
+
+        {/* Info column */}
+        <div class="flex flex-col gap-5">
+          {/* Discount badge */}
+          <span class="inline-flex w-fit items-center rounded-full bg-red-500 px-3 py-1 text-xs font-bold text-white">
+            {discountBadge}
+          </span>
+
+          <h1 class="text-h3 font-bold leading-tight text-text-dark">
+            {offer.name}
+          </h1>
+
+          {/* Price block */}
+          <div class="flex flex-wrap items-baseline gap-3">
+            <span class="text-2xl font-bold text-primary">{currentPriceFormatted}</span>
+            <span class="text-base text-text-light line-through">{originalPriceFormatted}</span>
+          </div>
+
+          {/* Availability badge */}
+          <span
+            class:list={[
+              "inline-flex w-fit items-center rounded-full px-2.5 py-0.5 text-xs font-semibold",
+              badge.class,
+            ]}
+          >
+            {badge.label}
+          </span>
+
+          {/* Valid until */}
+          <p class="text-sm text-text-light">
+            Válido hasta {validUntilFormatted}
+          </p>
+
+          {/* Description */}
+          <p class="text-base text-text-light">{offer.description}</p>
+
+          {/* CTA row */}
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
+            <CTAWhatsApp
+              variant="inline"
+              productName={offer.name}
+              messageTemplate={whatsappMessage}
+              class="w-full sm:w-auto"
+            />
+            <a
+              href={`/producto/${offer.productSlug}`}
+              class="btn btn-primary text-center w-full sm:w-auto"
+            >
+              Ver producto completo
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

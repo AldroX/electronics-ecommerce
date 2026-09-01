@@ -17,9 +17,11 @@ import CTAWhatsApp from "../ui/CTAWhatsApp.astro";
 
 export interface Props {
   offer: Offer;
+  href?: string;
 }
 
-const { offer } = Astro.props;
+const { offer, href } = Astro.props;
+const linkHref = href || `/producto/${offer.productSlug}`;
 
 const isOutOfStock = offer.availability === "out-of-stock";
 
@@ -49,7 +51,7 @@ const validUntilFormatted = new Intl.DateTimeFormat("es", {
 ---
 
 <a
-  href={`/producto/${offer.productSlug}`}
+  href={linkHref}
   class:list={[
     "group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-white shadow transition hover:shadow-lg scroll-mt-24 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
     isOutOfStock && "opacity-60",
