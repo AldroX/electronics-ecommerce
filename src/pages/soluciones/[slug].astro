@@ -1,0 +1,139 @@
+---
+/**
+ * Solution detail page — /soluciones/[slug]
+ *
+ * Shows solution overview and related products grid.
+ *
+ * Zero framework JS.
+ */
+import type { GetStaticPaths } from "astro";
+import type { Solution } from "@/data/types";
+import { getAllSolutions } from "@/data/helpers/solutions";
+import { getAllProducts } from "@/data/helpers/products";
+import config from "@/config/config.json";
+import Base from "@/layouts/Base.astro";
+import ProductCard from "@/components/cards/ProductCard.astro";
+import CTAWhatsApp from "@/components/ui/CTAWhatsApp.astro";
+
+export const getStaticPaths: GetStaticPaths = () => {
+  return getAllSolutions().map((solution) => ({
+    params: { slug: solution.slug },
+    props: { solution },
+  }));
+};
+
+const { solution } = Astro.props as { solution: Solution };
+const allProducts = getAllProducts();
+const siteTitle = config.site.title;
+const baseUrl = config.site.base_url;
+
+// Filter products that belong to this solution
+const solutionProducts = allProducts.filter((product) =>
+  solution.products.includes(product.id)
+);
+
+// SEO
+const pageTitle = solution.seo?.title || `${solution.name} | ${siteTitle}`;
+const pageDescription = solution.seo?.description || solution.description;
+const canonicalUrl = `${baseUrl}/soluciones/${solution.slug}`;
+
+// Breadcrumb items
+const breadcrumbItems: Array<{ name: string; url?: string }> = [
+  { name: "Inicio", url: `${baseUrl}/` },
+  { name: "Soluciones", url: `${baseUrl}/soluciones` },
+  { name: solution.name },
+];
+
+// WhatsApp CTA message
+const whatsappMessage = `Hola, me interesa la solución ${solution.name}. ¿Qué productos me recomiendan?`;
+
+// Material-style SVG icon paths (same as SolutionCard)
+const iconMap: Record<string, string> = {
+  home: "M12 3L4 9v12h5v-7h6v7h5V9l-8-6z",
+  lightbulb: "M9 21c0 .5.4 1 1 1h4c.6 0 1-.5 1-1v-1H9v1zm3-19C8.1 2 5 5.1 5 9c0 2.4 1.2 4.5 3 5.7V17c0 .5.4 1 1 1h6c.6 0 1-.5 1-1v-2.3c1.8-1.3 3-3.4 3-5.7 0-3.9-3.1-7-7-7z",
+  sun: "M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.79 1.42-1.41zM4 10.5H1v2h3v-2zm9-9.95h-2V3.5h2V.55zm7.45 3.91l-1.41-1.41-1.79 1.79 1.41 1.41 1.79-1.79zm-3.21 13.7l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zM20 10.5v2h-3v-2h3zm-8-5c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm-1 16.95h2V19.5h-2v2.95zm-7.45-3.91l1.41 1.41 1.79-1.8-1.41-1.41-1.79 1.8z",
+  laptop: "M20 18c1.1 0 1.99-.9 1.99-2L22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z",
+  leaf: "M17.75 4.09L15.22 6.03 16.13 9.09 13.5 7.28 10.87 9.09 11.78 6.03 9.25 4.09 12.44 4 13.5 1 14.56 4 17.75 4.09zM21.25 11L19.5 14.5 14.5 15.5V21h-3v-6l-1.47-.88L7 16v5h2v-3.5l4-2.5 5 3.5V21h2v-8.5l-2.75-1.5z",
+};
+
+const iconPath = iconMap[solution.icon] ?? iconMap.home;
+---
+
+<Base
+  meta_title={pageTitle}
+  description={pageDescription}
+  canonical={canonicalUrl}
+  breadcrumbs={breadcrumbItems}
+>
+  <section class="section">
+    <div class="container">
+      {/* Breadcrumbs */}
+      <nav aria-label="Miga de pan" class="mb-6 text-sm text-text-light">
+        <ol class="flex flex-wrap items-center gap-1.5" role="list">
+          {breadcrumbItems.map((item, index) => {
+            const isLast = index === breadcrumbItems.length - 1;
+            return (
+              <li class="flex items-center gap-1.5">
+                {index > 0 && (
+                  <span class="text-text-light/50" aria-hidden="true">/</span>
+                )}
+                {isLast ? (
+                  <span aria-current="page" class="font-medium text-text-dark">
+                    {item.name}
+                  </span>
+                ) : (
+                  <a
+                    href={item.url}
+                    class="text-primary underline-offset-2 hover:text-primary/80 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                  >
+                    {item.name}
+                  </a>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+      </nav>
+
+      {/* Solution header */}
+      <div class="mt-8 flex flex-col items-center gap-6 text-center">
+        <div class="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+          <svg
+            class="h-10 w-10"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path d={iconPath} />
+          </svg>
+        </div>
+
+        <div>
+          <h1 class="text-h3 font-bold text-text-dark">{solution.name}</h1>
+          {solution.description && (
+            <p class="mt-2 text-lg text-text-light">{solution.description}</p>
+          )}
+        </div>
+
+        <CTAWhatsApp
+          variant="inline"
+          productName={solution.name}
+          messageTemplate={whatsappMessage}
+          class="w-fit"
+        />
+      </div>
+
+      {/* Products grid */}
+      {solutionProducts.length > 0 && (
+        <div class="mt-12">
+          <h2 class="text-h4 mb-6">Productos para esta solución</h2>
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {solutionProducts.map((product) => (
+              <ProductCard product={product} />
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  </section>
+</Base>

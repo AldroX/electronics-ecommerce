@@ -4,7 +4,7 @@
  *
  * Implements REQ-SC-001..006:
  *  - icon (SVG, material-style), name (<h3>), description (<p>).
- *  - whole card is a single <a> to /productos?category={slug} (full-card link).
+ *  - whole card is a single <a> to /soluciones/{slug} (full-card link).
  *  - visible :focus-visible outline + scroll-margin so focus is not hidden by
  *    the sticky header during keyboard navigation.
  *  - the full-card link exceeds the 44x44px touch target minimum.
@@ -37,7 +37,7 @@ const iconPath = iconMap[solution.icon] ?? iconMap.home;
 ---
 
 <a
-  href={`/productos?category=${solution.slug}`}
+  href={`/soluciones/${solution.slug}`}
   class="group flex h-full flex-col items-center gap-3 rounded-lg border border-border bg-white p-6 text-center shadow transition hover:shadow-md scroll-mt-24 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
   aria-label={`Ver solución ${solution.name}`}
 >
