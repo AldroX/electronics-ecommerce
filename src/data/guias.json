@@ -1,0 +1,18 @@
+[
+  {
+    "id": "gui-1",
+    "title": "¿Qué significa 500Wh?",
+    "slug": "que-significa-500wh",
+    "description": "Explicación simple de qué son los vatios-hora (Wh) y cómo saber cuánto dura una batería según lo que quieras conectar.",
+    "image": "/images/placeholder-category.webp",
+    "content": "<h2>¿Qué es un vatio-hora (Wh)?</h2><p>Cuando ves una batería o una estación de energía con la etiqueta <strong>500Wh</strong>, los números significan lo siguiente:</p><ul><li><strong>W (vatios)</strong> es la cantidad de energía que un aparato <em>consume</em> cuando está encendido.</li><li><strong>h (horas)</strong> indica cuánto tiempo puede esa batería <em>entregar</em> esa energía.</li></ul><p>En palabras sencillas: <strong>500Wh</strong> es como un tanque de agua que contiene 500 vasos de agua. Cada aparato saca vasos a diferente velocidad — una lámpara LED saca muy pocos, mientras que una nevera saca muchos más.</p><h2>Fórmula rápida: ¿cuánto dura mi batería?</h2><p>Dividí la capacidad de la batería (Wh) entre los vatios que consume tu aparato:</p><pre><code>Duración = Capacidad de la batería (Wh) ÷ Consumo del aparato (W)</code></pre><p><strong>Ejemplo con 500Wh:</strong></p><ul><li>Un LED de 10W → 500 ÷ 10 = <strong>50 horas</strong> de luz</li><li>Un ventilador de 50W → 500 ÷ 50 = <strong>10 horas</strong> de aire</li><li>Una nevera pequeña de 100W → 500 ÷ 100 = <strong>5 horas</strong> (pero como la nevera no corre todo el tiempo, en la práctica dura más)</li></ul><h2>¿Qué significa en la práctica?</h2><p>Si comprás una <strong>Power Station de 1000Wh</strong>, tenés el doble de capacidad que una de 500Wh. Eso significa que podrás mantener tus aparatos esenciales encendidos más tiempo durante un apagón.</p><p>Por ejemplo, con una batería de <strong>1280Wh</strong> (como la Batería LiFePO4 12V 100Ah) podés:</p><ul><li>Mantener 4 bombillas LED de 9W durante <strong>más de 35 horas</strong></li><li>Cargar tu celular (aprox. 15W) unas <strong>85 veces</strong> desde 0 a 100%</li><li>Alimentar una nevera pequeña durante toda la noche</li></ul><h2>¿QuéFactors afectan la duración real?</h2><p>La duración real puede ser un poco menor a la teórica por varios factores:</p><ul><li><strong>Temperatura:</strong> las baterías LiFePO4 funcionan mejor entre 10°C y 35°C</li><li><strong>Edad de la batería:</strong> después de muchos ciclos, la capacidad se reduce ligeramente</li><li><strong>Tipo de batería:</strong> las LiFePO4 mantienen la capacidad mejor que las de plomo-ácido</li></ul><h2>Resumen</h2><p><strong>Wh = capacidad total de energía.</strong> A mayor número de Wh, más aparatos podés conectar y más tiempo van a durar. Si tu prioridad es tener respaldo durante apagones largos, buscá baterías con al menos 1000Wh. Si solo necesitás cargar celulares y mantener unas luces, 500Wh puede ser suficiente.</p><p>¿Tenés dudas sobre qué capacidad necesitás? <strong>Escribinos por WhatsApp</strong> y te ayudamos a elegir la opción ideal para tu situación.</p>",
+    "products": ["prod-3", "prod-4"],
+    "readTime": 3,
+    "seo": {
+      "title": "¿Qué significa 500Wh? | Guías EnergíaTotal",
+      "description": "Explicación simple de vatios-hora (Wh): cómo calcular cuánto dura una batería según lo que quieras conectar. Guía para no técnicos.",
+      "image": "/images/placeholder-category.webp",
+      "canonical": "/guias/que-significa-500wh"
+    }
+  }
+]

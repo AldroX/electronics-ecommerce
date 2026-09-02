@@ -61,6 +61,18 @@ export interface Kit {
   seo: SEOData;
 }
 
+export interface Guide {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  image: string;
+  content: string;   // RAW HTML article body
+  products: string[];
+  readTime: number;
+  seo: SEOData;
+}
+
 export interface Offer {
   id: string;
   name: string;

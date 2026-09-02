@@ -1,0 +1,51 @@
+---
+/**
+ * GuiasCard — Guide navigation card (molecule).
+ *
+ * Full-card link to /guias/{slug} with image, title, description
+ * (2-line clamp), and readTime badge.
+ *
+ * Zero framework JS.
+ */
+import type { Guide } from "@/data/types";
+
+export interface Props {
+  guide: Guide;
+}
+
+const { guide } = Astro.props;
+
+const PLACEHOLDER = "/images/placeholder-category.webp";
+const imageSrc = guide.image?.trim() ? guide.image : PLACEHOLDER;
+const imageAlt = guide.title;
+---
+
+<a
+  href={`/guias/${guide.slug}`}
+  class="group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-white shadow transition hover:shadow-lg scroll-mt-24 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+  aria-label={`Leer guía: ${guide.title}`}
+>
+  <div class="relative aspect-[16/9] w-full overflow-hidden bg-light">
+    <img
+      src={imageSrc}
+      alt={imageAlt}
+      loading="lazy"
+      width="640"
+      height="360"
+      decoding="async"
+      class="h-full w-full object-cover transition-transform duration-300 motion-safe:group-hover:scale-105"
+      onerror={`this.onerror=null;this.src='${PLACEHOLDER}';this.alt='${imageAlt}';`}
+    />
+    <span class="absolute top-3 right-3 inline-flex items-center rounded-full bg-primary/90 px-2.5 py-0.5 text-xs font-semibold text-white backdrop-blur-sm">
+      {guide.readTime} min de lectura
+    </span>
+  </div>
+
+  <div class="flex flex-1 flex-col gap-2 p-4">
+    <h3 class="text-h6 font-bold leading-snug text-text-dark">{guide.title}</h3>
+
+    {guide.description && (
+      <p class="line-clamp-2 text-sm text-text-light">{guide.description}</p>
+    )}
+  </div>
+</a>
