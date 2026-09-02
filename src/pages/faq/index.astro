@@ -1,0 +1,139 @@
+---
+/**
+ * FAQ page — /faq
+ *
+ * Lists all FAQ items with accordion interface.
+ *
+ * Zero framework JS — vanilla JS toggle.
+ */
+import Base from "@/layouts/Base.astro";
+import { getAllFAQs } from "@/data/helpers/faq";
+import config from "@/config/config.json";
+
+const faqs = getAllFAQs();
+const siteTitle = config.site.title;
+const baseUrl = config.site.base_url;
+
+const breadcrumbItems = [
+  { name: "Inicio", url: `${baseUrl}/` },
+  { name: "FAQ" },
+];
+
+// FAQPage JSON-LD (schema.org FAQPage)
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: faq.answer.replace(/<[^>]+>/g, ""),
+    },
+  })),
+};
+---
+
+<Base
+  meta_title={`Preguntas frecuentes | ${siteTitle}`}
+  description="Respuestas a las dudas más comunes sobre compra, envío, garantía y qué equipo necesitás."
+  canonical={`${baseUrl}/faq`}
+  breadcrumbs={breadcrumbItems}
+>
+  <!-- FAQPage JSON-LD structured data -->
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(faqJsonLd)} slot="head" />
+
+  <section class="section">
+    <div class="container">
+      <nav aria-label="Miga de pan" class="mb-6 text-sm text-text-light">
+        <ol class="flex flex-wrap items-center gap-1.5" role="list">
+          {breadcrumbItems.map((item, index) => {
+            const isLast = index === breadcrumbItems.length - 1;
+            return (
+              <li class="flex items-center gap-1.5">
+                {index > 0 && (
+                  <span class="text-text-light/50" aria-hidden="true">/</span>
+                )}
+                {isLast ? (
+                  <span aria-current="page" class="font-medium text-text-dark">
+                    {item.name}
+                  </span>
+                ) : (
+                  <a
+                    href={item.url}
+                    class="text-primary underline-offset-2 hover:text-primary/80 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                  >
+                    {item.name}
+                  </a>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+      </nav>
+
+      <h1 class="text-h2 mb-8">Preguntas frecuentes</h1>
+
+      <div class="max-w-3xl mx-auto">
+        {faqs.map((faq) => (
+          <div class="accordion" id={`accordion-${faq.id}`}>
+            <button
+              class="accordion-header"
+              aria-expanded="false"
+              aria-controls={`content-${faq.id}`}
+              type="button"
+            >
+              <span class="font-medium text-start pr-4">{faq.question}</span>
+              <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
+            <div
+              class="accordion-content"
+              id={`content-${faq.id}`}
+              role="region"
+              aria-labelledby={`accordion-${faq.id}`}
+            >
+              <div class="text-text-light leading-relaxed" set:html={faq.answer} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Vanilla JS accordion toggle — zero framework JS
+    document.addEventListener("DOMContentLoaded", () => {
+      const accordions = document.querySelectorAll(".accordion");
+
+      accordions.forEach((accordion) => {
+        const header = accordion.querySelector(".accordion-header") as HTMLElement | null;
+        const content = accordion.querySelector(".accordion-content") as HTMLElement | null;
+        const icon = accordion.querySelector(".accordion-icon") as HTMLElement | null;
+
+        if (!header || !content || !icon) return;
+
+        header.addEventListener("click", () => {
+          const isActive = accordion.classList.contains("active");
+
+          // Close all accordions
+          accordions.forEach((acc) => {
+            acc.classList.remove("active");
+            const btn = acc.querySelector(".accordion-header") as HTMLElement | null;
+            const cont = acc.querySelector(".accordion-content") as HTMLElement | null;
+            if (btn) btn.setAttribute("aria-expanded", "false");
+            if (cont) cont.style.maxHeight = "0";
+          });
+
+          // Open clicked one if it wasn't active
+          if (!isActive) {
+            accordion.classList.add("active");
+            header.setAttribute("aria-expanded", "true");
+            content.style.maxHeight = content.scrollHeight + "px";
+          }
+        });
+      });
+    });
+  </script>
+</Base>

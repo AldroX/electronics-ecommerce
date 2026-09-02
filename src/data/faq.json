@@ -1,0 +1,37 @@
+[
+  {
+    "id": "faq-1",
+    "question": "¿Cómo comprar?",
+    "answer": "Es muy sencillo. Navegá por nuestro catálogo, encontrá el producto que necesitás y hacé clic en el botón de WhatsApp. Te vamos a responder directamente para confirmar la disponibilidad, acordar el precio y organizar la entrega. <strong>No hay carrito de compras ni proceso de pago online</strong> — todo se gestiona por WhatsApp de forma directa."
+  },
+  {
+    "id": "faq-2",
+    "question": "¿Realizan entregas?",
+    "answer": "Sí. Realizamos entregas en hogares y pequeños negocios. El proceso de entrega se gestiona directamente por WhatsApp: acordamos la dirección, el horario y los detalles para que recibás tu equipo sin complicaciones."
+  },
+  {
+    "id": "faq-3",
+    "question": "¿Qué garantía tienen los productos?",
+    "answer": "Todos nuestros productos cuentan con la garantía del fabricante. Cada producto tiene especificaciones diferentes, por eso es importante revisar los datos técnicos de cada uno. Si tenés alguna duda sobre la garantía de un producto en particular, <a href=\"https://wa.me/5350000000?text=Hola%2C%20tengo%20una%20duda%20sobre%20la%20garant%C3%ADa%20de%20un%20producto.\">contactanos por WhatsApp</a> y te orientamos."
+  },
+  {
+    "id": "faq-4",
+    "question": "¿Cómo elegir una batería?",
+    "answer": "La clave está en saber cuánta energía necesitás. Factores como la capacidad (Wh), la tecnología (AGM, LiFePO4, etc.) y el uso que le vas a dar son fundamentales. Te recomendamos leer nuestras guías <a href=\"/guias/como-calcular-consumo-electrico\">Cómo calcular tu consumo eléctrico</a> y <a href=\"/guias/diferencia-entre-agm-y-lifepo4\">Diferencia entre baterías AGM y LiFePO4</a> para tomar la mejor decisión."
+  },
+  {
+    "id": "faq-5",
+    "question": "¿Qué equipo necesito para mi hogar?",
+    "answer": "Depende de qué querés alimentar y durante cuánto tiempo. Lo primero es conocer tu consumo eléctrico. Leé nuestra guía <a href=\"/guias/como-calcular-consumo-electrico\">Cómo calcular tu consumo eléctrico</a> para dimensionar tu sistema. Si querés saber qué puede alimentar una Power Station, mirá la guía <a href=\"/guias/que-puedes-alimentar-con-power-station\">Qué puedes alimentar con una Power Station</a>."
+  },
+  {
+    "id": "faq-6",
+    "question": "¿Cómo funciona la compra por WhatsApp?",
+    "answer": "Es muy fácil. Cuando encontrás un producto que te interesa, hacés clic en el botón de WhatsApp. Se abre WhatsApp con un mensaje prellenado indicando el producto. Respondés confirmando tu interés, acordamos los detalles y el medio de pago. Finalmente, organizamos la entrega. <strong>Sin trámites, sin cuentas, sin complicaciones.</strong>"
+  },
+  {
+    "id": "faq-7",
+    "question": "¿Qué medios de pago aceptan?",
+    "answer": "Todos los detalles de pago se acuerdan directamente por WhatsApp: transferencia bancaria, pago en efectivo contra entrega u otros métodos que podamos ofrecerte. <a href=\"https://wa.me/5350000000?text=Hola%2C%20me%20interesa%20un%20producto.%20%C2%BFCu%C3%A1les%20son%20los%20medios%20de%20pago%3F\">Escribinos</a> y te contamos las opciones disponibles."
+  }
+]
