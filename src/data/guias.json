@@ -30,5 +30,21 @@
       "image": "/images/placeholder-category.webp",
       "canonical": "/guias/que-puedes-alimentar-con-power-station"
     }
+  },
+  {
+    "id": "gui-3",
+    "title": "¿Cómo calcular el consumo eléctrico?",
+    "slug": "como-calcular-consumo-electrico",
+    "description": "Aprendé a calcular cuánta electricidad consume cada aparato de tu casa y a dimensionar la batería o el panel solar que necesitás.",
+    "image": "/images/placeholder-category.webp",
+    "content": "<h2>¿Por qué importa saber el consumo?</h2><p>Antes de comprar una batería, una Power Station o un panel solar, lo más útil es saber <strong>cuánta electricidad consume tu casa</strong>. Así dimensionás el equipo correcto: ni de más (porque gastás de más) ni de menos (porque te quedás a oscuras).</p><h2>El cálculo en 3 pasos</h2><p>Solo necesitás dos datos de cada aparato: <strong>cuántos vatios (W) consume</strong> y <strong>cuántas horas al día lo usás</strong>.</p><h3>Paso 1: Consumo diario por aparato</h3><pre><code>Vatios (W) × Horas de uso = Vatios-hora (Wh) al día</code></pre><p><strong>Ejemplo:</strong> una bombilla LED de 9W encendida 5 horas → 9 × 5 = <strong>45 Wh/día</strong>.</p><h3>Paso 2: Sumá todos los aparatos</h3><p>Anotá cada aparato esencial y sumá todos los Wh diarios. Ese total es lo que necesitás cubrir por día.</p><h3>Paso 3: Calculá la batería o el panel</h3><p>Una regla práctica:</p><ul><li><strong>Batería:</strong> tu consumo diario × 1.5 (margen por pérdidas y días nublados). Si consumís 1000 Wh/día, buscá una batería de al menos <strong>1500 Wh</strong>.</li><li><strong>Panel solar:</strong> dividí tu consumo diario entre las horas de sol útil (en Cuba, unas <strong>5 horas</strong>). Para 1000 Wh/día → 1000 ÷ 5 = <strong>200W de panel</strong>.</li></ul><h2>Ejemplo completo para una casa pequeña</h2><table><thead><tr><th>Aparato</th><th>Consumo (W)</th><th>Horas/día</th><th>Wh/día</th></tr></thead><tbody><tr><td>4 bombillas LED</td><td>4 × 9W = 36W</td><td>5</td><td>180</td></tr><tr><td>Ventilador</td><td>50W</td><td>8</td><td>400</td></tr><tr><td>Celular</td><td>15W</td><td>3</td><td>45</td></tr><tr><td>TV pequeña</td><td>80W</td><td>4</td><td>320</td></tr></tbody></table><p><strong>Total: 945 Wh/día.</strong> → Batería recomendada ≥ 1400 Wh; panel recomendado ≈ 190W (dos paneles de 100W, o uno de 200W).</p><h2>Empezá por lo que más consumís</h2><p>Si no querés hacer la lista completa, empezás por los <strong>3 aparatos que más usás</strong>. La electricidad que guardás en una batería se agota por lo más grande que enchufes, así que identificar esos tres ya te da una idea clara del tamaño de equipo.</p>",
+    "products": ["prod-3", "prod-4", "prod-1"],
+    "readTime": 5,
+    "seo": {
+      "title": "¿Cómo calcular el consumo eléctrico? | Guías EnergíaTotal",
+      "description": "Aprendé a calcular el consumo eléctrico de tu casa en 3 pasos y a dimensionar la batería o el panel solar que necesitás. Ejemplos claros.",
+      "image": "/images/placeholder-category.webp",
+      "canonical": "/guias/como-calcular-consumo-electrico"
+    }
   }
 ]
