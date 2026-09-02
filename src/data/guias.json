@@ -14,5 +14,21 @@
       "image": "/images/placeholder-category.webp",
       "canonical": "/guias/que-significa-500wh"
     }
+  },
+  {
+    "id": "gui-2",
+    "title": "¿Qué puedo alimentar con una Power Station?",
+    "slug": "que-puedes-alimentar-con-power-station",
+    "description": "Descubrí qué aparatos puede encender una estación de energía portátil (Power Station) y cuánto tiempo, con ejemplos claros para tu hogar.",
+    "image": "/images/placeholder-category.webp",
+    "content": "<h2>¿Qué es una Power Station?</h2><p>Una <strong>Power Station</strong> (estación de energía portátil) es como una batería gigante que podés cargar desde el tomacorriente, un panel solar o el auto. Guarda electricidad y la suelta cuando la necesitás — perfecta para apagones o para usar en lugares sin conexión.</p><p>La clave para saber <em>qué</em> puede alimentar es la <strong>potencia de salida (W)</strong> y la <strong>capacidad (Wh)</strong>. La potencia dice cuántos aparatos puede prender <strong>a la vez</strong>; la capacidad dice <strong>por cuánto tiempo</strong>.</p><h2>¿Qué puedo conectar y por cuánto tiempo?</h2><p>Tomemos como ejemplo la <strong>Power Station de 1000Wh con salida de 1000W</strong>:</p><table><thead><tr><th>Aparato</th><th>Consumo</th><th>Tiempo con 1000Wh</th></tr></thead><tbody><tr><td>Celular</td><td>15W</td><td>~66 cargas</td></tr><tr><td>Bombilla LED</td><td>9W</td><td>~110 horas</td></tr><tr><td>Ventilador</td><td>50W</td><td>~20 horas</td></tr><tr><td>Laptop</td><td>60W</td><td>~16 horas</td></tr><tr><td>Nevera pequeña</td><td>100W</td><td>~8 horas (más en la práctica)</td></tr><tr><td>Microondas</td><td>1000W</td><td>~1 hora</td></tr></tbody></table><p>Los aparatos con motor (nevera, ventilador) no consumen el máximo todo el tiempo, así que en la práctica duran más de lo que sugiere el cálculo.</p><h2>¿Qué NO debería conectar?</h2><p>Los aparatos que usan <strong>resistencia eléctrica para calentar</strong> consumen muchísimo: planchas, hornos eléctricos, calefactores o hervidores. Suelen superar los 1000W y agotar la batería en minutos.</p><h2>Consejo práctico</h2><p>Priorizá los <strong>aparatos esenciales</strong> durante un apagón: luces LED, celular, un ventilador y la nevera para conservar los alimentos. Así una Power Station de 1000Wh puede cubrirte cómodamente toda la noche.</p>",
+    "products": ["prod-3", "prod-4"],
+    "readTime": 4,
+    "seo": {
+      "title": "¿Qué puedo alimentar con una Power Station? | Guías EnergíaTotal",
+      "description": "Guía simple de qué aparatos puede encender una Power Station de 1000Wh y por cuánto tiempo. Ejemplos para hogares y pequeños negocios.",
+      "image": "/images/placeholder-category.webp",
+      "canonical": "/guias/que-puedes-alimentar-con-power-station"
+    }
   }
 ]
