@@ -1,0 +1,39 @@
+---
+/**
+ * Kits landing page — /kits
+ *
+ * Lists all available kits/bundles as cards.
+ *
+ * Zero framework JS.
+ */
+import Base from "@/layouts/Base.astro";
+import { getAllKits } from "@/data/helpers/kits";
+import KitCard from "@/components/cards/KitCard.astro";
+import config from "@/config/config.json";
+
+const kits = getAllKits();
+const siteTitle = config.site.title;
+const baseUrl = config.site.base_url;
+
+const breadcrumbItems = [
+  { name: "Inicio", url: `${baseUrl}/` },
+  { name: "Kits" },
+];
+---
+<Base
+  meta_title={`Kits | ${siteTitle}`}
+  description={config.metadata.meta_description}
+  canonical={`${baseUrl}/kits`}
+  breadcrumbs={breadcrumbItems}
+>
+  <section class="section">
+    <div class="container">
+      <h1 class="text-h2 mb-8">Kits</h1>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {kits.map((kit) => (
+          <KitCard kit={kit} />
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>
