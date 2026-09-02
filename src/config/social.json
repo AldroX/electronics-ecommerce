@@ -9,6 +9,11 @@
       "name": "Instagram",
       "icon": "instagram",
       "link": "https://instagram.com/energiatotal"
+    },
+    {
+      "name": "TikTok",
+      "icon": "tiktok",
+      "link": "https://tiktok.com/@energiatotal"
     }
   ]
 }
