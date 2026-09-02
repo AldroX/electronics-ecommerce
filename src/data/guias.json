@@ -46,5 +46,21 @@
       "image": "/images/placeholder-category.webp",
       "canonical": "/guias/como-calcular-consumo-electrico"
     }
+  },
+  {
+    "id": "gui-4",
+    "title": "¿Qué diferencia hay entre AGM y LiFePO4?",
+    "slug": "diferencia-entre-agm-y-lifepo4",
+    "description": "Te explicamos en palabras simples la diferencia entre las baterías AGM (plomo-ácido) y LiFePO4 (litio), y cuál conviene para qué caso.",
+    "image": "/images/placeholder-category.webp",
+    "content": "<h2>Las dos tecnologías de batería</h2><p>Cuando comprás un sistema de respaldo o solar, te vas a encontrar con dos tipos de baterías: <strong>AGM</strong> y <strong>LiFePO4</strong>. Son como dos marcas de tanque de agua: ambas guardan electricidad, pero una es más liviana, dura más y es más segura a largo plazo.</p><h3>AGM (plomo-ácido sellado)</h3><p>Es la tecnología clásica, similar a la batería de un auto. Es <strong>más económica al comprar</strong>, pero:</p><ul><li>Dura <strong>200-400 ciclos</strong> de carga (vida útil menor).</li><li>Es <strong>pesada</strong> y necesita cuidados de mantenimiento.</li><li>No le conviene descargarse por completo a menudo.</li></ul><h3>LiFePO4 (litio-ferrofosfato)</h3><p>Es la tecnología moderna, la que usan las <strong>Power Stations</strong> y las mejores baterías solares:</p><ul><li>Dura <strong>2000-3000 ciclos</strong> o más (5-10 veces más).</li><li>Es <strong>liviana</strong>: misma capacidad con mucho menos peso.</li><li>Se puede descargar casi por completo sin dañarse.</li><li>Incluye un sistema de protección (<strong>BMS</strong>) que la cuida sola.</li></ul><h2>Comparación rápida</h2><table><thead><tr><th>Característica</th><th>AGM</th><th>LiFePO4</th></tr></thead><tbody><tr><td>Ciclos de vida</td><td>200-400</td><td>2000-3000+</td></tr><tr><td>Peso (100Ah)</td><td>~30 kg</td><td>~11 kg</td></tr><tr><td>Descarga profunda</td><td>No recomendada</td><td>Sí, segura</td></tr><tr><td>Precio</td><td>Más barata</td><td>Más cara (se compensa con la vida útil)</td></tr></tbody></table><h2>¿Cuál te conviene?</h2><p>La regla simple:</p><ul><li>Si querés un sistema de respaldo <strong>apagones esporádicos</strong> y con presupuesto ajustado → un AGM de buena marca puede servir.</li><li>Si usás la batería <strong>todos los días</strong> o dependes de ella (negocios, uso solar diario) → <strong>LiFePO4</strong>. Aunque cuesta más, dura tanto más que termina saliendo más barata por año de uso.</li></ul><p>Para dar el ejemplo concreto: una <strong>Batería LiFePO4 12V 100Ah</strong> pesa unos 11 kg y te da unos 1280 Wh de energía útil. Una AGM de igual capacidad pesa casi el triple y se degrada mucho antes.</p><h2>Conclusión</h2><p>Si podés invertir un poco más al inicio, <strong>LiFePO4 es la mejor inversión a largo plazo</strong>: más segura, más liviana y no tenés que preocuparte por el mantenimiento.</p>",
+    "products": ["prod-4", "prod-3"],
+    "readTime": 4,
+    "seo": {
+      "title": "¿Qué diferencia hay entre AGM y LiFePO4? | Guías EnergíaTotal",
+      "description": "Diferencias simples entre baterías AGM y LiFePO4: ciclos de vida, peso, descarga y precio. Ayudate a elegir la batería correcta para tu hogar.",
+      "image": "/images/placeholder-category.webp",
+      "canonical": "/guias/diferencia-entre-agm-y-lifepo4"
+    }
   }
 ]
