@@ -1,0 +1,116 @@
+---
+/**
+ * Category detail page — /categoria/[slug]
+ *
+ * Shows category overview and related products grid.
+ *
+ * Zero framework JS.
+ */
+import type { GetStaticPaths } from "astro";
+import type { Category } from "@/data/types";
+import { getAllCategories } from "@/data/helpers/categories";
+import { getAllProducts } from "@/data/helpers/products";
+import config from "@/config/config.json";
+import Base from "@/layouts/Base.astro";
+import ProductCard from "@/components/cards/ProductCard.astro";
+import CTAWhatsApp from "@/components/ui/CTAWhatsApp.astro";
+
+export const getStaticPaths: GetStaticPaths = () => {
+  return getAllCategories().map((category) => ({
+    params: { slug: category.slug },
+    props: { category },
+  }));
+};
+
+const { category } = Astro.props as { category: Category };
+const allProducts = getAllProducts();
+const siteTitle = config.site.title;
+const baseUrl = config.site.base_url;
+
+// Filter products that belong to this category
+const categoryProducts = allProducts.filter((product) =>
+  category.products.includes(product.id)
+);
+
+// SEO
+const pageTitle = category.seo?.title || `${category.name} | ${siteTitle}`;
+const pageDescription = category.seo?.description || category.description;
+const canonicalUrl = `${baseUrl}/categoria/${category.slug}`;
+
+// Breadcrumb items
+const breadcrumbItems: Array<{ name: string; url?: string }> = [
+  { name: "Inicio", url: `${baseUrl}/` },
+  { name: category.name },
+];
+
+// WhatsApp CTA message
+const whatsappMessage = `Hola, me interesa la categoría ${category.name}. ¿Qué productos me recomiendan?`;
+---
+
+<Base
+  meta_title={pageTitle}
+  description={pageDescription}
+  canonical={canonicalUrl}
+  breadcrumbs={breadcrumbItems}
+>
+  <section class="section">
+    <div class="container">
+      {/* Breadcrumbs */}
+      <nav aria-label="Miga de pan" class="mb-6 text-sm text-text-light">
+        <ol class="flex flex-wrap items-center gap-1.5" role="list">
+          {breadcrumbItems.map((item, index) => {
+            const isLast = index === breadcrumbItems.length - 1;
+            return (
+              <li class="flex items-center gap-1.5">
+                {index > 0 && (
+                  <span class="text-text-light/50" aria-hidden="true">/</span>
+                )}
+                {isLast ? (
+                  <span aria-current="page" class="font-medium text-text-dark">
+                    {item.name}
+                  </span>
+                ) : (
+                  <a
+                    href={item.url}
+                    class="text-primary underline-offset-2 hover:text-primary/80 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                  >
+                    {item.name}
+                  </a>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+      </nav>
+
+      {/* Category header */}
+      <div class="mt-8 flex flex-col items-center gap-6 text-center">
+        <div>
+          <h1 class="text-h3 font-bold text-text-dark">{category.name}</h1>
+          {category.description && (
+            <p class="mt-2 text-lg text-text-light">{category.description}</p>
+          )}
+        </div>
+
+        <CTAWhatsApp
+          variant="inline"
+          productName={category.name}
+          messageTemplate={whatsappMessage}
+          class="w-fit"
+        />
+      </div>
+
+      {/* Products grid */}
+      {categoryProducts.length > 0 && (
+        <div class="mt-12">
+          <h2 class="text-h4 mb-6">Productos</h2>
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {categoryProducts.map((product) => (
+              <ProductCard product={product} />
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  </section>
+</Base>
