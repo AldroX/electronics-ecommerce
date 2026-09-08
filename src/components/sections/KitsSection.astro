@@ -21,7 +21,7 @@ const kits = getAllKits();
           <h2 id="kits-title">Kits</h2>
         </div>
 
-        <div class="grid grid-cols-2 gap-6 md:grid-cols-3">
+        <div class="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
           {kits.map((kit) => (
             <KitCard kit={kit} />
           ))}
