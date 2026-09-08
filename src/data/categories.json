@@ -4,7 +4,7 @@
     "name": "Energía Solar",
     "slug": "energia-solar",
     "description": "Paneles solares, controladores e inversores para generar tu propia electricidad.",
-    "image": "/images/placeholder-category.webp",
+    "image": "@/assets/categories/panel-solar.webp",
     "products": ["prod-1", "prod-2"],
     "seo": {
       "title": "Energía Solar | Paneles, Controladores e Inversores",
@@ -18,7 +18,7 @@
     "name": "Respaldo y Almacenamiento",
     "slug": "respaldo-almacenamiento",
     "description": "Power stations, baterías LiFePO4 y UPS para mantener tus equipos encendidos.",
-    "image": "/images/placeholder-category.webp",
+    "image": "@/assets/categories/ecoflows.webp",
     "products": ["prod-3", "prod-4"],
     "seo": {
       "title": "Respaldo y Almacenamiento | Power Stations y Baterías",
@@ -32,7 +32,7 @@
     "name": "Iluminación",
     "slug": "iluminacion",
     "description": "Lámparas solares, LED de bajo consumo y luces de emergencia.",
-    "image": "/images/placeholder-category.webp",
+    "image": "@/assets/categories/bombillo.webp",
     "products": ["prod-5", "prod-6"],
     "seo": {
       "title": "Iluminación | Lámparas Solares y LED",
@@ -46,7 +46,7 @@
     "name": "Accesorios",
     "slug": "accesorios",
     "description": "Cables, conectores, adaptadores y componentes para tu instalación.",
-    "image": "/images/placeholder-category.webp",
+    "image": "@/assets/categories/cable.webp",
     "products": ["prod-7", "prod-8"],
     "seo": {
       "title": "Accesorios | Cables, Conectores y Adaptadores",
