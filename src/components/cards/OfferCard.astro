@@ -50,50 +50,70 @@ const validUntilFormatted = new Intl.DateTimeFormat("es", {
 }).format(validUntilDate);
 ---
 
-<a
-  href={linkHref}
+<article
   class:list={[
-    "group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-white shadow transition hover:shadow-lg scroll-mt-24 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
+    "group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-white shadow transition hover:shadow-lg scroll-mt-24",
     isOutOfStock && "opacity-60",
   ]}
-  aria-label={`Ver oferta: ${offer.name}`}
 >
   {/* Discount badge */}
   <div class="relative bg-red-500 px-3 py-1.5 text-center">
     <span class="text-sm font-bold text-white">-{offer.discountPercent}%</span>
   </div>
 
-  <div class="flex flex-1 flex-col gap-3 p-4">
-    {/* Availability badge */}
-    <span class={`inline-flex w-fit items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${badge.class}`}>
-      {badge.label}
-    </span>
+  {/* Image */}
+  <div class="relative aspect-[4/3] w-full shrink-0 overflow-hidden bg-light">
+    <img
+      src={offer.image}
+      alt={offer.name}
+      loading="lazy"
+      width="400"
+      height="300"
+      decoding="async"
+      class="h-full w-full object-cover transition-transform duration-300 motion-safe:group-hover:scale-105"
+      onerror="this.src='/images/placeholder-product.svg'"
+    />
+  </div>
 
-    <h3 class="text-h6 font-bold leading-snug text-text-dark">{offer.name}</h3>
+  <a
+    href={linkHref}
+    class="flex h-full flex-1 flex-col"
+    aria-label={`Ver oferta: ${offer.name}`}
+  >
+    <div class="flex flex-1 flex-col gap-3 p-4">
+      {/* Availability badge */}
+      <span class={`inline-flex w-fit items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${badge.class}`}>
+        {badge.label}
+      </span>
 
-    {offer.description && (
-      <p class="line-clamp-2 text-sm text-text-light">{offer.description}</p>
-    )}
+      <h3 class="text-h6 font-bold leading-snug text-text-dark">{offer.name}</h3>
 
-    {/* Prices */}
-    <div class="mt-auto flex items-baseline gap-2 pt-2">
-      <span class="text-lg font-bold text-primary">{currentPriceFormatted}</span>
-      <span class="text-sm text-text-light line-through">{originalPriceFormatted}</span>
+      {offer.description && (
+        <p class="line-clamp-2 text-sm text-text-light">{offer.description}</p>
+      )}
+
+      {/* Prices */}
+      <div class="mt-auto flex items-baseline gap-2 pt-2">
+        <span class="text-lg font-bold text-primary">{currentPriceFormatted}</span>
+        <span class="text-sm text-text-light line-through">{originalPriceFormatted}</span>
+      </div>
+
+      {/* Valid until */}
+      <p class="text-xs text-text-light">
+        Válido hasta {validUntilFormatted}
+      </p>
     </div>
+  </a>
 
-    {/* Valid until */}
-    <p class="text-xs text-text-light">
-      Válido hasta {validUntilFormatted}
-    </p>
-
-    {/* WhatsApp CTA - hidden when out-of-stock */}
-    {!isOutOfStock && (
+  {/* WhatsApp CTA - hidden when out-of-stock */}
+  {!isOutOfStock && (
+    <div class="shrink-0 px-4 pb-4">
       <CTAWhatsApp
         variant="inline"
         productName={offer.name}
         messageTemplate={offer.whatsappMessage.replace("{PRODUCTO}", offer.name)}
-        class="mt-2"
+        class="w-full"
       />
-    )}
-  </div>
-</a>
+    </div>
+  )}
+</article>
