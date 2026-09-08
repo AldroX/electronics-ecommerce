@@ -40,13 +40,18 @@ function isImportableImage(path: string): boolean {
   return path.startsWith("@/assets/") || path.startsWith("../assets/");
 }
 
+// Normalize path separators for cross-platform glob key matching (Windows uses backslashes)
+function normalizeGlobKey(key: string): string {
+  return key.replace(/\\/g, "/");
+}
+
 // Convert @/assets/ or ../assets/ to the glob key format
 function toGlobKey(path: string): string {
   if (path.startsWith("@/assets/")) {
-    return "/src/" + path.slice(2); // @/assets/ -> /src/assets/
+    return normalizeGlobKey("/src/" + path.slice(2)); // @/assets/ -> /src/assets/
   }
   if (path.startsWith("../assets/")) {
-    return "/src/assets/" + path.slice(10); // ../assets/ -> /src/assets/
+    return normalizeGlobKey("/src/assets/" + path.slice(10)); // ../assets/ -> /src/assets/
   }
   return "";
 }
@@ -55,11 +60,17 @@ const hasImages = product.images.length > 0;
 const primaryPublic = product.images[0] ?? PLACEHOLDER;
 
 // Try to resolve as importable asset (future: real product images in src/assets)
+// Normalize glob keys for cross-platform compatibility
+const normalizedAssetGlob: Record<string, { default: ImageMetadata } | undefined> = {};
+for (const [key, value] of Object.entries(assetGlob)) {
+  normalizedAssetGlob[normalizeGlobKey(key)] = value;
+}
+
 const primaryImportKey = hasImages && isImportableImage(product.images[0])
   ? toGlobKey(product.images[0])
   : null;
 
-const primaryImport = primaryImportKey ? assetGlob[primaryImportKey]?.default : null;
+const primaryImport = primaryImportKey ? normalizedAssetGlob[primaryImportKey]?.default : null;
 
 // Descriptive Spanish alt (REQ-PC-002 / SCN-PC-003).
 const imageAlt = hasImages ? product.name : `Imagen no disponible para ${product.name}`;
@@ -92,57 +103,91 @@ const price = formatter.format(product.price);
 const compareAt = showCompareAt ? formatter.format(product.compareAtPrice!) : null;
 ---
 
-<a
-  href={`/producto/${product.slug}`}
-  class="group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-white shadow transition hover:shadow-lg scroll-mt-24 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-  aria-label={`Ver ${product.name}`}
+<article
+  class="group flex h-full min-w-0 flex-col overflow-hidden rounded-lg border border-border bg-white shadow transition hover:shadow-lg"
 >
-  <div class="relative aspect-[4/3] w-full overflow-hidden bg-light">
-    {primaryImport && (
-      <Picture
-        src={primaryImport}
-        alt={imageAlt}
-        loading={priority ? "eager" : "lazy"}
-        widths={[480, 640, 800]}
-        sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
-        formats={["avif", "webp"]}
-        class="h-full w-full object-cover transition-transform duration-300 motion-safe:group-hover:scale-105"
-      />
-    )}
-    {(!primaryImport || !hasImages) && (
-      <picture>
-        <img
-          src={primaryPublic}
+  <!-- Producto -->
+  <a
+    href={`/producto/${product.slug}`}
+    class="flex h-full flex-1 flex-col"
+    aria-label={`Ver ${product.name}`}
+  >
+    <!-- Imagen -->
+    <div class="relative aspect-[4/3] w-full shrink-0 overflow-hidden bg-light">
+      {primaryImport && (
+        <Picture
+          src={primaryImport}
           alt={imageAlt}
           loading={priority ? "eager" : "lazy"}
-          width="400"
-          height="300"
-          decoding="async"
+          widths={[480, 640, 800]}
+          sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
+          formats={["avif", "webp"]}
           class="h-full w-full object-cover transition-transform duration-300 motion-safe:group-hover:scale-105"
-          onerror={`this.onerror=null;this.src='${PLACEHOLDER}';this.srcset='';this.alt='Imagen no disponible para ${product.name}';`}
         />
-      </picture>
-    )}
-  </div>
+      )}
 
-  <div class="flex flex-1 flex-col gap-2 p-4">
-    <span class={`inline-flex w-fit items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${badge.class}`}>
-      {badge.label}
-    </span>
-
-    <h3 class="text-h6 font-bold leading-snug text-text-dark">{product.name}</h3>
-
-    {product.shortDescription && (
-      <p class="line-clamp-2 text-sm text-text-light">{product.shortDescription}</p>
-    )}
-
-    <div class="mt-auto flex items-baseline gap-2 pt-2">
-      <span class="text-lg font-bold text-primary">{price}</span>
-      {showCompareAt && (
-        <span class="text-sm text-text-light line-through">{compareAt}</span>
+      {(!primaryImport || !hasImages) && (
+        <picture>
+          <img
+            src={primaryPublic}
+            alt={imageAlt}
+            loading={priority ? "eager" : "lazy"}
+            width="400"
+            height="300"
+            decoding="async"
+            class="h-full w-full object-cover transition-transform duration-300 motion-safe:group-hover:scale-105"
+          />
+        </picture>
       )}
     </div>
 
-    <CTAWhatsApp variant="inline" productName={product.name} messageTemplate={whatsappMessage} class="mt-2" />
+    <!-- Información -->
+    <div class="flex flex-1 flex-col gap-3 p-4">
+
+      <span
+        class={`inline-flex w-fit shrink-0 items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${badge.class}`}
+      >
+        {badge.label}
+      </span>
+
+      <h3
+        class="m-0 line-clamp-2 min-h-[3.5rem] text-h6 font-bold leading-snug text-text-dark"
+      >
+        {product.name}
+      </h3>
+
+      {product.shortDescription ? (
+        <p
+          class="m-0 min-h-[3rem] line-clamp-2 text-sm leading-6 text-text-light"
+        >
+          {product.shortDescription}
+        </p>
+      ) : (
+        <div class="min-h-[3rem]"></div>
+      )}
+
+      <!-- Precio siempre al fondo -->
+      <div class="mt-auto flex min-h-[2rem] items-baseline gap-2 pt-2">
+        <span class="text-lg font-bold text-primary">
+          {price}
+        </span>
+
+        {showCompareAt && (
+          <span class="text-sm text-text-light line-through">
+            {compareAt}
+          </span>
+        )}
+      </div>
+    </div>
+  </a>
+
+  <!-- WhatsApp -->
+  <div class="shrink-0 px-2 pb-2">
+    <CTAWhatsApp
+      variant="inline"
+      productName={product.name}
+      messageTemplate={whatsappMessage}
+      class="w-full"
+    />
   </div>
-</a>
+</article>
