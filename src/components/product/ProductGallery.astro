@@ -23,18 +23,29 @@ const { images, productName } = Astro.props;
 
 const PLACEHOLDER = "/images/placeholder-product.svg";
 
+// Normalize path separators for cross-platform glob key matching (Windows uses backslashes)
+function normalizeGlobKey(key: string): string {
+  return key.replace(/\\/g, "/");
+}
+
 function isImportableImage(path: string): boolean {
   return path.startsWith("@/assets/") || path.startsWith("../assets/");
 }
 
 function toGlobKey(path: string): string {
   if (path.startsWith("@/assets/")) {
-    return "/src/" + path.slice(2);
+    return normalizeGlobKey("/src/" + path.slice(2));
   }
   if (path.startsWith("../assets/")) {
-    return "/src/assets/" + path.slice(10);
+    return normalizeGlobKey("/src/assets/" + path.slice(10));
   }
   return "";
+}
+
+// Normalize glob keys for cross-platform compatibility
+const normalizedAssetGlob: Record<string, { default: ImageMetadata } | undefined> = {};
+for (const [key, value] of Object.entries(assetGlob)) {
+  normalizedAssetGlob[normalizeGlobKey(key)] = value;
 }
 
 // Resolve images: importable ones get Picture, others get <img>
@@ -49,7 +60,7 @@ const resolvedImages: ResolvedImage[] = images.length > 0
       const alt = `${productName} — imagen ${idx + 1} de ${images.length}`;
       if (isImportableImage(img)) {
         const key = toGlobKey(img);
-        const metadata = assetGlob[key]?.default ?? null;
+        const metadata = normalizedAssetGlob[key]?.default ?? null;
         return { import: metadata, publicPath: img, alt };
       }
       return { import: null, publicPath: img, alt };
