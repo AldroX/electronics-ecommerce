@@ -2,14 +2,15 @@
 /**
  * KitCard — Kit/bundle display card (molecule).
  *
- * Displays:
- *  - name (<h3>), description, product count badge
- *  - price with optional compareAt strikethrough
- *  - WhatsApp CTA
- *  - whole card links to /kits/{slug} (or /productos as fallback)
- *
- * Zero framework JS.
- */
+  * Displays:
+  *  - image (lazy, with placeholder fallback)
+  *  - name (<h3>), description, product count badge
+  *  - price with optional compareAt strikethrough
+  *  - WhatsApp CTA
+  *  - whole card links to /kits/{slug}
+  *
+  * Zero framework JS.
+  */
 import type { Kit } from "@/data/types";
 import CTAWhatsApp from "../ui/CTAWhatsApp.astro";
 
@@ -21,6 +22,11 @@ export interface Props {
 }
 
 const { kit } = Astro.props;
+
+// Kit image lives in kits.json but is not declared on the base Kit type;
+// use it when present, otherwise fall back to the placeholder.
+const placeholder = "/images/placeholder-product.svg";
+const kitImage = kit.image || placeholder;
 
 // Price formatting
 const formatter = new Intl.NumberFormat("es", {
@@ -44,37 +50,57 @@ const whatsappMsg = kit.whatsappMessage ?? `Hola, estoy interesado en el kit ${k
 const href = `/kits/${kit.slug}`;
 ---
 
-<a
-  href={href}
-  class="group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-white shadow transition hover:shadow-lg scroll-mt-24 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-  aria-label={`Ver kit ${kit.name}`}
+<article
+  class="group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-white shadow transition hover:shadow-lg scroll-mt-24"
 >
-  <div class="flex flex-1 flex-col gap-3 p-4">
-    {/* Product count badge */}
-    <span class="inline-flex w-fit items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
-      {productLabel}
-    </span>
+  {/* Image */}
+  <div class="relative aspect-[4/3] w-full shrink-0 overflow-hidden bg-light">
+    <img
+      src={kitImage}
+      alt={kit.name}
+      loading="lazy"
+      width="400"
+      height="300"
+      decoding="async"
+      class="h-full w-full object-cover transition-transform duration-300 motion-safe:group-hover:scale-105"
+      onerror="this.src='/images/placeholder-product.svg'"
+    />
+  </div>
 
-    <h3 class="text-h6 font-bold leading-snug text-text-dark">{kit.name}</h3>
+  <a
+    href={href}
+    class="flex h-full flex-1 flex-col"
+    aria-label={`Ver kit ${kit.name}`}
+  >
+    <div class="flex flex-1 flex-col gap-3 p-4">
+      {/* Product count badge */}
+      <span class="inline-flex w-fit items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
+        {productLabel}
+      </span>
 
-    {kit.description && (
-      <p class="line-clamp-2 text-sm text-text-light">{kit.description}</p>
-    )}
+      <h3 class="text-h6 font-bold leading-snug text-text-dark">{kit.name}</h3>
 
-    {/* Prices */}
-    <div class="mt-auto flex items-baseline gap-2 pt-2">
-      <span class="text-lg font-bold text-primary">{priceFormatted}</span>
-      {hasDiscount && compareAtFormatted && (
-        <span class="text-sm text-text-light line-through">{compareAtFormatted}</span>
+      {kit.description && (
+        <p class="line-clamp-2 text-sm text-text-light">{kit.description}</p>
       )}
-    </div>
 
-    {/* WhatsApp CTA */}
+      {/* Prices */}
+      <div class="mt-auto flex items-baseline gap-2 pt-2">
+        <span class="text-lg font-bold text-primary">{priceFormatted}</span>
+        {hasDiscount && compareAtFormatted && (
+          <span class="text-sm text-text-light line-through">{compareAtFormatted}</span>
+        )}
+      </div>
+    </div>
+  </a>
+
+  {/* WhatsApp CTA */}
+  <div class="shrink-0 px-4 pb-4">
     <CTAWhatsApp
       variant="inline"
       productName={kit.name}
       messageTemplate={whatsappMsg}
-      class="mt-2"
+      class="w-full"
     />
   </div>
-</a>
+</article>
