@@ -20,10 +20,58 @@
  */
 import type { GetStaticPaths } from "astro";
 import type { Product } from "../../data/types";
+import type { ImageMetadata } from "astro";
 import Base from "../../layouts/Base.astro";
 import { getAllProducts } from "../../data/helpers/products";
 import ProductFilters from "../../components/cards/ProductFilters.astro";
 import CatalogGrid from "../../components/cards/CatalogGrid.astro";
+import productsHeroBg from "../../assets/products/products-hero-new.webp";
+
+// Pre-load all assets in src/assets for dynamic lookup (same as ProductCard.astro)
+const assetGlob = import.meta.glob<{ default: ImageMetadata }>("/src/assets/**/*.{jpg,jpeg,png,webp,avif}", { eager: true });
+
+// Normalize glob keys for cross-platform compatibility (Windows uses backslashes)
+function normalizeGlobKey(key: string): string {
+  return key.replace(/\\/g, "/");
+}
+
+// Convert @/assets/ or ../assets/ to the glob key format
+function toGlobKey(path: string): string {
+  if (path.startsWith("@/assets/")) {
+    return normalizeGlobKey("/src/" + path.slice(2)); // @/assets/ -> /src/assets/
+  }
+  if (path.startsWith("../assets/")) {
+    return normalizeGlobKey("/src/assets/" + path.slice(10)); // ../assets/ -> /src/assets/
+  }
+  return "";
+}
+
+// Build a map from import path (e.g. "@/assets/products/panel-solar.webp") to resolved public URL
+const normalizedAssetGlob: Record<string, { default: ImageMetadata } | undefined> = {};
+for (const [key, value] of Object.entries(assetGlob)) {
+  normalizedAssetGlob[normalizeGlobKey(key)] = value;
+}
+
+function resolveImageUrl(imagePath: string): string {
+  // If it's an importable asset path, resolve to final public URL
+  if (imagePath.startsWith("@/assets/") || imagePath.startsWith("../assets/")) {
+    const globKey = toGlobKey(imagePath);
+    const asset = normalizedAssetGlob[globKey]?.default;
+    if (asset?.src) {
+      return asset.src; // Final resolved URL with hash (e.g. /_astro/panel-solar.B45WK9N-_Z2m6MAA.avif)
+    }
+  }
+  // Public paths and placeholders pass through as-is
+  return imagePath;
+}
+
+// Transform products for client-side JSON: resolve @/assets/ paths to final URLs
+function transformProductsForClient(products: Product[]): Product[] {
+  return products.map((product) => ({
+    ...product,
+    images: product.images.map(resolveImageUrl),
+  }));
+}
 
 export const getStaticPaths: GetStaticPaths = ({ paginate }) => {
   const products = getAllProducts();
@@ -49,6 +97,7 @@ interface CatalogPage {
 
 const { page } = Astro.props as { page: CatalogPage };
 const allProducts = getAllProducts();
+const clientProducts = transformProductsForClient(allProducts);
 
 const metaTitle = page.currentPage > 1
   ? `Catálogo de Productos — Página ${page.currentPage}`
@@ -60,16 +109,23 @@ const description =
 <Base
   meta_title={metaTitle}
   description={description}
-  image="/images/placeholder-category.webp"
+  image={productsHeroBg.src}
 >
   <!-- Hero Section -->
-  <section class="section bg-gradient" aria-labelledby="catalog-title">
-    <div class="container">
+  <section
+    class="section relative overflow-hidden bg-cover bg-center bg-no-repeat md:min-h-[360px] lg:min-h-[420px]"
+    style={`background-image: url('${productsHeroBg.src}')`}
+    aria-labelledby="catalog-title"
+  >
+    {/* Dark overlay for text readability */}
+    <div class="absolute inset-0 bg-black/50" aria-hidden="true"></div>
+
+    <div class="container relative z-10">
       <div class="max-w-3xl">
-        <h1 id="catalog-title" class="text-h1-sm md:text-h1">
+        <h1 id="catalog-title" class="text-h1-sm md:text-h1 text-white">
           Catálogo de Productos
         </h1>
-        <p class="mt-4 max-w-2xl text-base text-text-light md:text-lg">
+        <p class="mt-4 max-w-2xl text-base text-gray-300 md:text-lg">
           Encuentra la solución energética que necesitas. Filtra por categoría,
           precio y disponibilidad. Asesoría gratis por WhatsApp.
         </p>
@@ -117,8 +173,8 @@ const description =
     </div>
   </section>
 
-  <!-- Embedded catalog data for client-side filtering -->
-  <script type="application/json" id="catalog-data" is:inline set:html={JSON.stringify(allProducts)} />
+  <!-- Embedded catalog data for client-side filtering (with resolved image URLs) -->
+  <script type="application/json" id="catalog-data" is:inline set:html={JSON.stringify(clientProducts)} />
 
   <!-- Client-side filter/sort interactivity -->
   <script is:inline>
