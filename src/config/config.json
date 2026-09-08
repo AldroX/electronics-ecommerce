@@ -1,7 +1,7 @@
 {
   "site": {
     "title": "EnergíaTotal",
-    "base_url": "https://energiatotal.cu",
+    "base_url": "http://localhost:4321",
     "favicon": "/favicon.svg",
     "logo": "/images/logo.png",
     "logo_width": "150",
