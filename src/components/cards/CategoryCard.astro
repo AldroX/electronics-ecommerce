@@ -70,7 +70,7 @@ const imageAlt = srcPublic === PLACEHOLDER ? `Categoría: ${category.name}` : ca
         widths={[96, 144, 192]}
         sizes="96px"
         formats={["avif", "webp"]}
-        class="h-20 w-20 object-contain transition-transform duration-300 motion-safe:group-hover:scale-110"
+        class="h-20 w-20 object-cover transition-transform duration-300 motion-safe:group-hover:scale-110"
       />
     )}
     {(!srcImport || !category.image?.trim()) && (
