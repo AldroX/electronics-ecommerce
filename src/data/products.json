@@ -4,12 +4,12 @@
     "name": "Panel Solar 450W Monocristalino",
     "slug": "panel-solar-450w-monocristalino",
     "description": "Panel solar de alta eficiencia con celdas monocristalinas. Ideal para instalaciones residenciales y comerciales. Garantía de 25 años en rendimiento lineal.",
-    "shortDescription": "Panel 450W alta eficiencia, 25 años garantía",
+    "shortDescription": "Panel 450W alta eficiencia",
     "price": 189.99,
     "compareAtPrice": 229.99,
     "currency": "USD",
     "category": "energia-solar",
-    "images": ["/images/placeholder-product.webp"],
+    "images": ["@/assets/products/panel-solar.webp"],
     "specs": {
       "Potencia máxima": "450W",
       "Voltaje en circuito abierto": "49.8V",
@@ -28,7 +28,7 @@
     "seo": {
       "title": "Panel Solar 450W Monocristalino | 25 Años Garantía",
       "description": "Panel solar 450W monocristalino alta eficiencia. Precio especial $189.99. Envío Cuba. WhatsApp para comprar.",
-      "image": "/images/placeholder-product.webp",
+      "image": "@/assets/products/panel-solar.webp",
       "canonical": "/producto/panel-solar-450w-monocristalino"
     },
     "relatedProducts": ["prod-2", "prod-3"]
@@ -76,7 +76,7 @@
     "compareAtPrice": 849.00,
     "currency": "USD",
     "category": "respaldo-almacenamiento",
-    "images": ["/images/placeholder-product.webp"],
+    "images": ["@/assets/products/EcoFlow DELTA 3 ultra.webp"],
     "specs": {
       "Capacidad": "1000Wh (LiFePO4)",
       "Salida AC": "1000W continua, 2000W pico",
