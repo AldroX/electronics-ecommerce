@@ -13,12 +13,11 @@
  * TrustSection must not duplicate it).
  *
  * No props — copy lives in frontmatter so it can move to a data layer
- * later (swappable-data principle). Above-fold images: this section has no
- * <img> elements, so the priority=true rule is N/A here; it applies to
- * ProductCards mounted above the fold in WU-5.
+ * later (swappable-data principle).
  *
  * Zero framework JS: build-time static markup only.
  */
+import heroBg from "../../assets/img/hero_img.png";
 import CTAWhatsApp from "../ui/CTAWhatsApp.astro";
 import FloatingWhatsApp from "../ui/FloatingWhatsApp.astro";
 
@@ -46,19 +45,32 @@ const trustItems: { label: string; icon: keyof typeof icons }[] = [
 ];
 ---
 
-<section class="section bg-gradient" aria-labelledby="hero-title">
-  <div class="container">
+<section
+  class="section relative overflow-hidden bg-cover bg-center bg-no-repeat md:min-h-[520px] lg:min-h-[620px] xl:min-h-[720px]"
+  style={`background-image: url('${heroBg.src}')`}
+  aria-labelledby="hero-title"
+>
+  {/* Dark overlay for text readability */}
+  <div class="absolute inset-0 bg-black/50" aria-hidden="true"></div>
+
+  <div class="container relative z-10">
     <div class="max-w-3xl">
-      <h1 id="hero-title">{headline}</h1>
-      <p class="mt-4 max-w-2xl text-base text-text-light md:text-lg">{subheadline}</p>
+      <h1 id="hero-title" class="text-white">{headline}</h1>
+      <p class="mt-4 max-w-2xl text-base text-white/90 md:text-lg">{subheadline}</p>
 
       <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-        <CTAWhatsApp variant="inline" class="btn-lg w-full sm:w-auto" />
+        <a href="/productos" class="btn btn-primary btn-md w-full sm:w-auto text-white">
+          Ver productos
+        </a>
+        <CTAWhatsApp
+          variant="inline"
+          class="btn-md w-full sm:w-auto bg-transparent text-whatsapp hover:bg-whatsapp/10"
+        />
       </div>
 
       <ul class="mt-10 flex flex-wrap gap-x-6 gap-y-3">
         {trustItems.map((item) => (
-          <li class="flex items-center gap-2 text-sm font-medium text-text-dark">
+          <li class="flex items-center gap-2 text-sm font-medium text-white">
             <svg class="h-5 w-5 shrink-0 text-primary" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d={icons[item.icon]} />
             </svg>
