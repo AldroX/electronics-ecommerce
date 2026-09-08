@@ -73,6 +73,13 @@ export interface Guide {
   seo: SEOData;
 }
 
+export interface FAQItem {
+  id: string;
+  question: string;
+  /** Plain text with optional inline HTML anchors, e.g. <a href="/guias/...">. */
+  answer: string;
+}
+
 export interface Offer {
   id: string;
   name: string;
