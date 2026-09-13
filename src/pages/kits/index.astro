@@ -6,20 +6,18 @@
  *
  * Zero framework JS.
  */
-import Base from "@/layouts/Base.astro";
-import { getAllKits } from "@/data/helpers/kits";
-import KitCard from "@/components/cards/KitCard.astro";
-import config from "@/config/config.json";
+import Base from '@/layouts/Base.astro';
+import { getAllKits } from '@/data/helpers/kits';
+import KitCard from '@/components/cards/KitCard.astro';
+import config from '@/config/config.json';
 
 const kits = getAllKits();
 const siteTitle = config.site.title;
 const baseUrl = config.site.base_url;
 
-const breadcrumbItems = [
-  { name: "Inicio", url: `${baseUrl}/` },
-  { name: "Kits" },
-];
+const breadcrumbItems = [{ name: 'Inicio', url: `${baseUrl}/` }, { name: 'Kits' }];
 ---
+
 <Base
   meta_title={`Kits | ${siteTitle}`}
   description={config.metadata.meta_description}
@@ -30,9 +28,7 @@ const breadcrumbItems = [
     <div class="container">
       <h1 class="text-h2 mb-8">Kits</h1>
       <div class="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
-        {kits.map((kit) => (
-          <KitCard kit={kit} />
-        ))}
+        {kits.map((kit) => <KitCard kit={kit} />)}
       </div>
     </div>
   </section>
