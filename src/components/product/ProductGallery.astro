@@ -7,12 +7,11 @@
  * Thumbnails are always <img> (simplified swap). Clicking a thumbnail
  * replaces the main image src.
  */
-import { Picture } from "astro:assets";
+import { Picture } from 'astro:assets';
 
-const assetGlob = import.meta.glob<{ default: ImageMetadata }>(
-  "/src/assets/**/*.{jpg,jpeg,png,webp,avif}",
-  { eager: true }
-);
+const assetGlob = import.meta.glob<{ default: ImageMetadata }>('/src/assets/**/*.{jpg,jpeg,png,webp,avif}', {
+  eager: true,
+});
 
 export interface Props {
   images: string[];
@@ -21,25 +20,25 @@ export interface Props {
 
 const { images, productName } = Astro.props;
 
-const PLACEHOLDER = "/images/placeholder-product.svg";
+const PLACEHOLDER = '/images/placeholder-product.svg';
 
 // Normalize path separators for cross-platform glob key matching (Windows uses backslashes)
 function normalizeGlobKey(key: string): string {
-  return key.replace(/\\/g, "/");
+  return key.replace(/\\/g, '/');
 }
 
 function isImportableImage(path: string): boolean {
-  return path.startsWith("@/assets/") || path.startsWith("../assets/");
+  return path.startsWith('@/assets/') || path.startsWith('../assets/');
 }
 
 function toGlobKey(path: string): string {
-  if (path.startsWith("@/assets/")) {
-    return normalizeGlobKey("/src/" + path.slice(2));
+  if (path.startsWith('@/assets/')) {
+    return normalizeGlobKey('/src/' + path.slice(2));
   }
-  if (path.startsWith("../assets/")) {
-    return normalizeGlobKey("/src/assets/" + path.slice(10));
+  if (path.startsWith('../assets/')) {
+    return normalizeGlobKey('/src/assets/' + path.slice(10));
   }
-  return "";
+  return '';
 }
 
 // Normalize glob keys for cross-platform compatibility
@@ -55,17 +54,18 @@ interface ResolvedImage {
   alt: string;
 }
 
-const resolvedImages: ResolvedImage[] = images.length > 0
-  ? images.map((img, idx) => {
-      const alt = `${productName} — imagen ${idx + 1} de ${images.length}`;
-      if (isImportableImage(img)) {
-        const key = toGlobKey(img);
-        const metadata = normalizedAssetGlob[key]?.default ?? null;
-        return { import: metadata, publicPath: img, alt };
-      }
-      return { import: null, publicPath: img, alt };
-    })
-  : [{ import: null, publicPath: PLACEHOLDER, alt: `Imagen no disponible para ${productName}` }];
+const resolvedImages: ResolvedImage[] =
+  images.length > 0
+    ? images.map((img, idx) => {
+        const alt = `${productName} — imagen ${idx + 1} de ${images.length}`;
+        if (isImportableImage(img)) {
+          const key = toGlobKey(img);
+          const metadata = normalizedAssetGlob[key]?.default ?? null;
+          return { import: metadata, publicPath: img, alt };
+        }
+        return { import: null, publicPath: img, alt };
+      })
+    : [{ import: null, publicPath: PLACEHOLDER, alt: `Imagen no disponible para ${productName}` }];
 
 const primaryImage = resolvedImages[0];
 
@@ -92,65 +92,63 @@ const primaryImage = resolvedImages[0];
   </div>
 
   {/* Thumbnails — clickable to swap main image */}
-  {resolvedImages.length > 1 && (
-    <div class="mt-3 flex gap-2 overflow-x-auto" role="group" aria-label="Imágenes del producto">
-      {resolvedImages.map((img, idx) => (
-        <button
-          type="button"
-          class="gallery-thumb flex-shrink-0 h-16 w-16 overflow-hidden rounded-md border-2 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:h-20 sm:w-20"
-          class:list={[
-            idx === 0
-              ? "border-primary"
-              : "border-border hover:border-primary/60",
-          ]}
-          data-gallery-thumb
-          data-src={img.publicPath}
-          data-alt={img.alt}
-          aria-label={`Ver imagen ${idx + 1} de ${productName}`}
-          aria-pressed={idx === 0 ? "true" : "false"}
-        >
-          {img.import ? (
-            <Picture
-              src={img.import}
-              alt={img.alt}
-              loading="lazy"
-              widths={[128, 192]}
-              sizes="80px"
-              formats={["avif", "webp"]}
-              class="h-full w-full object-cover"
-            />
-          ) : (
-            <img
-              src={img.publicPath}
-              alt={img.alt}
-              loading="lazy"
-              width="80"
-              height="80"
-              decoding="async"
-              class="h-full w-full object-cover"
-              onerror={`this.onerror=null;this.src='${PLACEHOLDER}';this.srcset='';`}
-            />
-          )}
-        </button>
-      ))}
-    </div>
-  )}
+  {
+    resolvedImages.length > 1 && (
+      <div class="mt-3 flex gap-2 overflow-x-auto" role="group" aria-label="Imágenes del producto">
+        {resolvedImages.map((img, idx) => (
+          <button
+            type="button"
+            class="gallery-thumb flex-shrink-0 h-16 w-16 overflow-hidden rounded-md border-2 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:h-20 sm:w-20"
+            class:list={[idx === 0 ? 'border-primary' : 'border-border hover:border-primary/60']}
+            data-gallery-thumb
+            data-src={img.publicPath}
+            data-alt={img.alt}
+            aria-label={`Ver imagen ${idx + 1} de ${productName}`}
+            aria-pressed={idx === 0 ? 'true' : 'false'}
+          >
+            {img.import ? (
+              <Picture
+                src={img.import}
+                alt={img.alt}
+                loading="lazy"
+                widths={[128, 192]}
+                sizes="80px"
+                formats={['avif', 'webp']}
+                class="h-full w-full object-cover"
+              />
+            ) : (
+              <img
+                src={img.publicPath}
+                alt={img.alt}
+                loading="lazy"
+                width="80"
+                height="80"
+                decoding="async"
+                class="h-full w-full object-cover"
+                onerror={`this.onerror=null;this.src='${PLACEHOLDER}';this.srcset='';`}
+              />
+            )}
+          </button>
+        ))}
+      </div>
+    )
+  }
 </div>
 
 <script>
   // Gallery thumbnail swap — vanilla JS.
   // Each thumbnail stores data-src and data-alt. Clicking swaps the main <img>.
   function initGallery() {
-    const galleries = document.querySelectorAll<HTMLElement>("[data-gallery]");
+    const galleries = document.querySelectorAll<HTMLElement>('[data-gallery]');
     galleries.forEach((gallery) => {
-      const thumbs = gallery.querySelectorAll<HTMLElement>("[data-gallery-thumb]");
-      const mainImg = gallery.querySelector<HTMLImageElement>("[data-gallery-main]");
+      const thumbs = gallery.querySelectorAll<HTMLElement>('[data-gallery-thumb]');
+      const mainImg = gallery.querySelector<HTMLImageElement>('[data-gallery-main]');
       if (!mainImg) return;
 
       thumbs.forEach((thumb) => {
-        thumb.addEventListener("click", () => {
-          const src = thumb.getAttribute("data-src");
-          const alt = thumb.getAttribute("data-alt");
+        thumb.addEventListener('click', () => {
+          const src = thumb.getAttribute('data-src');
+          const alt = thumb.getAttribute('data-alt');
           if (!src) return;
 
           mainImg.src = src;
@@ -158,20 +156,20 @@ const primaryImage = resolvedImages[0];
 
           // Update active thumbnail styling
           thumbs.forEach((t) => {
-            t.classList.remove("border-primary");
-            t.classList.add("border-border");
-            t.setAttribute("aria-pressed", "false");
+            t.classList.remove('border-primary');
+            t.classList.add('border-border');
+            t.setAttribute('aria-pressed', 'false');
           });
-          thumb.classList.remove("border-border");
-          thumb.classList.add("border-primary");
-          thumb.setAttribute("aria-pressed", "true");
+          thumb.classList.remove('border-border');
+          thumb.classList.add('border-primary');
+          thumb.setAttribute('aria-pressed', 'true');
         });
       });
     });
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initGallery);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initGallery);
   } else {
     initGallery();
   }
