@@ -1,25 +1,30 @@
 # Prompt — Ecommerce de Energía, Respaldo y Soluciones Solares
 
-Quiero diseñar y desarrollar un ecommerce moderno, rápido y orientado a conversión para un negocio especializado en productos de energía, respaldo eléctrico, energía solar, iluminación eficiente y accesorios.
+Quiero diseñar y desarrollar un ecommerce moderno, rápido y orientado a
+conversión para un negocio especializado en productos de energía, respaldo
+eléctrico, energía solar, iluminación eficiente y accesorios.
 
 ## 1. Objetivo del proyecto
 
-El ecommerce debe funcionar como una extensión de una estrategia comercial basada principalmente en redes sociales.
+El ecommerce debe funcionar como una extensión de una estrategia comercial
+basada principalmente en redes sociales.
 
 El flujo principal del negocio es:
 
 **Facebook / Instagram → Ecommerce → WhatsApp → Venta**
 
-El usuario normalmente descubrirá un producto mediante una publicación en redes sociales y llegará al ecommerce para:
+El usuario normalmente descubrirá un producto mediante una publicación en redes
+sociales y llegará al ecommerce para:
 
-* conocer el producto;
-* entender para qué sirve;
-* verificar características;
-* consultar disponibilidad;
-* conocer el precio;
-* contactar por WhatsApp para completar la compra.
+- conocer el producto;
+- entender para qué sirve;
+- verificar características;
+- consultar disponibilidad;
+- conocer el precio;
+- contactar por WhatsApp para completar la compra.
 
-No quiero un ecommerce tradicional enfocado en procesos complejos de registro, cuentas de usuario o checkout pesado.
+No quiero un ecommerce tradicional enfocado en procesos complejos de registro,
+cuentas de usuario o checkout pesado.
 
 La prioridad es:
 
@@ -31,13 +36,13 @@ La prioridad es:
 
 El ecommerce está dirigido principalmente a:
 
-* hogares;
-* pequeños negocios;
-* personas que necesitan respaldo eléctrico;
-* personas interesadas en energía solar;
-* personas que buscan iluminación eficiente;
-* usuarios que necesitan soluciones para cortes eléctricos;
-* compradores que no necesariamente tienen conocimientos técnicos.
+- hogares;
+- pequeños negocios;
+- personas que necesitan respaldo eléctrico;
+- personas interesadas en energía solar;
+- personas que buscan iluminación eficiente;
+- usuarios que necesitan soluciones para cortes eléctricos;
+- compradores que no necesariamente tienen conocimientos técnicos.
 
 Por ello, la interfaz debe explicar los productos de forma sencilla y comercial.
 
@@ -57,12 +62,12 @@ El concepto comercial debe girar alrededor de:
 
 La propuesta de valor debe transmitir:
 
-* seguridad;
-* disponibilidad;
-* autonomía;
-* soluciones prácticas;
-* asesoría;
-* productos confiables.
+- seguridad;
+- disponibilidad;
+- autonomía;
+- soluciones prácticas;
+- asesoría;
+- productos confiables.
 
 La sensación general debe ser:
 
@@ -84,14 +89,14 @@ Debe contener:
 
 ### Header
 
-* Logo
-* Productos
-* Soluciones
-* Kits
-* Ofertas
-* Guías
-* Contacto
-* CTA visible de WhatsApp
+- Logo
+- Productos
+- Soluciones
+- Kits
+- Ofertas
+- Guías
+- Contacto
+- CTA visible de WhatsApp
 
 El header debe ser limpio, compacto y optimizado para móvil.
 
@@ -107,7 +112,8 @@ Concepto:
 
 Subtexto:
 
-Productos de respaldo, energía solar, iluminación eficiente y accesorios para ayudarte a tener mayor autonomía energética.
+Productos de respaldo, energía solar, iluminación eficiente y accesorios para
+ayudarte a tener mayor autonomía energética.
 
 CTAs:
 
@@ -173,12 +179,12 @@ Mostrar entre 4 y 8 productos.
 
 Cada tarjeta debe contener:
 
-* imagen optimizada;
-* nombre;
-* precio;
-* característica principal;
-* disponibilidad;
-* CTA.
+- imagen optimizada;
+- nombre;
+- precio;
+- característica principal;
+- disponibilidad;
+- CTA.
 
 Ejemplo:
 
@@ -204,7 +210,8 @@ Crear una sección:
 
 Mostrar productos que tengan mayor conversión o demanda.
 
-La interfaz debe dejar preparada la estructura para que posteriormente estos productos puedan alimentarse desde datos reales.
+La interfaz debe dejar preparada la estructura para que posteriormente estos
+productos puedan alimentarse desde datos reales.
 
 ---
 
@@ -216,13 +223,14 @@ Crear una sección visualmente diferenciada:
 
 Mostrar:
 
-* precio anterior;
-* precio actual;
-* descuento;
-* disponibilidad;
-* CTA WhatsApp.
+- precio anterior;
+- precio actual;
+- descuento;
+- disponibilidad;
+- CTA WhatsApp.
 
-Debe poder utilizarse como destino directo desde publicaciones de Facebook e Instagram.
+Debe poder utilizarse como destino directo desde publicaciones de Facebook e
+Instagram.
 
 Por ejemplo:
 
@@ -260,7 +268,8 @@ Inversor + batería + accesorios
 
 Los kits deben resolver necesidades completas.
 
-El objetivo es evitar que el usuario tenga que entender qué componentes necesita comprar.
+El objetivo es evitar que el usuario tenga que entender qué componentes necesita
+comprar.
 
 ---
 
@@ -272,12 +281,12 @@ Crear:
 
 Debe tener:
 
-* buscador;
-* categorías;
-* filtros básicos;
-* ordenamiento;
-* tarjetas de producto;
-* disponibilidad.
+- buscador;
+- categorías;
+- filtros básicos;
+- ordenamiento;
+- tarjetas de producto;
+- disponibilidad.
 
 No utilizar filtros excesivamente complejos.
 
@@ -293,12 +302,12 @@ Debe incluir:
 
 ### Información principal
 
-* imágenes;
-* nombre;
-* precio;
-* disponibilidad;
-* valoración;
-* CTA WhatsApp.
+- imágenes;
+- nombre;
+- precio;
+- disponibilidad;
+- valoración;
+- CTA WhatsApp.
 
 ### Descripción
 
@@ -312,14 +321,14 @@ Explicación sencilla de:
 
 ### Especificaciones
 
-* potencia;
-* capacidad;
-* batería;
-* entradas;
-* salidas;
-* dimensiones;
-* peso;
-* garantía.
+- potencia;
+- capacidad;
+- batería;
+- entradas;
+- salidas;
+- dimensiones;
+- peso;
+- garantía.
 
 ### "¿Qué puedes alimentar?"
 
@@ -327,11 +336,7 @@ Mostrar ejemplos concretos.
 
 Por ejemplo:
 
-✓ Router
-✓ Laptop
-✓ Luces
-✓ Televisor
-✓ Teléfono
+✓ Router ✓ Laptop ✓ Luces ✓ Televisor ✓ Teléfono
 
 ### "¿Cuánto tiempo puede funcionar?"
 
@@ -377,13 +382,13 @@ El objetivo es utilizar el ecommerce también como plataforma de contenido y SEO
 
 Ejemplos:
 
-* ¿Qué batería necesito para una casa?
-* ¿Cuántos watts consume un refrigerador?
-* ¿Qué significa 500Wh?
-* ¿Qué puedo alimentar con una Power Station?
-* ¿Qué diferencia existe entre AGM y LiFePO4?
-* ¿Cuántos paneles solares necesito?
-* ¿Cómo calcular el consumo eléctrico?
+- ¿Qué batería necesito para una casa?
+- ¿Cuántos watts consume un refrigerador?
+- ¿Qué significa 500Wh?
+- ¿Qué puedo alimentar con una Power Station?
+- ¿Qué diferencia existe entre AGM y LiFePO4?
+- ¿Cuántos paneles solares necesito?
+- ¿Cómo calcular el consumo eléctrico?
 
 Las guías deben enlazar productos relacionados.
 
@@ -405,13 +410,13 @@ Crear:
 
 Preguntas frecuentes:
 
-* ¿Cómo comprar?
-* ¿Realizan entregas?
-* ¿Qué garantía tienen los productos?
-* ¿Cómo elegir una batería?
-* ¿Qué equipo necesito para mi hogar?
-* ¿Cómo funciona la compra por WhatsApp?
-* ¿Qué medios de pago aceptan?
+- ¿Cómo comprar?
+- ¿Realizan entregas?
+- ¿Qué garantía tienen los productos?
+- ¿Cómo elegir una batería?
+- ¿Qué equipo necesito para mi hogar?
+- ¿Cómo funciona la compra por WhatsApp?
+- ¿Qué medios de pago aceptan?
 
 ---
 
@@ -419,13 +424,13 @@ Preguntas frecuentes:
 
 Agregar una sección de confianza con:
 
-* garantía;
-* disponibilidad;
-* asesoría;
-* atención por WhatsApp;
-* métodos de entrega;
-* redes sociales;
-* información del negocio.
+- garantía;
+- disponibilidad;
+- asesoría;
+- atención por WhatsApp;
+- métodos de entrega;
+- redes sociales;
+- información del negocio.
 
 Debe reducir el miedo del usuario antes de contactar.
 
@@ -435,17 +440,17 @@ Debe reducir el miedo del usuario antes de contactar.
 
 Incluir:
 
-* categorías;
-* productos;
-* soluciones;
-* guías;
-* FAQ;
-* contacto;
-* WhatsApp;
-* redes sociales;
-* políticas;
-* garantía;
-* información del negocio.
+- categorías;
+- productos;
+- soluciones;
+- guías;
+- FAQ;
+- contacto;
+- WhatsApp;
+- redes sociales;
+- políticas;
+- garantía;
+- información del negocio.
 
 ---
 
@@ -453,7 +458,8 @@ Incluir:
 
 Esta parte es extremadamente importante.
 
-El ecommerce será utilizado principalmente desde teléfonos móviles provenientes de Facebook, Instagram y WhatsApp.
+El ecommerce será utilizado principalmente desde teléfonos móviles provenientes
+de Facebook, Instagram y WhatsApp.
 
 Diseñar primero para:
 
@@ -475,24 +481,25 @@ No utilizar interfaces excesivamente densas.
 
 # 19. Rendimiento
 
-El público objetivo puede tener conexiones extremadamente lentas, incluso inferiores a 1 Mbps.
+El público objetivo puede tener conexiones extremadamente lentas, incluso
+inferiores a 1 Mbps.
 
 Por lo tanto, el rendimiento es una prioridad absoluta.
 
 La implementación debe estar optimizada para:
 
-* Astro;
-* generación estática cuando sea posible;
-* mínimo JavaScript;
-* imágenes WebP/AVIF;
-* imágenes responsive;
-* lazy loading;
-* compresión;
-* fuentes optimizadas;
-* evitar librerías innecesarias;
-* evitar sliders pesados;
-* evitar videos de fondo;
-* evitar animaciones costosas.
+- Astro;
+- generación estática cuando sea posible;
+- mínimo JavaScript;
+- imágenes WebP/AVIF;
+- imágenes responsive;
+- lazy loading;
+- compresión;
+- fuentes optimizadas;
+- evitar librerías innecesarias;
+- evitar sliders pesados;
+- evitar videos de fondo;
+- evitar animaciones costosas.
 
 La página principal debe comenzar a mostrar contenido útil inmediatamente.
 
@@ -514,13 +521,13 @@ Debe transmitir una marca moderna orientada al consumidor.
 
 Utilizar:
 
-* mucho espacio en blanco;
-* tarjetas limpias;
-* tipografía moderna;
-* iconografía simple;
-* fotografías de productos de alta calidad;
-* llamadas a la acción claras;
-* jerarquía visual fuerte.
+- mucho espacio en blanco;
+- tarjetas limpias;
+- tipografía moderna;
+- iconografía simple;
+- fotografías de productos de alta calidad;
+- llamadas a la acción claras;
+- jerarquía visual fuerte.
 
 La interfaz debe priorizar la legibilidad.
 
@@ -530,21 +537,21 @@ La interfaz debe priorizar la legibilidad.
 
 Usar una paleta inspirada en:
 
-* verde energético;
-* azul oscuro;
-* blanco;
-* gris neutro;
-* pequeños acentos amarillos asociados a energía/solar.
+- verde energético;
+- azul oscuro;
+- blanco;
+- gris neutro;
+- pequeños acentos amarillos asociados a energía/solar.
 
 Evitar saturar la interfaz con colores.
 
 El color debe utilizarse principalmente para:
 
-* CTA;
-* estados;
-* categorías;
-* ofertas;
-* disponibilidad.
+- CTA;
+- estados;
+- categorías;
+- ofertas;
+- disponibilidad.
 
 ---
 
@@ -580,11 +587,11 @@ El diseño debe considerar que el ecommerce forma parte de este sistema:
 
 Por eso el ecommerce debe permitir URLs directas para:
 
-* productos;
-* categorías;
-* kits;
-* ofertas;
-* soluciones.
+- productos;
+- categorías;
+- kits;
+- ofertas;
+- soluciones.
 
 Ejemplo:
 
@@ -608,23 +615,25 @@ WhatsApp
 
 # 23. Preparar el sistema para datos
 
-Aunque inicialmente los datos pueden ser estáticos, la arquitectura debe poder evolucionar.
+Aunque inicialmente los datos pueden ser estáticos, la arquitectura debe poder
+evolucionar.
 
 Cada producto debería poder registrar posteriormente:
 
-* visitas;
-* clics en WhatsApp;
-* consultas;
-* ventas;
-* publicaciones asociadas;
-* conversión;
-* margen;
-* demanda;
-* mejor horario de venta.
+- visitas;
+- clics en WhatsApp;
+- consultas;
+- ventas;
+- publicaciones asociadas;
+- conversión;
+- margen;
+- demanda;
+- mejor horario de venta.
 
 El objetivo futuro es identificar:
 
-**qué producto genera más ventas, qué publicación genera más clientes y qué horario convierte mejor.**
+**qué producto genera más ventas, qué publicación genera más clientes y qué
+horario convierte mejor.**
 
 ---
 
@@ -660,18 +669,18 @@ Esto debe ayudar a incrementar el ticket medio.
 
 Preparar desde el principio:
 
-* URLs limpias;
-* metadata;
-* Open Graph;
-* sitemap;
-* robots.txt;
-* schema.org;
-* Product structured data;
-* imágenes optimizadas;
-* páginas indexables;
-* páginas de categorías;
-* páginas de productos;
-* artículos educativos.
+- URLs limpias;
+- metadata;
+- Open Graph;
+- sitemap;
+- robots.txt;
+- schema.org;
+- Product structured data;
+- imágenes optimizadas;
+- páginas indexables;
+- páginas de categorías;
+- páginas de productos;
+- artículos educativos.
 
 Las URLs deben ser simples.
 
@@ -691,19 +700,19 @@ Ejemplo:
 
 Crear componentes reutilizables para:
 
-* Header;
-* ProductCard;
-* CategoryCard;
-* SolutionCard;
-* ProductGrid;
-* CTAWhatsApp;
-* OfferCard;
-* KitCard;
-* FAQ;
-* Testimonial;
-* ProductSpecs;
-* RelatedProducts;
-* Footer.
+- Header;
+- ProductCard;
+- CategoryCard;
+- SolutionCard;
+- ProductGrid;
+- CTAWhatsApp;
+- OfferCard;
+- KitCard;
+- FAQ;
+- Testimonial;
+- ProductSpecs;
+- RelatedProducts;
+- Footer.
 
 El sistema debe ser modular y fácil de escalar.
 
@@ -799,4 +808,5 @@ Priorizando:
 
 No diseñes solamente una tienda online.
 
-Diseña un **sistema comercial digital que conecte redes sociales, ecommerce, WhatsApp, contenido y datos de ventas**.
+Diseña un **sistema comercial digital que conecte redes sociales, ecommerce,
+WhatsApp, contenido y datos de ventas**.
