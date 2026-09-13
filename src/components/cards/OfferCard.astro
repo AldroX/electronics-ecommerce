@@ -12,8 +12,8 @@
  *
  * Zero framework JS.
  */
-import type { Offer } from "@/data/types";
-import CTAWhatsApp from "../ui/CTAWhatsApp.astro";
+import type { Offer } from '@/data/types';
+import CTAWhatsApp from '../ui/CTAWhatsApp.astro';
 
 export interface Props {
   offer: Offer;
@@ -23,11 +23,11 @@ export interface Props {
 const { offer, href } = Astro.props;
 const linkHref = href || `/producto/${offer.productSlug}`;
 
-const isOutOfStock = offer.availability === "out-of-stock";
+const isOutOfStock = offer.availability === 'out-of-stock';
 
 // Price formatting
-const formatter = new Intl.NumberFormat("es", {
-  style: "currency",
+const formatter = new Intl.NumberFormat('es', {
+  style: 'currency',
   currency: offer.currency,
 });
 const currentPriceFormatted = formatter.format(offer.currentPrice);
@@ -35,25 +35,25 @@ const originalPriceFormatted = formatter.format(offer.originalPrice);
 
 // Availability badge mapping
 const availabilityMap = {
-  "in-stock": { label: "Disponible", class: "bg-emerald-100 text-emerald-700" },
-  limited: { label: "Pocas unidades", class: "bg-amber-100 text-amber-700" },
-  "out-of-stock": { label: "Agotado", class: "bg-red-100 text-red-700" },
+  'in-stock': { label: 'Disponible', class: 'bg-emerald-100 text-emerald-700' },
+  limited: { label: 'Pocas unidades', class: 'bg-amber-100 text-amber-700' },
+  'out-of-stock': { label: 'Agotado', class: 'bg-red-100 text-red-700' },
 } as const;
 const stockKey = offer.availability as keyof typeof availabilityMap;
-const badge = availabilityMap[stockKey] ?? availabilityMap["in-stock"];
+const badge = availabilityMap[stockKey] ?? availabilityMap['in-stock'];
 
 // Format validUntil as "Válido hasta DD/MM"
-const validUntilDate = new Date(offer.validUntil + "T00:00:00");
-const validUntilFormatted = new Intl.DateTimeFormat("es", {
-  day: "2-digit",
-  month: "2-digit",
+const validUntilDate = new Date(offer.validUntil + 'T00:00:00');
+const validUntilFormatted = new Intl.DateTimeFormat('es', {
+  day: '2-digit',
+  month: '2-digit',
 }).format(validUntilDate);
 ---
 
 <article
   class:list={[
-    "group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-white shadow transition hover:shadow-lg scroll-mt-24",
-    isOutOfStock && "opacity-60",
+    'group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-white shadow transition hover:shadow-lg scroll-mt-24',
+    isOutOfStock && 'opacity-60',
   ]}
 >
   {/* Discount badge */}
@@ -75,11 +75,7 @@ const validUntilFormatted = new Intl.DateTimeFormat("es", {
     />
   </div>
 
-  <a
-    href={linkHref}
-    class="flex h-full flex-1 flex-col"
-    aria-label={`Ver oferta: ${offer.name}`}
-  >
+  <a href={linkHref} class="flex h-full flex-1 flex-col" aria-label={`Ver oferta: ${offer.name}`}>
     <div class="flex flex-1 flex-col gap-3 p-4">
       {/* Availability badge */}
       <span class={`inline-flex w-fit items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${badge.class}`}>
@@ -88,9 +84,7 @@ const validUntilFormatted = new Intl.DateTimeFormat("es", {
 
       <h3 class="text-h6 font-bold leading-snug text-text-dark">{offer.name}</h3>
 
-      {offer.description && (
-        <p class="line-clamp-2 text-sm text-text-light">{offer.description}</p>
-      )}
+      {offer.description && <p class="line-clamp-2 text-sm text-text-light">{offer.description}</p>}
 
       {/* Prices */}
       <div class="mt-auto flex items-baseline gap-2 pt-2">
@@ -106,14 +100,16 @@ const validUntilFormatted = new Intl.DateTimeFormat("es", {
   </a>
 
   {/* WhatsApp CTA - hidden when out-of-stock */}
-  {!isOutOfStock && (
-    <div class="shrink-0 px-4 pb-4">
-      <CTAWhatsApp
-        variant="inline"
-        productName={offer.name}
-        messageTemplate={offer.whatsappMessage.replace("{PRODUCTO}", offer.name)}
-        class="w-full"
-      />
-    </div>
-  )}
+  {
+    !isOutOfStock && (
+      <div class="shrink-0 px-4 pb-4">
+        <CTAWhatsApp
+          variant="inline"
+          productName={offer.name}
+          messageTemplate={offer.whatsappMessage.replace('{PRODUCTO}', offer.name)}
+          class="w-full"
+        />
+      </div>
+    )
+  }
 </article>

@@ -15,12 +15,14 @@
  * Zero framework JS: `onerror` is the standard HTML image-fallback attribute,
  * not a client script or framework bundle.
  */
-import type { Product } from "@/data/types";
-import CTAWhatsApp from "../ui/CTAWhatsApp.astro";
-import { Picture } from "astro:assets";
+import type { Product } from '@/data/types';
+import CTAWhatsApp from '../ui/CTAWhatsApp.astro';
+import { Picture } from 'astro:assets';
 
 // Pre-load all assets in src/assets for dynamic lookup
-const assetGlob = import.meta.glob<{ default: ImageMetadata }>("/src/assets/**/*.{jpg,jpeg,png,webp,avif}", { eager: true });
+const assetGlob = import.meta.glob<{ default: ImageMetadata }>('/src/assets/**/*.{jpg,jpeg,png,webp,avif}', {
+  eager: true,
+});
 
 export interface Props {
   product: Product;
@@ -32,28 +34,28 @@ const { product, priority = false } = Astro.props;
 
 // Real placeholders created in WU-1 are SVG files (public/images/placeholder-product.svg),
 // NOT the .webp naming used in design.md/tasks.md — use the actual files.
-const PLACEHOLDER = "/images/placeholder-product.svg";
+const PLACEHOLDER = '/images/placeholder-product.svg';
 
 // Helper: check if an image path is an importable asset (in src/assets)
 // vs a public/ placeholder. In the future, real products will use imports.
 function isImportableImage(path: string): boolean {
-  return path.startsWith("@/assets/") || path.startsWith("../assets/");
+  return path.startsWith('@/assets/') || path.startsWith('../assets/');
 }
 
 // Normalize path separators for cross-platform glob key matching (Windows uses backslashes)
 function normalizeGlobKey(key: string): string {
-  return key.replace(/\\/g, "/");
+  return key.replace(/\\/g, '/');
 }
 
 // Convert @/assets/ or ../assets/ to the glob key format
 function toGlobKey(path: string): string {
-  if (path.startsWith("@/assets/")) {
-    return normalizeGlobKey("/src/" + path.slice(2)); // @/assets/ -> /src/assets/
+  if (path.startsWith('@/assets/')) {
+    return normalizeGlobKey('/src/' + path.slice(2)); // @/assets/ -> /src/assets/
   }
-  if (path.startsWith("../assets/")) {
-    return normalizeGlobKey("/src/assets/" + path.slice(10)); // ../assets/ -> /src/assets/
+  if (path.startsWith('../assets/')) {
+    return normalizeGlobKey('/src/assets/' + path.slice(10)); // ../assets/ -> /src/assets/
   }
-  return "";
+  return '';
 }
 
 const hasImages = product.images.length > 0;
@@ -66,9 +68,7 @@ for (const [key, value] of Object.entries(assetGlob)) {
   normalizedAssetGlob[normalizeGlobKey(key)] = value;
 }
 
-const primaryImportKey = hasImages && isImportableImage(product.images[0])
-  ? toGlobKey(product.images[0])
-  : null;
+const primaryImportKey = hasImages && isImportableImage(product.images[0]) ? toGlobKey(product.images[0]) : null;
 
 const primaryImport = primaryImportKey ? normalizedAssetGlob[primaryImportKey]?.default : null;
 
@@ -77,28 +77,26 @@ const imageAlt = hasImages ? product.name : `Imagen no disponible para ${product
 
 // Availability badge mapping (REQ-PC-004) — Spanish labels, green/amber/red.
 const availabilityMap = {
-  "in-stock": { label: "Disponible", class: "bg-emerald-100 text-emerald-700" },
-  limited: { label: "Pocas unidades", class: "bg-amber-100 text-amber-700" },
-  "out-of-stock": { label: "Agotado", class: "bg-red-100 text-red-700" },
+  'in-stock': { label: 'Disponible', class: 'bg-emerald-100 text-emerald-700' },
+  limited: { label: 'Pocas unidades', class: 'bg-amber-100 text-amber-700' },
+  'out-of-stock': { label: 'Agotado', class: 'bg-red-100 text-red-700' },
 } as const;
 const stockKey = product.availability as keyof typeof availabilityMap;
-const badge = availabilityMap[stockKey] ?? availabilityMap["in-stock"];
+const badge = availabilityMap[stockKey] ?? availabilityMap['in-stock'];
 
 // Out-of-stock: keep the WhatsApp CTA but append a repo-availability notice
 // (REQ-PC-004 / SCN-PC-004). Overrides the config template when set.
-const isOutOfStock = product.availability === "out-of-stock";
+const isOutOfStock = product.availability === 'out-of-stock';
 const whatsappMessage = isOutOfStock
   ? `${product.whatsappMessage} (Producto agotado, consultar reposición)`
   : undefined;
 
 // Price formatting from the product currency; site locale is Spanish (REQ-PC-003).
-const formatter = new Intl.NumberFormat("es", {
-  style: "currency",
+const formatter = new Intl.NumberFormat('es', {
+  style: 'currency',
   currency: product.currency,
 });
-const showCompareAt = Boolean(
-  product.compareAtPrice && product.compareAtPrice > product.price
-);
+const showCompareAt = Boolean(product.compareAtPrice && product.compareAtPrice > product.price);
 const price = formatter.format(product.price);
 const compareAt = showCompareAt ? formatter.format(product.compareAtPrice!) : null;
 ---
@@ -107,64 +105,59 @@ const compareAt = showCompareAt ? formatter.format(product.compareAtPrice!) : nu
   class="group flex h-full min-w-0 flex-col overflow-hidden rounded-lg border border-border bg-white shadow transition hover:shadow-lg"
 >
   <!-- Producto -->
-  <a
-    href={`/producto/${product.slug}`}
-    class="flex h-full flex-1 flex-col"
-    aria-label={`Ver ${product.name}`}
-  >
+  <a href={`/producto/${product.slug}`} class="flex h-full flex-1 flex-col" aria-label={`Ver ${product.name}`}>
     <!-- Imagen -->
     <div class="relative aspect-[4/3] w-full shrink-0 overflow-hidden bg-light">
-      {primaryImport && (
-        <Picture
-          src={primaryImport}
-          alt={imageAlt}
-          loading={priority ? "eager" : "lazy"}
-          widths={[480, 640, 800]}
-          sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
-          formats={["avif", "webp"]}
-          class="h-full w-full object-cover transition-transform duration-300 motion-safe:group-hover:scale-105"
-        />
-      )}
-
-      {(!primaryImport || !hasImages) && (
-        <picture>
-          <img
-            src={primaryPublic}
+      {
+        primaryImport && (
+          <Picture
+            src={primaryImport}
             alt={imageAlt}
-            loading={priority ? "eager" : "lazy"}
-            width="400"
-            height="300"
-            decoding="async"
+            loading={priority ? 'eager' : 'lazy'}
+            widths={[480, 640, 800]}
+            sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
+            formats={['avif', 'webp']}
             class="h-full w-full object-cover transition-transform duration-300 motion-safe:group-hover:scale-105"
           />
-        </picture>
-      )}
+        )
+      }
+
+      {
+        (!primaryImport || !hasImages) && (
+          <picture>
+            <img
+              src={primaryPublic}
+              alt={imageAlt}
+              loading={priority ? 'eager' : 'lazy'}
+              width="400"
+              height="300"
+              decoding="async"
+              class="h-full w-full object-cover transition-transform duration-300 motion-safe:group-hover:scale-105"
+            />
+          </picture>
+        )
+      }
     </div>
 
     <!-- Información -->
     <div class="flex flex-1 flex-col gap-3 p-4">
-
       <span
         class={`inline-flex w-fit shrink-0 items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${badge.class}`}
       >
         {badge.label}
       </span>
 
-      <h3
-        class="m-0 line-clamp-2 min-h-[3.5rem] text-h6 font-bold leading-snug text-text-dark"
-      >
+      <h3 class="m-0 line-clamp-2 min-h-[3.5rem] text-h6 font-bold leading-snug text-text-dark">
         {product.name}
       </h3>
 
-      {product.shortDescription ? (
-        <p
-          class="m-0 min-h-[3rem] line-clamp-2 text-sm leading-6 text-text-light"
-        >
-          {product.shortDescription}
-        </p>
-      ) : (
-        <div class="min-h-[3rem]"></div>
-      )}
+      {
+        product.shortDescription ? (
+          <p class="m-0 min-h-[3rem] line-clamp-2 text-sm leading-6 text-text-light">{product.shortDescription}</p>
+        ) : (
+          <div class="min-h-[3rem]" />
+        )
+      }
 
       <!-- Precio siempre al fondo -->
       <div class="mt-auto flex min-h-[2rem] items-baseline gap-2 pt-2">
@@ -172,22 +165,13 @@ const compareAt = showCompareAt ? formatter.format(product.compareAtPrice!) : nu
           {price}
         </span>
 
-        {showCompareAt && (
-          <span class="text-sm text-text-light line-through">
-            {compareAt}
-          </span>
-        )}
+        {showCompareAt && <span class="text-sm text-text-light line-through">{compareAt}</span>}
       </div>
     </div>
   </a>
 
   <!-- WhatsApp -->
   <div class="shrink-0 px-2 pb-2">
-    <CTAWhatsApp
-      variant="inline"
-      productName={product.name}
-      messageTemplate={whatsappMessage}
-      class="w-full"
-    />
+    <CTAWhatsApp variant="inline" productName={product.name} messageTemplate={whatsappMessage} class="w-full" />
   </div>
 </article>

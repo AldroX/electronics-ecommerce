@@ -7,7 +7,7 @@
  *
  * Zero framework JS.
  */
-import type { Guide } from "@/data/types";
+import type { Guide } from '@/data/types';
 
 export interface Props {
   guide: Guide;
@@ -15,7 +15,7 @@ export interface Props {
 
 const { guide } = Astro.props;
 
-const PLACEHOLDER = "/images/placeholder-category.webp";
+const PLACEHOLDER = '/images/placeholder-category.webp';
 const imageSrc = guide.image?.trim() ? guide.image : PLACEHOLDER;
 const imageAlt = guide.title;
 ---
@@ -36,7 +36,9 @@ const imageAlt = guide.title;
       class="h-full w-full object-cover transition-transform duration-300 motion-safe:group-hover:scale-105"
       onerror={`this.onerror=null;this.src='${PLACEHOLDER}';this.alt='${imageAlt}';`}
     />
-    <span class="absolute top-3 right-3 inline-flex items-center rounded-full bg-primary/90 px-2.5 py-0.5 text-xs font-semibold text-white backdrop-blur-sm">
+    <span
+      class="absolute top-3 right-3 inline-flex items-center rounded-full bg-primary/90 px-2.5 py-0.5 text-xs font-semibold text-white backdrop-blur-sm"
+    >
       {guide.readTime} min de lectura
     </span>
   </div>
@@ -44,8 +46,6 @@ const imageAlt = guide.title;
   <div class="flex flex-1 flex-col gap-2 p-4">
     <h3 class="text-h6 font-bold leading-snug text-text-dark">{guide.title}</h3>
 
-    {guide.description && (
-      <p class="line-clamp-2 text-sm text-text-light">{guide.description}</p>
-    )}
+    {guide.description && <p class="line-clamp-2 text-sm text-text-light">{guide.description}</p>}
   </div>
 </a>

@@ -13,33 +13,29 @@
  * Accessibility: fieldset + legend for each group, proper labels,
  * aria-describedby for price inputs, logical tab order.
  */
-import { getAllCategories } from "@/data/helpers/categories";
+import { getAllCategories } from '@/data/helpers/categories';
 
 const categories = getAllCategories();
 ---
 
-<form
-  id="catalog-filters"
-  class="space-y-6"
-  role="search"
-  aria-label="Filtros de productos"
-  onsubmit="return false"
->
+<form id="catalog-filters" class="space-y-6" role="search" aria-label="Filtros de productos" onsubmit="return false">
   <!-- Categories -->
   <fieldset class="space-y-3">
     <legend class="text-sm font-semibold text-text-dark">Categorías</legend>
-    {categories.map((cat) => (
-      <label class="flex items-center gap-2 cursor-pointer">
-        <input
-          type="checkbox"
-          name="category"
-          value={cat.slug}
-          data-filter="category"
-          class="h-4 w-4 rounded border-border text-primary focus:ring-primary"
-        />
-        <span class="text-sm text-text-dark">{cat.name}</span>
-      </label>
-    ))}
+    {
+      categories.map((cat) => (
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            name="category"
+            value={cat.slug}
+            data-filter="category"
+            class="h-4 w-4 rounded border-border text-primary focus:ring-primary"
+          />
+          <span class="text-sm text-text-dark">{cat.name}</span>
+        </label>
+      ))
+    }
   </fieldset>
 
   <!-- Price range -->
@@ -82,22 +78,24 @@ const categories = getAllCategories();
   <!-- Availability -->
   <fieldset class="space-y-3">
     <legend class="text-sm font-semibold text-text-dark">Disponibilidad</legend>
-    {[
-      { value: "in-stock", label: "Disponible" },
-      { value: "limited", label: "Pocas unidades" },
-      { value: "out-of-stock", label: "Agotado" },
-    ].map((opt) => (
-      <label class="flex items-center gap-2 cursor-pointer">
-        <input
-          type="checkbox"
-          name="availability"
-          value={opt.value}
-          data-filter="availability"
-          class="h-4 w-4 text-primary focus:ring-primary"
-        />
-        <span class="text-sm text-text-dark">{opt.label}</span>
-      </label>
-    ))}
+    {
+      [
+        { value: 'in-stock', label: 'Disponible' },
+        { value: 'limited', label: 'Pocas unidades' },
+        { value: 'out-of-stock', label: 'Agotado' },
+      ].map((opt) => (
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            name="availability"
+            value={opt.value}
+            data-filter="availability"
+            class="h-4 w-4 text-primary focus:ring-primary"
+          />
+          <span class="text-sm text-text-dark">{opt.label}</span>
+        </label>
+      ))
+    }
   </fieldset>
 
   <!-- Actions -->
