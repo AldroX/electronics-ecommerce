@@ -1,0 +1,38 @@
+# Build outputs
+dist/
+.build/
+*.log
+
+# Dependencies
+node_modules/
+
+# Astro generated
+.astro/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Config files (managed separately)
+*.config.js
+*.config.mjs
+*.config.ts
+
+# Scripts
+scripts/
+
+# Generated
+generated-theme.css
+
+# SDD artifacts (contain non-standard syntax)
+.sdd/
+
+# Agent skills
+.agents/
+.atl/
