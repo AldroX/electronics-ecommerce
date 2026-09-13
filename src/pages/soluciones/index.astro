@@ -6,20 +6,18 @@
  *
  * Zero framework JS.
  */
-import Base from "@/layouts/Base.astro";
-import { getAllSolutions } from "@/data/helpers/solutions";
-import SolutionCard from "@/components/cards/SolutionCard.astro";
-import config from "@/config/config.json";
+import Base from '@/layouts/Base.astro';
+import { getAllSolutions } from '@/data/helpers/solutions';
+import SolutionCard from '@/components/cards/SolutionCard.astro';
+import config from '@/config/config.json';
 
 const solutions = getAllSolutions();
 const siteTitle = config.site.title;
 const baseUrl = config.site.base_url;
 
-const breadcrumbItems = [
-  { name: "Inicio", url: `${baseUrl}/` },
-  { name: "Soluciones" },
-];
+const breadcrumbItems = [{ name: 'Inicio', url: `${baseUrl}/` }, { name: 'Soluciones' }];
 ---
+
 <Base
   meta_title={`¿Qué necesitás solucionar? | ${siteTitle}`}
   description="Encuentra la solución energética perfecta para tu hogar o negocio. Asesoramiento gratis por WhatsApp."
@@ -30,15 +28,19 @@ const breadcrumbItems = [
     <div class="container">
       <h1 class="text-h2 mb-8">¿Qué necesitás solucionar?</h1>
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-        {solutions.map((solution) => (
-          <SolutionCard solution={{
-            slug: solution.slug,
-            name: solution.name,
-            description: solution.description,
-            icon: solution.icon,
-            productIds: solution.products
-          }} />
-        ))}
+        {
+          solutions.map((solution) => (
+            <SolutionCard
+              solution={{
+                slug: solution.slug,
+                name: solution.name,
+                description: solution.description,
+                icon: solution.icon,
+                productIds: solution.products,
+              }}
+            />
+          ))
+        }
       </div>
     </div>
   </section>
