@@ -8,7 +8,7 @@ import { z } from 'zod';
 export const ProductListQuerySchema = z.object({
   page: z.coerce.number().int().positive().default(1),
   perPage: z.coerce.number().int().positive().max(100).default(12),
-  category: z.string().uuid().optional(),
+  category: z.string().optional(),
   search: z.string().optional(),
   sort: z.enum(['price-asc', 'price-desc', 'name-asc', 'newest']).default('newest'),
   availability: z.array(z.enum(['in-stock', 'limited', 'out-of-stock'])).optional(),
@@ -111,7 +111,7 @@ export const ProductListItemSchema = z.object({
   price: z.number().positive(),
   compareAtPrice: z.number().positive().optional(),
   currency: z.string().length(3),
-  category: z.string().uuid(),
+  category: z.string().regex(/^[a-z0-9-]+$/),
   images: z.array(z.string()),
   specs: z.record(z.string(), z.string()),
   features: z.array(z.string()),

@@ -211,6 +211,9 @@ export async function fetchProducts(filters?: {
 
   const products = (data as ProductListRow[] | null | undefined) ?? [];
 
+  const { data: categoriesData } = await supabase.from('categories').select('id, slug');
+  const categorySlugMap = new Map((categoriesData ?? []).map((category) => [category.id, category.slug]));
+
   return {
     data: products.map(p => ({
       id: p.id,
@@ -220,7 +223,7 @@ export async function fetchProducts(filters?: {
       shortDescription: p.short_description || p.description || '',
       price: p.price,
       currency: p.currency,
-      category: p.category_id || '',
+      category: categorySlugMap.get(p.category_id ?? '') || p.category_id || '',
       availability: p.availability,
       featured: p.featured,
       bestSeller: p.best_seller,

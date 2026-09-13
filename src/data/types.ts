@@ -50,7 +50,7 @@ export const ProductSchema = z.object({
   price: z.number().positive(),
   compareAtPrice: z.number().positive().optional(),
   currency: z.string().length(3).default('ARS'),
-  category: z.string().uuid(),
+  category: z.string(),
   images: z.array(z.string().url()).min(1),
   specs: z.record(z.string(), z.string()),
   features: z.array(z.string()),

@@ -74,9 +74,17 @@ export const GET: APIRoute = async (context) => {
     // Construir query para Supabase
     let querySupabase = supabase.from('products').select('*, categories(*)', { count: 'exact' });
 
-    // Filtrar por categoría (category_id en BD)
+    // Filtrar por categoría: la UI envía el slug (ej. "energia-solar"), pero la BD usa category_id.
     if (parsed.category) {
-      querySupabase = querySupabase.eq('category_id', parsed.category);
+      const { data: categoryRow } = await supabase
+        .from('categories')
+        .select('id')
+        .eq('slug', parsed.category)
+        .maybeSingle();
+
+      if (categoryRow?.id) {
+        querySupabase = querySupabase.eq('category_id', categoryRow.id);
+      }
     }
 
     // Filtrar por solución (solution slug -> category_id via products filter)
