@@ -7,12 +7,14 @@
  *
  * Zero framework JS.
  */
-import type { GetStaticPaths } from "astro";
-import type { Offer } from "@/data/types";
-import { getAllOffers } from "@/data/helpers/offers";
-import config from "@/config/config.json";
-import Base from "@/layouts/Base.astro";
-import CTAWhatsApp from "@/components/ui/CTAWhatsApp.astro";
+import type { GetStaticPaths } from 'astro';
+import type { Offer } from '@/data/types';
+import { getAllOffers } from '@/data/helpers/offers';
+import config from '@/config/config.json';
+import Base from '@/layouts/Base.astro';
+import CTAWhatsApp from '@/components/ui/CTAWhatsApp.astro';
+
+export const prerender = true;
 
 export const getStaticPaths: GetStaticPaths = () => {
   return getAllOffers().map((offer) => ({
@@ -21,7 +23,15 @@ export const getStaticPaths: GetStaticPaths = () => {
   }));
 };
 
-const { offer } = Astro.props as { offer: Offer };
+const slug = Astro.params.slug;
+const offerFromProps = (Astro.props as { offer?: Offer } | undefined)?.offer;
+const offers = getAllOffers();
+const offer = offerFromProps ?? offers.find((item) => item.slug === slug) ?? null;
+
+if (!offer) {
+  throw new Error('No se encontró la oferta solicitada');
+}
+
 const siteTitle = config.site.title;
 const baseUrl = config.site.base_url;
 
@@ -33,14 +43,14 @@ const canonicalUrl = `${baseUrl}/ofertas/${offer.slug}`;
 
 // Breadcrumb items
 const breadcrumbItems: Array<{ name: string; url?: string }> = [
-  { name: "Inicio", url: `${baseUrl}/` },
-  { name: "Ofertas", url: `${baseUrl}/ofertas` },
+  { name: 'Inicio', url: `${baseUrl}/` },
+  { name: 'Ofertas', url: `${baseUrl}/ofertas` },
   { name: offer.name },
 ];
 
 // Price formatting (matches OfferCard)
-const formatter = new Intl.NumberFormat("es", {
-  style: "currency",
+const formatter = new Intl.NumberFormat('es', {
+  style: 'currency',
   currency: offer.currency,
 });
 const currentPriceFormatted = formatter.format(offer.currentPrice);
@@ -48,25 +58,25 @@ const originalPriceFormatted = formatter.format(offer.originalPrice);
 
 // Availability badge mapping (matches OfferCard and ProductCard)
 const availabilityMap = {
-  "in-stock": { label: "Disponible", class: "bg-emerald-100 text-emerald-700" },
-  limited: { label: "Pocas unidades", class: "bg-amber-100 text-amber-700" },
-  "out-of-stock": { label: "Agotado", class: "bg-red-100 text-red-700" },
+  'in-stock': { label: 'Disponible', class: 'bg-emerald-100 text-emerald-700' },
+  limited: { label: 'Pocas unidades', class: 'bg-amber-100 text-amber-700' },
+  'out-of-stock': { label: 'Agotado', class: 'bg-red-100 text-red-700' },
 } as const;
 const stockKey = offer.availability as keyof typeof availabilityMap;
-const badge = availabilityMap[stockKey] ?? availabilityMap["in-stock"];
+const badge = availabilityMap[stockKey] ?? availabilityMap['in-stock'];
 
 // Format validUntil as "Válido hasta DD/MM" (matches OfferCard)
-const validUntilDate = new Date(offer.validUntil + "T00:00:00");
-const validUntilFormatted = new Intl.DateTimeFormat("es", {
-  day: "2-digit",
-  month: "2-digit",
+const validUntilDate = new Date(offer.validUntil + 'T00:00:00');
+const validUntilFormatted = new Intl.DateTimeFormat('es', {
+  day: '2-digit',
+  month: '2-digit',
 }).format(validUntilDate);
 
 // Discount badge text
 const discountBadge = `-${offer.discountPercent}%`;
 
 // WhatsApp CTA message (replace {PRODUCTO} placeholder)
-const whatsappMessage = offer.whatsappMessage.replace("{PRODUCTO}", offer.name);
+const whatsappMessage = offer.whatsappMessage.replace('{PRODUCTO}', offer.name);
 ---
 
 <Base
@@ -81,28 +91,32 @@ const whatsappMessage = offer.whatsappMessage.replace("{PRODUCTO}", offer.name);
       {/* Breadcrumbs */}
       <nav aria-label="Miga de pan" class="mb-6 text-sm text-text-light">
         <ol class="flex flex-wrap items-center gap-1.5" role="list">
-          {breadcrumbItems.map((item, index) => {
-            const isLast = index === breadcrumbItems.length - 1;
-            return (
-              <li class="flex items-center gap-1.5">
-                {index > 0 && (
-                  <span class="text-text-light/50" aria-hidden="true">/</span>
-                )}
-                {isLast ? (
-                  <span aria-current="page" class="font-medium text-text-dark">
-                    {item.name}
-                  </span>
-                ) : (
-                  <a
-                    href={item.url}
-                    class="text-primary underline-offset-2 hover:text-primary/80 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-                  >
-                    {item.name}
-                  </a>
-                )}
-              </li>
-            );
-          })}
+          {
+            breadcrumbItems.map((item, index) => {
+              const isLast = index === breadcrumbItems.length - 1;
+              return (
+                <li class="flex items-center gap-1.5">
+                  {index > 0 && (
+                    <span class="text-text-light/50" aria-hidden="true">
+                      /
+                    </span>
+                  )}
+                  {isLast ? (
+                    <span aria-current="page" class="font-medium text-text-dark">
+                      {item.name}
+                    </span>
+                  ) : (
+                    <a
+                      href={item.url}
+                      class="text-primary underline-offset-2 hover:text-primary/80 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                    >
+                      {item.name}
+                    </a>
+                  )}
+                </li>
+              );
+            })
+          }
         </ol>
       </nav>
 
@@ -110,11 +124,7 @@ const whatsappMessage = offer.whatsappMessage.replace("{PRODUCTO}", offer.name);
       <div class="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
         {/* Image column */}
         <div>
-          <img
-            src={offer.image}
-            alt={offer.name}
-            class="w-full h-auto rounded-lg"
-          />
+          <img src={offer.image} alt={offer.name} class="w-full h-auto rounded-lg" />
         </div>
 
         {/* Info column */}
@@ -137,7 +147,7 @@ const whatsappMessage = offer.whatsappMessage.replace("{PRODUCTO}", offer.name);
           {/* Availability badge */}
           <span
             class:list={[
-              "inline-flex w-fit items-center rounded-full px-2.5 py-0.5 text-xs font-semibold",
+              'inline-flex w-fit items-center rounded-full px-2.5 py-0.5 text-xs font-semibold',
               badge.class,
             ]}
           >
@@ -160,10 +170,7 @@ const whatsappMessage = offer.whatsappMessage.replace("{PRODUCTO}", offer.name);
               messageTemplate={whatsappMessage}
               class="w-full sm:w-auto"
             />
-            <a
-              href={`/producto/${offer.productSlug}`}
-              class="btn btn-primary text-center w-full sm:w-auto"
-            >
+            <a href={`/producto/${offer.productSlug}`} class="btn btn-primary text-center w-full sm:w-auto">
               Ver producto completo
             </a>
           </div>
