@@ -42,7 +42,7 @@
     "price": 89.99,
     "currency": "USD",
     "category": "energia-solar",
-    "images": ["/images/placeholder-product.webp"],
+    "images": ["/images/placeholder-product.svg"],
     "specs": {
       "Corriente de carga": "60A",
       "Voltaje máximo entrada": "150V",
@@ -61,7 +61,7 @@
     "seo": {
       "title": "Controlador MPPT 60A 150V | Pantalla LCD",
       "description": "Controlador MPPT 60A hasta 150V entrada. $89.99. Para sistemas 12V-48V. Compra por WhatsApp.",
-      "image": "/images/placeholder-product.webp",
+      "image": "/images/placeholder-product.svg",
       "canonical": "/producto/controlador-mppt-60a-150v"
     },
     "relatedProducts": ["prod-1", "prod-3"]
@@ -97,7 +97,7 @@
     "seo": {
       "title": "Power Station 1000Wh LiFePO4 | 1000W AC, Solar Ready",
       "description": "Power Station 1000Wh LiFePO4, 1000W salida AC, carga solar 200W. $699 (antes $849). WhatsApp para pedir.",
-      "image": "/images/placeholder-product.webp",
+      "image": "/images/placeholder-product.svg",
       "canonical": "/producto/power-station-1000wh-lifepo4"
     },
     "relatedProducts": ["prod-4", "prod-5"]
@@ -111,7 +111,7 @@
     "price": 299.0,
     "currency": "USD",
     "category": "respaldo-almacenamiento",
-    "images": ["/images/placeholder-product.webp"],
+    "images": ["/images/placeholder-product.svg"],
     "specs": {
       "Voltaje nominal": "12.8V",
       "Capacidad": "100Ah (1280Wh)",
@@ -132,7 +132,7 @@
     "seo": {
       "title": "Batería LiFePO4 12V 100Ah | BMS Integrado",
       "description": "Batería LiFePO4 12V 100Ah con BMS. 2000+ ciclos. $299. Para solar, RV, respaldo. Pedido por WhatsApp.",
-      "image": "/images/placeholder-product.webp",
+      "image": "/images/placeholder-product.svg",
       "canonical": "/producto/bateria-lifepo4-12v-100ah"
     },
     "relatedProducts": ["prod-3", "prod-2"]
@@ -146,7 +146,7 @@
     "price": 45.99,
     "currency": "USD",
     "category": "iluminacion",
-    "images": ["/images/placeholder-product.webp"],
+    "images": ["/images/placeholder-product.svg"],
     "specs": {
       "Potencia LED": "200W equivalente",
       "Flujo luminoso": "2000 lúmenes",
@@ -167,7 +167,7 @@
     "seo": {
       "title": "Lámpara Solar LED 200W | Sensor Movimiento, IP65",
       "description": "Lámpara solar 200W todo-en-uno con sensor y control remoto. $45.99. IP65 para exterior. WhatsApp para comprar.",
-      "image": "/images/placeholder-product.webp",
+      "image": "/images/placeholder-product.svg",
       "canonical": "/producto/lampara-solar-led-200w-panel-integrado"
     },
     "relatedProducts": ["prod-6", "prod-3"]
@@ -181,7 +181,7 @@
     "price": 8.99,
     "currency": "USD",
     "category": "iluminacion",
-    "images": ["/images/placeholder-product.webp"],
+    "images": ["/images/placeholder-product.svg"],
     "specs": {
       "Voltaje": "12V DC",
       "Potencia": "9W",
@@ -202,7 +202,7 @@
     "seo": {
       "title": "Bombilla LED 12V 9W | Directa a Solar, 3000K",
       "description": "Bombilla LED 12V 9W para sistemas solares. Equivale a 75W. $8.99. Luz cálida. Pedido WhatsApp.",
-      "image": "/images/placeholder-product.webp",
+      "image": "/images/placeholder-product.svg",
       "canonical": "/producto/bombilla-led-12v-9w-alta-eficiencia"
     },
     "relatedProducts": ["prod-5", "prod-7"]
@@ -216,7 +216,7 @@
     "price": 24.99,
     "currency": "USD",
     "category": "accesorios",
-    "images": ["/images/placeholder-product.webp"],
+    "images": ["/images/placeholder-product.svg"],
     "specs": {
       "Sección": "4mm²",
       "Longitud": "10m c/u (par = 20m total)",
@@ -236,7 +236,7 @@
     "seo": {
       "title": "Cable Solar MC4 4mm² 10m Par | TÜV Certificado",
       "description": "Par cables solares MC4 4mm² 10m cada uno. Resistente UV, certificado TÜV. $24.99. WhatsApp para pedir.",
-      "image": "/images/placeholder-product.webp",
+      "image": "/images/placeholder-product.svg",
       "canonical": "/producto/cable-solar-mc4-4mm2-10m-par"
     },
     "relatedProducts": ["prod-8", "prod-2"]
@@ -250,7 +250,7 @@
     "price": 12.99,
     "currency": "USD",
     "category": "accesorios",
-    "images": ["/images/placeholder-product.webp"],
+    "images": ["/images/placeholder-product.svg"],
     "specs": {
       "Tipo": "Y paralelo (1 macho + 2 hembra)",
       "Corriente máx": "30A",
@@ -269,7 +269,7 @@
     "seo": {
       "title": "Conector MC4 Y Rama Paralelo | IP68, 30A",
       "description": "Conector Y MC4 para paralelo de 2 paneles. IP68, 30A. $12.99. Compra por WhatsApp.",
-      "image": "/images/placeholder-product.webp",
+      "image": "/images/placeholder-product.svg",
       "canonical": "/producto/conector-mc4-y-rama-paralelo"
     },
     "relatedProducts": ["prod-7", "prod-1"]

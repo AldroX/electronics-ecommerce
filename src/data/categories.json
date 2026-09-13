@@ -9,7 +9,7 @@
     "seo": {
       "title": "Energía Solar | Paneles, Controladores e Inversores",
       "description": "Compra paneles solares, controladores MPPT e inversores. Envío a toda Cuba. WhatsApp para asesoría.",
-      "image": "/images/placeholder-category.webp",
+      "image": "/images/placeholder-category.svg",
       "canonical": "/categoria/energia-solar"
     }
   },
@@ -23,7 +23,7 @@
     "seo": {
       "title": "Respaldo y Almacenamiento | Power Stations y Baterías",
       "description": "Power stations portátiles, baterías LiFePO4 y UPS. Autonomía para tu hogar o negocio.",
-      "image": "/images/placeholder-category.webp",
+      "image": "/images/placeholder-category.svg",
       "canonical": "/categoria/respaldo-almacenamiento"
     }
   },
@@ -37,7 +37,7 @@
     "seo": {
       "title": "Iluminación | Lámparas Solares y LED",
       "description": "Iluminación eficiente: lámparas solares, bombillas LED y luces de emergencia. Ahorra energía.",
-      "image": "/images/placeholder-category.webp",
+      "image": "/images/placeholder-category.svg",
       "canonical": "/categoria/iluminacion"
     }
   },
@@ -51,7 +51,7 @@
     "seo": {
       "title": "Accesorios | Cables, Conectores y Adaptadores",
       "description": "Todo lo que necesitas para conectar tu sistema: cables MC4, conectores, adaptadores y más.",
-      "image": "/images/placeholder-category.webp",
+      "image": "/images/placeholder-category.svg",
       "canonical": "/categoria/accesorios"
     }
   }

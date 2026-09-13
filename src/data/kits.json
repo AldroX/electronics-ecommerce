@@ -10,7 +10,7 @@
     "seo": {
       "title": "Kit Respaldo Básico | Power Station + Lámpara Solar",
       "description": "Kit: Power Station 1000Wh LiFePO4 + Lámpara Solar 200W. $729 (ahorro $165). WhatsApp para pedir.",
-      "image": "/images/placeholder-category.webp",
+      "image": "/images/placeholder-category.svg",
       "canonical": "/kits/kit-respaldo-basico"
     }
   },
@@ -25,7 +25,7 @@
     "seo": {
       "title": "Kit Iluminación Solar | Panel + Controlador + Lámparas + LED",
       "description": "Kit completo iluminación off-grid: Panel 450W + MPPT 60A + 2 lámparas solares + 4 bombillas LED 12V. $365.",
-      "image": "/images/placeholder-category.webp",
+      "image": "/images/placeholder-category.svg",
       "canonical": "/kits/kit-iluminacion-solar"
     }
   },
@@ -40,7 +40,7 @@
     "seo": {
       "title": "Kit Solar Inicial | Panel + Controlador + Batería LiFePO4",
       "description": "Base sistema solar: Panel 450W + MPPT 60A + Batería 12V 100Ah LiFePO4. $559 (ahorro $118). WhatsApp.",
-      "image": "/images/placeholder-category.webp",
+      "image": "/images/placeholder-category.svg",
       "canonical": "/kits/kit-solar-inicial"
     }
   }

@@ -9,7 +9,7 @@
     "seo": {
       "title": "Respaldo para Hogar | Soluciones Energía",
       "description": "Solución respaldo hogar: nevera, luces, ventilador. Power Station + solar. Asesoría WhatsApp gratis.",
-      "image": "/images/placeholder-category.webp",
+      "image": "/images/placeholder-category.svg",
       "canonical": "/soluciones/respaldo-hogar"
     }
   },
@@ -23,7 +23,7 @@
     "seo": {
       "title": "Iluminación en Cortes | Lámparas Solares y 12V",
       "description": "Iluminación sin red: lámparas solares con sensor, bombillas 12V directas a batería. Compra por WhatsApp.",
-      "image": "/images/placeholder-category.webp",
+      "image": "/images/placeholder-category.svg",
       "canonical": "/soluciones/iluminacion-cortes"
     }
   },
@@ -37,7 +37,7 @@
     "seo": {
       "title": "Iniciarse en Solar | Kit Básico Panel + Controlador + Batería",
       "description": "Primer kit solar: panel 450W + controlador MPPT + batería LiFePO4. Asesoría incluida. WhatsApp para empezar.",
-      "image": "/images/placeholder-category.webp",
+      "image": "/images/placeholder-category.svg",
       "canonical": "/soluciones/energia-solar-inicio"
     }
   },
@@ -51,7 +51,7 @@
     "seo": {
       "title": "Equipos Pequeños | Power Station Portátil",
       "description": "Energía para laptop, router, cámara, dron. Power Station 1000Wh o batería 12V + inversor. Envío Cuba.",
-      "image": "/images/placeholder-category.webp",
+      "image": "/images/placeholder-category.svg",
       "canonical": "/soluciones/equipos-pequenos"
     }
   },
@@ -65,7 +65,7 @@
     "seo": {
       "title": "Reducir Consumo | LED 12V y Solar Exterior",
       "description": "Ahorra electricidad: bombillas LED 12V, lámparas solares, controlador MPPT. Productos eficientes por WhatsApp.",
-      "image": "/images/placeholder-category.webp",
+      "image": "/images/placeholder-category.svg",
       "canonical": "/soluciones/reduccion-consumo"
     }
   }
