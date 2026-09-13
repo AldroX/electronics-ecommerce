@@ -1,0 +1,114 @@
+{
+  "products": [
+    {
+      "id": "1",
+      "name": "Estación de Potencia Solar EcoFlow Delta 2",
+      "slug": "estacion-potencia-solar-ecoflow-delta-2",
+      "description": "Potencia confiable para tu hogar o aventura al aire libre. La EcoFlow Delta 2 ofrece 1800W de potencia continua y 2400W de pico, suficiente para hacer funcionar electrodomésticos esenciales, herramientas y dispositivos electrónicos. Con tecnología LiFePO4, ofrece una vida útil de hasta 3000 ciclos al 80% de capacidad.",
+      "shortDescription": "Estación de potencia portátil de 1800W con tecnología LiFePO4",
+      "price": 149990,
+      "compareAtPrice": 169990,
+      "currency": "ARS",
+      "category": "cat-potencia",
+      "images": ["/assets/images/products/ecoflow-delta-2-1.jpg", "/assets/images/products/ecoflow-delta-2-2.jpg"],
+      "specs": {
+        "capacidad": "1024 Wh",
+        "potencia": "1800W continuo / 2400W pico",
+        "baterias": "LiFePO4",
+        "ciclos": "3000 al 80%",
+        "puertos": "6 x AC, 1 x USB-C, 2 x USB-A"
+      },
+      "features": [
+        "Portátil y fácil de transportar",
+        "Carga solar rápida",
+        "Alta durabilidad LiFePO4",
+        "Multiples opciones de puertos"
+      ],
+      "availability": "in-stock",
+      "featured": true,
+      "bestSeller": true,
+      "kitOnly": false,
+      "whatsappMessage": "Hola, estoy interesado en la Estación de Potencia Solar EcoFlow Delta 2. ¿Está disponible?",
+      "tags": ["energia-solar", "estacion-potencia", "backup"],
+      "seo": {
+        "title": "Estación de Potencia Solar EcoFlow Delta 2",
+        "description": "Potencia confiable para tu hogar o aventura al aire libre",
+        "image": "/assets/images/products/ecoflow-delta-2-1.jpg",
+        "canonical": "/producto/estacion-potencia-solar-ecoflow-delta-2"
+      },
+      "relatedProducts": ["2", "3"],
+      "batteryWh": 1024,
+      "createdAt": "2024-01-15T10:30:00Z",
+      "updatedAt": "2024-01-15T10:30:00Z"
+    },
+    {
+      "id": "2",
+      "name": "Panel Solar Plegable 200W Renogy",
+      "slug": "panel-solar-plegable-200w-renogy",
+      "description": "Aprovecha la energía del sol con el panel solar plegable Renogy de 200W. Diseñado para ser liviano y portátil, es perfecto para acampar, viajar en RV o emergencias domésticas. Con celdas de silicio monocristalino, ofrece hasta un 21% de eficiencia de conversión energética.",
+      "shortDescription": "Panel solar plegable 200W con 21% de eficiencia",
+      "price": 45990,
+      "compareAtPrice": 52990,
+      "currency": "ARS",
+      "category": "cat-paneles",
+      "images": ["/assets/images/products/renogy-200w-1.jpg", "/assets/images/products/renogy-200w-2.jpg"],
+      "specs": {
+        "potencia": "200W",
+        "eficiencia": "21%",
+        "dimensiones": "1821 x 991 x 25 mm",
+        "peso": "7 kg",
+        "celulas": "Silicio monocristalino"
+      },
+      "features": ["Ligero y portátil", "Alta eficiencia monocristalino", "Diseño plegable", "Cableado preinstalado"],
+      "availability": "in-stock",
+      "featured": false,
+      "bestSeller": false,
+      "kitOnly": false,
+      "whatsappMessage": "Hola, estoy interesado en el Panel Solar Plegable 200W Renogy. ¿Está disponible?",
+      "tags": ["paneles-solares", "energia-solar", "acampar"],
+      "seo": {
+        "title": "Panel Solar Plegable 200W Renogy",
+        "description": "Panel solar portátil de 200W con alta eficiencia",
+        "image": "/assets/images/products/renogy-200w-1.jpg",
+        "canonical": "/producto/panel-solar-plegable-200w-renogy"
+      },
+      "relatedProducts": ["1"],
+      "batteryWh": null,
+      "createdAt": "2024-01-15T10:30:00Z",
+      "updatedAt": "2024-01-15T10:30:00Z"
+    }
+    // ... more products
+  ],
+  "categories": [
+    {
+      "id": "cat-1",
+      "name": "Estaciones de Potencia",
+      "slug": "estaciones-potencia",
+      "description": "Soluciones de energía portátil para hogares y negocios",
+      "image": "/assets/images/categories/potencia.jpg",
+      "product_ids": ["1", "2"],
+      "seo": {
+        "title": "Estaciones de Potencia",
+        "description": "Soluciones de energía portátil",
+        "image": "/assets/images/categories/potencia.jpg",
+        "canonical": "/categoria/estaciones-potencia"
+      }
+    },
+    {
+      "id": "cat-2",
+      "name": "Paneles Solares",
+      "slug": "paneles-solares",
+      "description": "Paneles solares portátiles para generar energía",
+      "image": "/assets/images/categories/paneles.jpg",
+      "product_ids": ["2", "3"],
+      "seo": {
+        "title": "Paneles Solares",
+        "description": "Paneles solares portátiles",
+        "image": "/assets/images/categories/paneles.jpg",
+        "canonical": "/categoria/paneles-solares"
+      }
+    }
+    // ... more categories
+  ]
+  // ... more entities
+}
