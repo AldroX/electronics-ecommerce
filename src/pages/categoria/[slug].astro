@@ -6,31 +6,41 @@
  *
  * Zero framework JS.
  */
-import type { GetStaticPaths } from "astro";
-import type { Category } from "@/data/types";
-import { getAllCategories } from "@/data/helpers/categories";
-import { getAllProducts } from "@/data/helpers/products";
-import config from "@/config/config.json";
-import Base from "@/layouts/Base.astro";
-import ProductCard from "@/components/cards/ProductCard.astro";
-import CTAWhatsApp from "@/components/ui/CTAWhatsApp.astro";
+import type { GetStaticPaths } from 'astro';
+import type { Category, Product } from '@/data/types';
+import { fetchCategory, fetchCategories } from '@/lib/api/fetchers';
+import config from '@/config/config.json';
+import Base from '@/layouts/Base.astro';
+import ProductCard from '@/components/cards/ProductCard.astro';
+import CTAWhatsApp from '@/components/ui/CTAWhatsApp.astro';
 
-export const getStaticPaths: GetStaticPaths = () => {
-  return getAllCategories().map((category) => ({
+export const prerender = true;
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const result = await fetchCategories();
+  return result.data.map((category) => ({
     params: { slug: category.slug },
     props: { category },
   }));
 };
 
-const { category } = Astro.props as { category: Category };
-const allProducts = getAllProducts();
+const slug = Astro.params.slug;
+const categoryFromProps = (Astro.props as { category?: Category } | undefined)?.category;
+const categoryList = await fetchCategories();
+const category = (categoryFromProps ?? categoryList.data.find((item) => item.slug === slug) ?? null) as Category | null;
+
+if (!category) {
+  throw new Error(`No se encontró la categoría solicitada`);
+}
+
 const siteTitle = config.site.title;
 const baseUrl = config.site.base_url;
 
-// Filter products that belong to this category
-const categoryProducts = allProducts.filter((product) =>
-  category.products.includes(product.id)
-);
+// Fetch category with products
+const categoryData = await fetchCategory(category.slug);
+if (!categoryData) {
+  throw new Error(`No se encontró la categoría ${category.slug}`);
+}
 
 // SEO
 const pageTitle = category.seo?.title || `${category.name} | ${siteTitle}`;
@@ -39,47 +49,63 @@ const canonicalUrl = `${baseUrl}/categoria/${category.slug}`;
 
 // Breadcrumb items
 const breadcrumbItems: Array<{ name: string; url?: string }> = [
-  { name: "Inicio", url: `${baseUrl}/` },
+  { name: 'Inicio', url: `${baseUrl}/` },
   { name: category.name },
 ];
 
 // WhatsApp CTA message
 const whatsappMessage = `Hola, me interesa la categoría ${category.name}. ¿Qué productos me recomiendan?`;
+
+// Cast products to full Product type for ProductCard
+const productsForCard: Product[] = categoryData.products.map((p: any) => ({
+  ...p,
+  description: p.description || '',
+  shortDescription: p.description || '',
+  category: p.category || '',
+  features: p.features || [],
+  tags: p.tags || [],
+  seo: p.seo || { title: p.name, description: '', image: p.image, canonical: '' },
+  batteryWh: p.batteryWh || null,
+  compareAtPrice: p.compareAtPrice || null,
+  relatedProducts: p.relatedProducts || [],
+  kitOnly: p.kitOnly || false,
+  bestSeller: p.bestSeller || false,
+  featured: p.featured || false,
+}));
 ---
 
-<Base
-  meta_title={pageTitle}
-  description={pageDescription}
-  canonical={canonicalUrl}
-  breadcrumbs={breadcrumbItems}
->
+<Base meta_title={pageTitle} description={pageDescription} canonical={canonicalUrl} breadcrumbs={breadcrumbItems}>
   <section class="section">
     <div class="container">
       {/* Breadcrumbs */}
       <nav aria-label="Miga de pan" class="mb-6 text-sm text-text-light">
         <ol class="flex flex-wrap items-center gap-1.5" role="list">
-          {breadcrumbItems.map((item, index) => {
-            const isLast = index === breadcrumbItems.length - 1;
-            return (
-              <li class="flex items-center gap-1.5">
-                {index > 0 && (
-                  <span class="text-text-light/50" aria-hidden="true">/</span>
-                )}
-                {isLast ? (
-                  <span aria-current="page" class="font-medium text-text-dark">
-                    {item.name}
-                  </span>
-                ) : (
-                  <a
-                    href={item.url}
-                    class="text-primary underline-offset-2 hover:text-primary/80 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-                  >
-                    {item.name}
-                  </a>
-                )}
-              </li>
-            );
-          })}
+          {
+            breadcrumbItems.map((item, index) => {
+              const isLast = index === breadcrumbItems.length - 1;
+              return (
+                <li class="flex items-center gap-1.5">
+                  {index > 0 && (
+                    <span class="text-text-light/50" aria-hidden="true">
+                      /
+                    </span>
+                  )}
+                  {isLast ? (
+                    <span aria-current="page" class="font-medium text-text-dark">
+                      {item.name}
+                    </span>
+                  ) : (
+                    <a
+                      href={item.url}
+                      class="text-primary underline-offset-2 hover:text-primary/80 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                    >
+                      {item.name}
+                    </a>
+                  )}
+                </li>
+              );
+            })
+          }
         </ol>
       </nav>
 
@@ -87,30 +113,25 @@ const whatsappMessage = `Hola, me interesa la categoría ${category.name}. ¿Qu�
       <div class="mt-8 flex flex-col items-center gap-6 text-center">
         <div>
           <h1 class="text-h3 font-bold text-text-dark">{category.name}</h1>
-          {category.description && (
-            <p class="mt-2 text-lg text-text-light">{category.description}</p>
-          )}
+          {category.description && <p class="mt-2 text-lg text-text-light">{category.description}</p>}
         </div>
 
-        <CTAWhatsApp
-          variant="inline"
-          productName={category.name}
-          messageTemplate={whatsappMessage}
-          class="w-fit"
-        />
+        <CTAWhatsApp variant="inline" productName={category.name} messageTemplate={whatsappMessage} class="w-fit" />
       </div>
 
       {/* Products grid */}
-      {categoryProducts.length > 0 && (
-        <div class="mt-12">
-          <h2 class="text-h4 mb-6">Productos</h2>
-          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {categoryProducts.map((product) => (
-              <ProductCard product={product} />
-            ))}
+      {
+        productsForCard.length > 0 && (
+          <div class="mt-12">
+            <h2 class="text-h4 mb-6">Productos</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {productsForCard.map((product) => (
+                <ProductCard product={product} />
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )
+      }
     </div>
   </section>
 </Base>

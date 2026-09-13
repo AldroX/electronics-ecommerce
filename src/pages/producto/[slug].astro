@@ -8,45 +8,51 @@
  * Zero framework JS: all interactivity lives inside the child components.
  * UI copy in Spanish. Comments in English.
  */
-import type { GetStaticPaths } from "astro";
-import type { Product } from "@/data/types";
-import { getAllProducts } from "@/data/helpers/products";
-import { getAllCategories } from "@/data/helpers/categories";
-import config from "@/config/config.json";
-import Base from "@/layouts/Base.astro";
-import Breadcrumbs from "@/components/product/Breadcrumbs.astro";
-import ProductGallery from "@/components/product/ProductGallery.astro";
-import ProductSpecs from "@/components/product/ProductSpecs.astro";
-import PowerCalculator from "@/components/product/PowerCalculator.astro";
-import RelatedProducts from "@/components/product/RelatedProducts.astro";
-import CTAWhatsApp from "@/components/ui/CTAWhatsApp.astro";
+import type { GetStaticPaths } from 'astro';
+import type { Product, Category } from '@/data/types';
+import { fetchProducts, fetchCategories } from '@/lib/api/fetchers';
+import config from '@/config/config.json';
+import Base from '@/layouts/Base.astro';
+import Breadcrumbs from '@/components/product/Breadcrumbs.astro';
+import ProductGallery from '@/components/product/ProductGallery.astro';
+import ProductSpecs from '@/components/product/ProductSpecs.astro';
+import PowerCalculator from '@/components/product/PowerCalculator.astro';
+import RelatedProducts from '@/components/product/RelatedProducts.astro';
+import CTAWhatsApp from '@/components/ui/CTAWhatsApp.astro';
 
-export const getStaticPaths: GetStaticPaths = () => {
-  const products = getAllProducts();
-  return products.map((product) => ({
+export const getStaticPaths: GetStaticPaths = async () => {
+  const result = await fetchProducts({ limit: 1000 });
+  return result.data.map((product) => ({
     params: { slug: product.slug },
     props: { product },
   }));
 };
 
-const { product } = Astro.props as { product: Product };
-const allProducts = getAllProducts();
-const categories = getAllCategories();
+const allProductsResult = await fetchProducts({ limit: 1000 });
+const allProducts = allProductsResult.data as Product[];
+const slug = Astro.params.slug;
+const productFromProps = (Astro.props as { product?: Product } | undefined)?.product;
+const product = productFromProps ?? allProducts.find((item) => item.slug === slug);
+
+if (!product) {
+  throw new Error('No se encontró el producto solicitado');
+}
+
+// Fetch all products and categories for related products and breadcrumbs
+const [categoriesResult] = await Promise.all([fetchCategories()]);
+const categories = categoriesResult.data as unknown as Category[];
 
 // SEO
 const siteTitle = config.site.title;
 const baseUrl = config.site.base_url;
 const pageTitle = product.seo?.title || `${product.name} | ${siteTitle}`;
-const pageDescription =
-  product.seo?.description || product.shortDescription || product.description;
-const pageImage = product.seo?.image || product.images[0];
-const canonicalUrl = `${baseUrl}/producto/${product.slug}`;
+const pageDescription = product.seo?.description || product.shortDescription || product.description || '';
+const pageImage = product.seo?.image || product.images?.[0] || '/images/placeholder-product.svg';
+const canonicalUrl = product.seo?.canonical || `${baseUrl}/producto/${product.slug}`;
 
 // Breadcrumb items for JSON-LD in Base.astro <head>
-const category = categories.find((c) => c.slug === product.category);
-const breadcrumbItems: Array<{ name: string; url?: string }> = [
-  { name: "Inicio", url: `${baseUrl}/` },
-];
+const category = categories.find((c: Category) => c.slug === product.category);
+const breadcrumbItems: Array<{ name: string; url?: string }> = [{ name: 'Inicio', url: `${baseUrl}/` }];
 if (category) {
   breadcrumbItems.push({
     name: category.name,
@@ -56,35 +62,38 @@ if (category) {
 breadcrumbItems.push({ name: product.name });
 
 // Price formatting (matches ProductCard)
-const formatter = new Intl.NumberFormat("es", {
-  style: "currency",
+const formatter = new Intl.NumberFormat('es', {
+  style: 'currency',
   currency: product.currency,
 });
-const showCompareAt = Boolean(
-  product.compareAtPrice && product.compareAtPrice > product.price,
-);
+const showCompareAt = Boolean(product.compareAtPrice && product.compareAtPrice > product.price);
 const price = formatter.format(product.price);
-const compareAt = showCompareAt
-  ? formatter.format(product.compareAtPrice!)
-  : null;
+const compareAt = showCompareAt ? formatter.format(product.compareAtPrice!) : null;
 
 // Availability badge (matches ProductCard)
 const availabilityMap = {
-  "in-stock": { label: "Disponible", class: "bg-emerald-100 text-emerald-700" },
-  limited: { label: "Pocas unidades", class: "bg-amber-100 text-amber-700" },
-  "out-of-stock": { label: "Agotado", class: "bg-red-100 text-red-700" },
+  'in-stock': { label: 'Disponible', class: 'bg-emerald-100 text-emerald-700' },
+  limited: { label: 'Pocas unidades', class: 'bg-amber-100 text-amber-700' },
+  'out-of-stock': { label: 'Agotado', class: 'bg-red-100 text-red-700' },
 } as const;
 const stockKey = product.availability as keyof typeof availabilityMap;
-const badge = availabilityMap[stockKey] ?? availabilityMap["in-stock"];
+const badge = availabilityMap[stockKey] ?? availabilityMap['in-stock'];
 
 // WhatsApp: out-of-stock appends repo notice (matches ProductCard)
-const isOutOfStock = product.availability === "out-of-stock";
+const isOutOfStock = product.availability === 'out-of-stock';
 const whatsappMessage = isOutOfStock
   ? `${product.whatsappMessage} (Producto agotado, consultar reposición)`
   : undefined;
 ---
 
-<Base meta_title={pageTitle} description={pageDescription} image={pageImage} canonical={canonicalUrl} product={product} breadcrumbs={breadcrumbItems}>
+<Base
+  meta_title={pageTitle}
+  description={pageDescription}
+  image={pageImage}
+  canonical={canonicalUrl}
+  product={product}
+  breadcrumbs={breadcrumbItems}
+>
   <section class="container py-10">
     <Breadcrumbs product={product} categories={categories} />
 
@@ -98,35 +107,23 @@ const whatsappMessage = isOutOfStock
           {product.name}
         </h1>
 
-        {product.shortDescription && (
-          <p class="text-base text-text-light">{product.shortDescription}</p>
-        )}
+        {product.shortDescription && <p class="text-base text-text-light">{product.shortDescription}</p>}
 
         {/* Price */}
         <div class="flex items-baseline gap-3">
           <span class="text-2xl font-bold text-primary">{price}</span>
-          {showCompareAt && (
-            <span class="text-base text-text-light line-through">{compareAt}</span>
-          )}
+          {showCompareAt && <span class="text-base text-text-light line-through">{compareAt}</span>}
         </div>
 
         {/* Availability badge */}
         <span
-          class:list={[
-            "inline-flex w-fit items-center rounded-full px-2.5 py-0.5 text-xs font-semibold",
-            badge.class,
-          ]}
+          class:list={['inline-flex w-fit items-center rounded-full px-2.5 py-0.5 text-xs font-semibold', badge.class]}
         >
           {badge.label}
         </span>
 
         {/* Inline WhatsApp CTA */}
-        <CTAWhatsApp
-          variant="inline"
-          productName={product.name}
-          messageTemplate={whatsappMessage}
-          class="mt-1 w-fit"
-        />
+        <CTAWhatsApp variant="inline" productName={product.name} messageTemplate={whatsappMessage} class="mt-1 w-fit" />
       </div>
     </div>
 
