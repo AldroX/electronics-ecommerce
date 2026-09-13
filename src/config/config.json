@@ -3,7 +3,7 @@
     "title": "EnergíaTotal",
     "base_url": "http://localhost:4321",
     "favicon": "/favicon.svg",
-    "logo": "/images/logo.png",
+    "logo": "",
     "logo_width": "150",
     "logo_height": "40",
     "logo_text": "EnergíaTotal"

@@ -65,8 +65,10 @@ function resolveImageUrl(imagePath: string): string {
       return asset.src; // Final resolved URL with hash (e.g. /_astro/panel-solar.B45WK9N-_Z2m6MAA.avif)
     }
   }
-  // Public paths and placeholders pass through as-is
-  return imagePath;
+  // Normalize legacy placeholder paths returned by remote data.
+  return imagePath
+    .replace('/images/placeholder-product.webp', '/images/placeholder-product.svg')
+    .replace('/images/placeholder-category.webp', '/images/placeholder-category.svg');
 }
 
 // Transform products for client-side JSON: resolve @/assets/ paths to final URLs
@@ -137,9 +139,18 @@ const description =
   <!-- Hero Section -->
   <section
     class="section relative overflow-hidden bg-cover bg-center bg-no-repeat md:min-h-[360px] lg:min-h-[420px]"
-    style={`background-image: url('${productsHeroBg.src}')`}
     aria-labelledby="catalog-title"
   >
+    <img
+      src={productsHeroBg.src}
+      alt=""
+      aria-hidden="true"
+      class="absolute inset-0 h-full w-full object-cover"
+      loading="eager"
+      fetchpriority="high"
+      decoding="async"
+    />
+
     {/* Dark overlay for text readability */}
     <div class="absolute inset-0 bg-black/50" aria-hidden="true"></div>
 

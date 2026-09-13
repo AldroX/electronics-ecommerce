@@ -17,7 +17,8 @@
  *
  * Zero framework JS: build-time static markup only.
  */
-import heroBg from '../../assets/img/hero_img.png';
+import heroBg from '../../assets/img/hero_img.webp';
+import { Picture } from 'astro:assets';
 import CTAWhatsApp from '../ui/CTAWhatsApp.astro';
 import FloatingWhatsApp from '../ui/FloatingWhatsApp.astro';
 
@@ -47,9 +48,20 @@ const trustItems: { label: string; icon: keyof typeof icons }[] = [
 
 <section
   class="section relative overflow-hidden bg-cover bg-center bg-no-repeat md:min-h-[520px] lg:min-h-[620px] xl:min-h-[720px]"
-  style={`background-image: url('${heroBg.src}')`}
   aria-labelledby="hero-title"
 >
+  <Picture
+    src={heroBg}
+    alt=""
+    aria-hidden="true"
+    class="absolute inset-0 h-full w-full object-cover"
+    loading="eager"
+    fetchpriority="high"
+    decoding="async"
+    widths={[640, 828, 1097, 1440]}
+    sizes="100vw"
+    formats={['avif', 'webp']}
+  />
   {/* Dark overlay for text readability */}
   <div class="absolute inset-0 bg-black/50" aria-hidden="true"></div>
 

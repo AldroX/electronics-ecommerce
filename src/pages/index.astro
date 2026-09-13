@@ -30,9 +30,10 @@ import BestSellers from '../components/sections/BestSellers.astro';
 import OffersSection from '../components/sections/OffersSection.astro';
 import KitsSection from '../components/sections/KitsSection.astro';
 import TrustSection from '../components/sections/TrustSection.astro';
+import heroOg from '../assets/img/hero_img.webp';
 ---
 
-<Base meta_title="EnergíaTotal | Energía solar, respaldo eléctrico e iluminación" image="/images/placeholder-hero.svg">
+<Base meta_title="EnergíaTotal | Energía solar, respaldo eléctrico e iluminación" image={heroOg.src}>
   <HeroSection />
   <CategoriesSection />
   <SolutionsSection />
