@@ -1,9 +1,9 @@
 ---
-import type { Product } from "@/data/types";
-import config from "@/config/config.json";
-import Header from "@/layouts/partials/Header.astro";
-import Footer from "@/layouts/partials/Footer.astro";
-import "@/styles/main.css";
+import type { Product } from '@/data/types';
+import config from '@/config/config.json';
+import Header from '@/layouts/partials/Header.astro';
+import Footer from '@/layouts/partials/Footer.astro';
+import '@/styles/main.css';
 
 export interface Props {
   title?: string;
@@ -21,7 +21,7 @@ const { title, meta_title, description, image, noindex, canonical, product, brea
 const pageTitle = meta_title || (title ? `${title} | ${config.site.title}` : config.site.title);
 const pageDescription = description || config.metadata.meta_description;
 const pageImage = `${config.site.base_url}${image || config.metadata.meta_image}`;
-const pageUrl = `${config.site.base_url}${Astro.url.pathname === "/" ? "" : Astro.url.pathname}`;
+const pageUrl = `${config.site.base_url}${Astro.url.pathname === '/' ? '' : Astro.url.pathname}`;
 
 // Self-referencing canonical by default (REQ-HP-004): every route gets a
 // canonical URL — an explicit `canonical` prop overrides it when needed.
@@ -30,14 +30,14 @@ const canonicalUrl = canonical || pageUrl;
 // schema.org WebPage structured data (REQ-HP-004), rendered as JSON-LD in
 // <head>. Single source of truth for the current route.
 const webPageJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "WebPage",
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
   name: pageTitle,
   url: pageUrl,
   description: pageDescription,
-  inLanguage: "es",
+  inLanguage: 'es',
   isPartOf: {
-    "@type": "WebSite",
+    '@type': 'WebSite',
     name: config.site.title,
     url: config.site.base_url,
   },
@@ -45,28 +45,24 @@ const webPageJsonLd = {
 
 // Product JSON-LD (schema.org Product, REQ-SEO-009)
 const availabilitySchemaMap: Record<string, string> = {
-  "in-stock": "https://schema.org/InStock",
-  limited: "https://schema.org/LimitedAvailability",
-  "out-of-stock": "https://schema.org/OutOfStock",
+  'in-stock': 'https://schema.org/InStock',
+  limited: 'https://schema.org/LimitedAvailability',
+  'out-of-stock': 'https://schema.org/OutOfStock',
 };
 
 const productJsonLd = product
   ? {
-      "@context": "https://schema.org",
-      "@type": "Product",
+      '@context': 'https://schema.org',
+      '@type': 'Product',
       name: product.name,
       description: product.shortDescription || product.description,
-      image: product.images.map((img) =>
-        img.startsWith("http") ? img : `${config.site.base_url}${img}`,
-      ),
+      image: product.images.map((img) => (img.startsWith('http') ? img : `${config.site.base_url}${img}`)),
       sku: product.id,
       offers: {
-        "@type": "Offer",
+        '@type': 'Offer',
         price: product.price,
-        priceCurrency: product.currency || "USD",
-        availability:
-          availabilitySchemaMap[product.availability] ||
-          "https://schema.org/InStock",
+        priceCurrency: product.currency || 'USD',
+        availability: availabilitySchemaMap[product.availability] || 'https://schema.org/InStock',
         url: `${config.site.base_url}/producto/${product.slug}`,
       },
     }
@@ -76,10 +72,10 @@ const productJsonLd = product
 const breadcrumbJsonLd =
   breadcrumbs && breadcrumbs.length > 0
     ? {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
         itemListElement: breadcrumbs.map((item, index) => ({
-          "@type": "ListItem",
+          '@type': 'ListItem',
           position: index + 1,
           name: item.name,
           ...(item.url ? { item: item.url } : {}),
@@ -102,10 +98,7 @@ const breadcrumbJsonLd =
     <!-- font preload -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-    />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
 
     <!-- title -->
     <title>{pageTitle}</title>
@@ -145,12 +138,8 @@ const breadcrumbJsonLd =
 
     <!-- schema.org structured data (JSON-LD, REQ-HP-004) -->
     <script type="application/ld+json" is:inline set:html={JSON.stringify(webPageJsonLd)} />
-    {productJsonLd && (
-      <script type="application/ld+json" is:inline set:html={JSON.stringify(productJsonLd)} />
-    )}
-    {breadcrumbJsonLd && (
-      <script type="application/ld+json" is:inline set:html={JSON.stringify(breadcrumbJsonLd)} />
-    )}
+    {productJsonLd && <script type="application/ld+json" is:inline set:html={JSON.stringify(productJsonLd)} />}
+    {breadcrumbJsonLd && <script type="application/ld+json" is:inline set:html={JSON.stringify(breadcrumbJsonLd)} />}
   </head>
   <body class="flex flex-col min-h-screen bg-body font-primary text-text">
     <Header />
