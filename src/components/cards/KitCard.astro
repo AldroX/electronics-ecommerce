@@ -26,7 +26,7 @@ const { kit } = Astro.props;
 // Kit image lives in kits.json but is not declared on the base Kit type;
 // use it when present, otherwise fall back to the placeholder.
 const placeholder = '/images/placeholder-product.svg';
-const kitImage = kit.image || placeholder;
+const kitImage = kit.image?.replace('/images/placeholder-category.webp', placeholder) || placeholder;
 
 // Price formatting
 const formatter = new Intl.NumberFormat('es', {

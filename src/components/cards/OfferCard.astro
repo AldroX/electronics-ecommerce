@@ -64,7 +64,7 @@ const validUntilFormatted = new Intl.DateTimeFormat('es', {
   {/* Image */}
   <div class="relative aspect-[4/3] w-full shrink-0 overflow-hidden bg-light">
     <img
-      src={offer.image}
+      src={offer.image.replace('/images/placeholder-product.webp', '/images/placeholder-product.svg')}
       alt={offer.name}
       loading="lazy"
       width="400"

@@ -15,7 +15,7 @@ export interface Props {
 
 const { guide } = Astro.props;
 
-const PLACEHOLDER = '/images/placeholder-category.webp';
+const PLACEHOLDER = '/images/placeholder-category.svg';
 const imageSrc = guide.image?.trim() ? guide.image : PLACEHOLDER;
 const imageAlt = guide.title;
 ---

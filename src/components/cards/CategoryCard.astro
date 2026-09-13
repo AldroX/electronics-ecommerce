@@ -51,7 +51,9 @@ function toGlobKey(path: string): string {
 
 // Category.image is a single public/ path. Guard against an empty string so we
 // fall back to the placeholder (REQ-CC-002 / SCN-CC-002).
-const srcPublic = category.image?.trim() ? category.image : PLACEHOLDER;
+const srcPublic = category.image?.trim()
+  ? category.image.replace('/images/placeholder-category.webp', PLACEHOLDER)
+  : PLACEHOLDER;
 const isImportable = isImportableImage(category.image ?? '');
 const importKey = isImportable ? toGlobKey(category.image!) : null;
 const srcImport = importKey ? assetGlob[importKey]?.default : null;

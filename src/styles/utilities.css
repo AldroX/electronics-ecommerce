@@ -21,3 +21,8 @@
 @utility section-sm {
   @apply py-16 xl:py-20;
 }
+
+@utility section-deferred {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 600px;
+}
