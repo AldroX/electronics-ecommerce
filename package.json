@@ -9,20 +9,56 @@
     "dev": "concurrently \"node scripts/themeGenerator.js --watch\" \"astro dev\"",
     "build": "node scripts/themeGenerator.js && astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write \"**/*.{ts,tsx,astro,json,css,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,astro,json,css,md}\"",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "e2e": "playwright test",
+    "e2e:ui": "playwright test --ui",
+    "e2e:install": "playwright install --with-deps chromium",
+    "audit": "pnpm audit --audit-level=moderate",
+    "bundle:analyze": "astro build && npx vite-bundle-analyzer dist"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.116.0",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.2.7",
-    "tailwindcss": "^4.3.3"
+    "dotenv": "^17.4.2",
+    "kysely": "^0.29.5",
+    "tailwindcss": "^4.3.3",
+    "zod": "^4.5.4"
   },
   "allowScripts": {
     "esbuild": true
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "@astrojs/node": "^11.1.5",
     "@astrojs/sitemap": "^3.7.3",
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.40.0",
+    "@supabase/ssr": "^0.12.7",
+    "@types/pg": "^8.23.1",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
     "concurrently": "^10.0.5",
-    "sharp": "^0.35.4"
+    "dotenv-cli": "^11.0.0",
+    "eslint": "^8.45.0",
+    "eslint-plugin-astro": "^0.30.0",
+    "eslint-plugin-jsx-a11y": "^6.7.0",
+    "pg": "^8.23.0",
+    "playwright": "^1.40.0",
+    "prettier": "^3.0.0",
+    "prettier-plugin-astro": "^0.12.0",
+    "sharp": "^0.35.4",
+    "tsx": "^4.23.13",
+    "typescript": "^5.2.0",
+    "typescript-eslint": "^8.70.0",
+    "vite-bundle-analyzer": "^0.10.0",
+    "vitest": "^5.0.0"
   }
 }
