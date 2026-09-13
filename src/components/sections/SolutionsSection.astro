@@ -8,13 +8,14 @@
  *
  * No props. <h2> section title (REQ-HP-003). Zero framework JS.
  */
-import { getAllSolutions } from "@/data/helpers/solutions";
-import SolutionCard from "../cards/SolutionCard.astro";
+import { getAllSolutions } from '@/data/helpers/solutions';
+import SolutionCard from '../cards/SolutionCard.astro';
 
 const solutions = getAllSolutions();
 ---
 
-{solutions.length > 0 && (
+{
+  solutions.length > 0 && (
     <section class="section" aria-labelledby="solutions-title">
       <div class="container">
         <div class="mb-8 md:mb-10">
@@ -42,4 +43,5 @@ const solutions = getAllSolutions();
         </div>
       </div>
     </section>
-  )}
+  )
+}

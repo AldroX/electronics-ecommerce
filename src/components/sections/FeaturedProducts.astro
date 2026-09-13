@@ -9,13 +9,14 @@
  * Renders nothing when no product is featured (REQ-HP-002 / SCN-HP-002).
  * No props. <h2> section title (REQ-HP-003). Zero framework JS.
  */
-import { getFeaturedProducts } from "@/data/helpers/products";
-import ProductCard from "../cards/ProductCard.astro";
+import { getFeaturedProducts } from '@/data/helpers/products';
+import ProductCard from '../cards/ProductCard.astro';
 
 const featured = getFeaturedProducts();
 ---
 
-{featured.length > 0 && (
+{
+  featured.length > 0 && (
     <section class="section bg-light" aria-labelledby="featured-title">
       <div class="container">
         <div class="mb-8 md:mb-10">
@@ -29,4 +30,5 @@ const featured = getFeaturedProducts();
         </div>
       </div>
     </section>
-  )}
+  )
+}

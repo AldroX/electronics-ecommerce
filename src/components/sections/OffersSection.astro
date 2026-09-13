@@ -8,13 +8,14 @@
  *
  * No props. <h2> section title (REQ-HP-003). Zero framework JS.
  */
-import { getActiveOffers } from "@/data/helpers/offers";
-import OfferCard from "../cards/OfferCard.astro";
+import { getActiveOffers } from '@/data/helpers/offers';
+import OfferCard from '../cards/OfferCard.astro';
 
 const offers = getActiveOffers();
 ---
 
-{offers.length > 0 && (
+{
+  offers.length > 0 && (
     <section class="section bg-amber-50/30" aria-labelledby="offers-title">
       <div class="container">
         <div class="mb-8 md:mb-10">
@@ -34,4 +35,5 @@ const offers = getActiveOffers();
         </div>
       </div>
     </section>
-  )}
+  )
+}
