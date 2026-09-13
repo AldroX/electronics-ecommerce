@@ -85,9 +85,7 @@ export function filterProducts(products: Product[], filters: FilterState): Produ
 
   // Availability filter (array — any selected value matches)
   if (filters.availability && filters.availability.length > 0) {
-    result = result.filter((product) =>
-      filters.availability!.includes(product.availability)
-    );
+    result = result.filter((product) => filters.availability!.includes(product.availability));
   }
 
   return result;

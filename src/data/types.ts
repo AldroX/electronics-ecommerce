@@ -1,9 +1,20 @@
+import { z } from 'zod';
+
 export interface SEOData {
   title: string;
   description: string;
   image?: string;
   canonical?: string;
 }
+
+export const SEODataSchema = z.object({
+  title: z.string(),
+  description: z.string(),
+  image: z.string().optional(),
+  canonical: z.string().optional(),
+});
+
+export type SEODataZod = z.infer<typeof SEODataSchema>;
 
 export interface Product {
   id: string;
@@ -29,6 +40,34 @@ export interface Product {
   /** Battery capacity in watt-hours, only for products that store energy (power stations, batteries, battery kits). */
   batteryWh?: number;
 }
+
+export const ProductSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string().min(1),
+  slug: z.string().regex(/^[a-z0-9-]+$/),
+  description: z.string(),
+  shortDescription: z.string(),
+  price: z.number().positive(),
+  compareAtPrice: z.number().positive().optional(),
+  currency: z.string().length(3).default('ARS'),
+  category: z.string().uuid(),
+  images: z.array(z.string().url()).min(1),
+  specs: z.record(z.string(), z.string()),
+  features: z.array(z.string()),
+  availability: z.enum(['in-stock', 'limited', 'out-of-stock']),
+  featured: z.boolean(),
+  bestSeller: z.boolean(),
+  kitOnly: z.boolean(),
+  whatsappMessage: z.string(),
+  tags: z.array(z.string()),
+  seo: SEODataSchema,
+  relatedProducts: z.array(z.string().uuid()),
+  batteryWh: z.number().positive().optional(),
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime(),
+});
+
+export type ProductZod = z.infer<typeof ProductSchema>;
 
 export interface Category {
   id: string;
@@ -67,7 +106,7 @@ export interface Guide {
   slug: string;
   description: string;
   image: string;
-  content: string;   // RAW HTML article body
+  content: string; // RAW HTML article body
   products: string[];
   readTime: number;
   seo: SEOData;
