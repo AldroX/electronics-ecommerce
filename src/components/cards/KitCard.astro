@@ -49,7 +49,7 @@ const href = `/kits/${kit.slug}`;
 ---
 
 <article
-  class="group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-white shadow transition hover:shadow-lg scroll-mt-24"
+  class="admin-card-group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-white shadow transition hover:shadow-lg scroll-mt-24"
 >
   {/* Image */}
   <div class="relative aspect-[4/3] w-full shrink-0 overflow-hidden bg-light">
@@ -60,7 +60,7 @@ const href = `/kits/${kit.slug}`;
       width="400"
       height="300"
       decoding="async"
-      class="h-full w-full object-cover transition-transform duration-300 motion-safe:group-hover:scale-105"
+      class="h-full w-full object-cover transition-transform duration-300 admin-card-image-hover"
       onerror="this.src='/images/placeholder-product.svg'"
     />
   </div>
@@ -95,3 +95,15 @@ const href = `/kits/${kit.slug}`;
     <CTAWhatsApp variant="inline" productName={kit.name} messageTemplate={whatsappMsg} class="w-full" />
   </div>
 </article>
+
+<style>
+  .admin-card-group:hover .admin-card-image-hover {
+    transform: scale(1.05);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .admin-card-image-hover {
+      transform: none;
+    }
+  }
+</style>

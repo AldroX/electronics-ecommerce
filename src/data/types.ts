@@ -135,3 +135,64 @@ export interface Offer {
   productSlug: string;
   seo?: SEOData;
 }
+
+// ============================================================
+// Admin Product Types (Task T03)
+// ============================================================
+
+/** Lightweight product item for admin list table */
+export interface ProductAdminListItem {
+  id: string;
+  name: string;
+  slug: string;
+  categoryName: string;
+  price: number;
+  currency: string;
+  availability: 'in-stock' | 'limited' | 'out-of-stock';
+  featured: boolean;
+  bestSeller: boolean;
+  thumbnail?: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt?: string | null;
+}
+
+/** Paginated admin product list response */
+export interface ProductAdminListResponse {
+  products: ProductAdminListItem[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
+/** Full product detail for admin edit page */
+export interface ProductAdminDetail {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  shortDescription: string;
+  price: number;
+  compareAtPrice?: number | null;
+  currency: string;
+  categoryId: string;
+  categoryName: string;
+  images: string[];
+  specs: Record<string, string>;
+  features: string[];
+  availability: 'in-stock' | 'limited' | 'out-of-stock';
+  featured: boolean;
+  bestSeller: boolean;
+  kitOnly: boolean;
+  whatsappMessage: string;
+  tags: string[];
+  seo: SEOData;
+  relatedProductIds: string[];
+  batteryWh?: number | null;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt?: string | null;
+}

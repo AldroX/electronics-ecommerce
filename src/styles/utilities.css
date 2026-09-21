@@ -1,3 +1,5 @@
+@reference "tailwindcss";
+
 .bg-gradient {
   @apply bg-linear-to-r from-light to-light/60;
 }
@@ -25,4 +27,13 @@
 @utility section-deferred {
   content-visibility: auto;
   contain-intrinsic-size: auto 600px;
+}
+
+@utility touch-target {
+  @apply min-h-[44px] min-w-[44px];
+}
+
+/* Group utility for parent-hover variants */
+.group {
+  /* No styles needed - just marks element as a group for group-* variants */
 }

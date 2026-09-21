@@ -9,7 +9,7 @@ export const prerender = false;
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from '@/lib/supabase/types';
 import { z } from 'zod';
-import { ProductCreateSchema } from '@/lib/api/validation';
+import { ProductCreateSchema, ProductAdminListQuerySchema } from '@/lib/api/validation';
 import { verifyAdminSession } from '@/lib/auth/admin-guard';
 import { Errors, ErrorCode } from '@/lib/api/error-codes';
 
@@ -180,6 +180,156 @@ export const POST: APIRoute = async (context) => {
         ok: false,
         error: Errors.internalError('Error interno del servidor'),
       }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
+};
+
+/// ============================================================
+/// GET /api/admin/products - List products (admin only)
+/// Task T01
+/// ============================================================
+
+export const GET: APIRoute = async (context) => {
+  try {
+    const adminUser = await verifyAdminSession(context.request);
+    if (!adminUser) {
+      return new Response(
+        JSON.stringify({
+          ok: false,
+          error: { code: 'UNAUTHORIZED', message: 'Admin authentication required' },
+        }),
+        { status: 401, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const url = new URL(context.request.url);
+    const queryResult = ProductAdminListQuerySchema.safeParse(Object.fromEntries(url.searchParams));
+
+    if (!queryResult.success) {
+      return new Response(
+        JSON.stringify({
+          ok: false,
+          error: {
+            code: ErrorCode.VALIDATION_ERROR,
+            message: 'Error de validación en query parameters',
+            issues: queryResult.error.issues,
+          },
+        }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const { page, limit, search, category, availability, sort, showArchived } = queryResult.data;
+    const supabase = getServiceClient();
+
+    // Build base query
+    let query = supabase
+      .from('products')
+      .select(`
+        id,
+        name,
+        slug,
+        price,
+        currency,
+        availability,
+        featured,
+        best_seller,
+        images,
+        created_at,
+        updated_at,
+        deleted_at,
+        categories!inner (
+          name
+        )
+      `, { count: 'exact' });
+
+    // Filter out archived (soft-deleted) products unless showArchived is true
+    if (!showArchived) {
+      query = query.is('deleted_at', null);
+    }
+
+    // Search filter
+    if (search) {
+      query = query.or(`name.ilike.%${search}%,slug.ilike.%${search}%`);
+    }
+
+    // Category filter
+    if (category) {
+      query = query.eq('category_id', category);
+    }
+
+    // Availability filter
+    if (availability) {
+      query = query.eq('availability', availability);
+    }
+
+    // Sorting
+    const [sortField, sortOrder] = sort.split('-');
+    const fieldMap: Record<string, string> = {
+      name: 'name',
+      price: 'price',
+      created: 'created_at',
+      updated: 'updated_at',
+    };
+    const dbField = fieldMap[sortField] || 'created_at';
+    const ascending = sortOrder === 'asc';
+    query = query.order(dbField, { ascending });
+
+    // Pagination
+    const from = (page - 1) * limit;
+    const to = from + limit - 1;
+    query = query.range(from, to);
+
+    const { data: products, error, count } = await query;
+
+    if (error) {
+      console.error('Supabase error fetching products:', error);
+      return new Response(
+        JSON.stringify({ ok: false, error: Errors.internalError('Error al obtener productos') }),
+        { status: 500, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const total = count ?? 0;
+    const totalPages = Math.ceil(total / limit);
+
+    // Transform to admin list item shape
+    const productItems = (products ?? []).map((p: any) => ({
+      id: p.id,
+      name: p.name,
+      slug: p.slug,
+      categoryName: p.categories?.name ?? 'Sin categoría',
+      price: p.price,
+      currency: p.currency,
+      availability: p.availability,
+      featured: p.featured,
+      bestSeller: p.best_seller,
+      thumbnail: p.images?.[0] ?? null,
+      createdAt: p.created_at,
+      updatedAt: p.updated_at,
+      deletedAt: p.deleted_at,
+    }));
+
+    return new Response(
+      JSON.stringify({
+        ok: true,
+        data: {
+          products: productItems,
+          pagination: {
+            page,
+            limit,
+            total,
+            totalPages,
+          },
+        },
+      }),
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
+    );
+  } catch (err) {
+    console.error('Admin list products error:', err);
+    return new Response(
+      JSON.stringify({ ok: false, error: Errors.internalError('Error interno del servidor') }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }

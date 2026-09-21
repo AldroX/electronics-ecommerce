@@ -1,0 +1,308 @@
+---
+import config from '@/config/config.json';
+import { verifyAdminSession } from '@/lib/auth/admin-guard';
+
+/**
+ * Admin layout — minimal HTML shell for admin pages
+ * - No public header/footer
+ * - Sidebar navigation with auth guard
+ * - Dark mode support via CSS variables
+ * - Robots noindex, nofollow
+ * - Toast/flash messages via URL query params (?toast=success&message=...)
+ */
+
+interface Props {
+  title?: string;
+  description?: string;
+  currentPath?: string;
+}
+
+const { title, description, currentPath = '/admin' } = Astro.props;
+
+const pageTitle = title ? `${title} | ${config.site.title} - Admin` : `${config.site.title} - Admin`;
+const pageDescription = description || 'Panel de administración';
+
+// Verify admin session - redirect to login if not authenticated
+const adminUser = await verifyAdminSession(Astro.request);
+
+if (!adminUser) {
+  const loginUrl = new URL('/login', Astro.url.origin);
+  loginUrl.searchParams.set('redirect', Astro.url.pathname + Astro.url.search);
+  return Astro.redirect(loginUrl.toString());
+}
+
+// Read toast from URL query params
+const url = new URL(Astro.request.url);
+const toastType = url.searchParams.get('toast') as 'success' | 'error' | 'info' | null;
+const toastMessage = url.searchParams.get('message');
+const toast = toastType && toastMessage ? { type: toastType, message: decodeURIComponent(toastMessage) } : null;
+
+// Admin navigation items
+const navItems = [
+  { href: '/admin/products', label: 'Productos', icon: '📦' },
+  { href: '/admin/categories', label: 'Categorías', icon: '📁' },
+  { href: '/admin/solutions', label: 'Soluciones', icon: '💡' },
+  { href: '/admin/kits', label: 'Kits', icon: '🧰' },
+  { href: '/admin/guides', label: 'Guías', icon: '📚' },
+  { href: '/admin/settings', label: 'Ajustes', icon: '⚙️' },
+];
+---
+
+<!doctype html>
+<html lang="es" class="h-full">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="theme-color" content="#0b1727" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="shortcut icon" href={config.site.favicon} />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <meta name="author" content={config.metadata.meta_author} />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={`${config.site.base_url}${Astro.url.pathname}`} />
+    <meta property="og:image" content={`${config.site.base_url}${config.metadata.meta_image}`} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDescription} />
+    <meta name="twitter:image" content={`${config.site.base_url}${config.metadata.meta_image}`} />
+
+    <script is:inline>
+      // Theme initialization - must run before paint to avoid flash
+      (function() {
+        const stored = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const isDark = stored ? stored === 'dark' : prefersDark;
+        document.documentElement.classList.toggle('dark', isDark);
+      })();
+    </script>
+
+    <!-- Global styles -->
+    <link rel="stylesheet" href="/styles/main.css" />
+  </head>
+  <body class="flex h-screen min-h-screen bg-body font-primary text-text dark:bg-body-dark dark:text-text-dark antialiased">
+    <!-- Toast notification -->
+    {toast && (
+      <div
+        class="fixed top-4 right-4 z-50 max-w-sm w-full animate-slide-in"
+        role="alert"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        <div
+          class={`flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg border min-w-0 ${
+            toast.type === 'success'
+              ? 'bg-green-600 text-white border-green-700'
+              : toast.type === 'error'
+              ? 'bg-red-600 text-white border-red-700'
+              : 'bg-blue-600 text-white border-blue-700'
+          }`}
+        >
+          <span class="flex-1 text-sm font-medium">{toast.message}</span>
+          <button
+            type="button"
+            class="text-current opacity-70 hover:opacity-100 transition-opacity p-1 ml-2 flex-shrink-0"
+            aria-label="Cerrar notificación"
+            onclick="this.parentElement.parentElement.remove()"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    )}
+
+    <div class="flex flex-1 overflow-hidden">
+      <!-- Sidebar -->
+      <aside
+        id="admin-sidebar"
+        class="fixed inset-y-0 left-0 z-40 w-64 bg-body-border dark:bg-body-border-dark border-r border-border dark:border-border-dark transform transition-transform duration-300 ease-in-out lg:translate-x-0 -translate-x-full"
+        aria-label="Navegación de administración"
+      >
+        <div class="flex flex-col h-full">
+          <!-- Logo / Brand -->
+          <div class="flex items-center gap-3 px-6 py-5 border-b border-border dark:border-border-dark">
+            <svg class="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+            </svg>
+            <span class="text-lg font-semibold text-text dark:text-text-dark">{config.site.title}</span>
+            <span class="ml-auto px-2 py-1 text-xs font-medium bg-primary/10 text-primary rounded-full">Admin</span>
+          </div>
+
+          <!-- Navigation -->
+          <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto" role="navigation" aria-label="Menú principal de administración">
+            <ul class="space-y-1" role="list">
+              {navItems.map((item) => (
+                <li>
+                  <a
+                    href={item.href}
+                    class={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors min-h-[44px] touch-target ${
+                      currentPath.startsWith(item.href)
+                        ? 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary'
+                        : 'text-text-light dark:text-text-light-dark hover:bg-body-muted dark:hover:bg-body-muted-dark hover:text-text dark:hover:text-text'
+                    }`}
+                    aria-current={currentPath.startsWith(item.href) ? 'page' : undefined}
+                  >
+                    <span aria-hidden="true" class="text-base">{item.icon}</span>
+                    <span>{item.label}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <!-- User info / Logout -->
+          <div class="p-3 border-t border-border dark:border-border-dark">
+            <div class="flex items-center gap-3 px-3 py-2">
+              <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium text-sm">
+                {adminUser.email?.charAt(0).toUpperCase() ?? 'A'}
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium text-text dark:text-text-dark truncate">{adminUser.email}</p>
+                <p class="text-xs text-text-light dark:text-text-light-dark">Administrador</p>
+              </div>
+            </div>
+            <form action="/api/auth/signout" method="POST" class="p-3">
+              <input type="hidden" name="redirect" value="/" />
+              <button
+                type="submit"
+                class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-text-light dark:text-text-light-dark hover:text-text dark:hover:text-text hover:bg-body-muted dark:hover:bg-body-muted-dark rounded-lg transition-colors min-h-[44px] touch-target"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                Cerrar sesión
+              </button>
+            </form>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Mobile sidebar overlay -->
+      <div
+        id="sidebar-overlay"
+        class="fixed inset-0 z-30 bg-black/50 lg:hidden hidden transition-opacity"
+        aria-hidden="true"
+        onclick="document.getElementById('admin-sidebar')?.classList.add('-translate-x-full'); this.classList.add('hidden')"
+      ></div>
+
+      <!-- Main content -->
+      <main class="flex-1 flex flex-col min-w-0 lg:ml-64">
+        <!-- Top bar -->
+        <header class="sticky top-0 z-20 flex items-center gap-4 px-4 py-3 bg-body/80 dark:bg-body-dark/80 backdrop-blur-sm border-b border-border dark:border-border-dark">
+          <button
+            type="button"
+            id="sidebar-toggle"
+            class="lg:hidden p-2 rounded-lg text-text-light dark:text-text-light-dark hover:bg-body-muted dark:hover:bg-body-muted-dark transition-colors min-h-[44px] min-w-[44px] touch-target"
+            aria-label="Abrir menú de navegación"
+            aria-expanded="false"
+            aria-controls="admin-sidebar"
+            onclick="document.getElementById('admin-sidebar')?.classList.remove('-translate-x-full'); document.getElementById('sidebar-overlay')?.classList.remove('hidden'); this.setAttribute('aria-expanded', 'true')"
+          >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+          <h1 class="text-lg font-semibold text-text dark:text-text-dark truncate">{title || 'Panel de administración'}</h1>
+          <div class="flex-1"></div>
+          <!-- Theme toggle -->
+          <button
+            type="button"
+            id="theme-toggle"
+            class="p-2 rounded-lg text-text-light dark:text-text-light-dark hover:bg-body-muted dark:hover:bg-body-muted-dark transition-colors min-h-[44px] min-w-[44px] touch-target"
+            aria-label="Cambiar tema"
+            onclick="document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light')"
+          >
+            <svg class="w-5 h-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+            <svg class="hidden w-5 h-5 dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          </button>
+        </header>
+
+        <!-- Page content -->
+        <div class="flex-1 overflow-y-auto p-4 lg:p-6">
+          <slot />
+        </div>
+      </main>
+    </div>
+
+    <!-- Mobile sidebar close script -->
+    <script is:inline>
+      // Close sidebar on link click (mobile)
+      document.addEventListener('DOMContentLoaded', () => {
+        const sidebar = document.getElementById('admin-sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+        const toggle = document.getElementById('sidebar-toggle');
+
+        if (sidebar && overlay) {
+          // Close on escape key
+          document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !sidebar.classList.contains('-translate-x-full')) {
+              sidebar.classList.add('-translate-x-full');
+              overlay.classList.add('hidden');
+              toggle?.setAttribute('aria-expanded', 'false');
+            }
+          });
+
+          // Close overlay click already handled inline
+
+          // Update toggle aria-expanded on sidebar state change
+          const observer = new MutationObserver(() => {
+            const isOpen = !sidebar.classList.contains('-translate-x-full');
+            toggle?.setAttribute('aria-expanded', String(isOpen));
+          });
+          observer.observe(sidebar, { attributes: true, attributeFilter: ['class'] });
+        }
+      });
+    </script>
+
+    <style is:global>
+      /* Touch target utility */
+      .touch-target {
+        min-height: 44px;
+        min-width: 44px;
+      }
+
+      /* Slide in animation for toast */
+      @keyframes slide-in {
+        from {
+          opacity: 0;
+          transform: translateX(100%);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+      .animate-slide-in {
+        animation: slide-in 0.3s ease-out;
+      }
+
+      /* Scrollbar styling for sidebar */
+      #admin-sidebar::-webkit-scrollbar {
+        width: 6px;
+      }
+      #admin-sidebar::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      #admin-sidebar::-webkit-scrollbar-thumb {
+        background: var(--color-border);
+        border-radius: 3px;
+      }
+      .dark #admin-sidebar::-webkit-scrollbar-thumb {
+        background: var(--color-border-dark);
+      }
+    </style>
+  </body>
+</html>

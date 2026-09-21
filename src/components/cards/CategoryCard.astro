@@ -62,7 +62,7 @@ const imageAlt = srcPublic === PLACEHOLDER ? `Categoría: ${category.name}` : ca
 
 <a
   href={`/categoria/${category.slug}`}
-  class="group flex h-full flex-col items-center gap-3 rounded-lg border border-border bg-white p-6 text-center shadow transition hover:shadow-lg scroll-mt-24 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+  class="admin-card-group flex h-full flex-col items-center gap-3 rounded-lg border border-border bg-white p-6 text-center shadow transition hover:shadow-lg scroll-mt-24 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
   aria-label={`Ver categoría ${category.name}`}
 >
   <picture class="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full bg-light">
@@ -75,7 +75,7 @@ const imageAlt = srcPublic === PLACEHOLDER ? `Categoría: ${category.name}` : ca
           widths={[96, 144, 192]}
           sizes="96px"
           formats={['avif', 'webp']}
-          class="h-20 w-20 object-cover transition-transform duration-300 motion-safe:group-hover:scale-110"
+          class="h-20 w-20 object-cover transition-transform duration-300 admin-card-image-hover"
         />
       )
     }
@@ -88,7 +88,7 @@ const imageAlt = srcPublic === PLACEHOLDER ? `Categoría: ${category.name}` : ca
           width="96"
           height="96"
           decoding="async"
-          class="h-20 w-20 object-contain transition-transform duration-300 motion-safe:group-hover:scale-110"
+          class="h-20 w-20 object-contain transition-transform duration-300 admin-card-image-hover"
           onerror={`this.onerror=null;this.src='${PLACEHOLDER}';this.alt='Categoría: ${category.name}';`}
         />
       )
@@ -99,3 +99,15 @@ const imageAlt = srcPublic === PLACEHOLDER ? `Categoría: ${category.name}` : ca
 
   {category.description && <p class="text-sm text-text-light">{category.description}</p>}
 </a>
+
+<style>
+  .admin-card-group:hover .admin-card-image-hover {
+    transform: scale(1.1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .admin-card-image-hover {
+      transform: none;
+    }
+  }
+</style>

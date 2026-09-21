@@ -1,0 +1,330 @@
+---
+/**
+ * ImageUpload component — multi-file image upload with drag-drop, previews, reorder, delete
+ * Uses existing /api/upload endpoint
+ * Zero JS for core flow; optional island for previews/reorder
+ */
+
+interface Props {
+  existingImages?: string[];
+  maxFiles?: number;
+  maxSizeMB?: number;
+  fieldName?: string;
+}
+
+const {
+  existingImages = [],
+  maxFiles = 5,
+  maxSizeMB = 5,
+  fieldName = 'images',
+} = Astro.props;
+
+const maxSizeBytes = maxSizeMB * 1024 * 1024;
+---
+
+<div class="admin-image-upload space-y-4" data-max-files={maxFiles} data-max-size={maxSizeBytes} data-field-name={fieldName}>
+  <!-- File Input -->
+  <div class="admin-upload-zone border-2 border-dashed border-border dark:border-border-dark rounded-lg p-8 text-center transition-colors"
+       role="region"
+       aria-label="Zona de carga de imágenes"
+       tabindex="0">
+    <input
+      type="file"
+      id="image-upload-input"
+      name="image_files"
+      multiple
+      accept="image/*"
+      class="sr-only"
+      aria-describedby="upload-help"
+    />
+    <label for="image-upload-input" class="cursor-pointer w-full h-full flex flex-col items-center gap-4">
+      <svg class="w-12 h-12 text-text-light dark:text-text-light-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+      </svg>
+      <div>
+        <p class="text-lg font-medium text-text-dark dark:text-text-dark">Arrastra y suelta imágenes aquí</p>
+        <p class="text-text-light dark:text-text-light-dark">o haz clic para seleccionar</p>
+      </div>
+      <p id="upload-help" class="text-sm text-text-light dark:text-text-light-dark">
+        Máximo {maxFiles} archivos, {maxSizeMB}MB cada uno. Formatos: JPG, PNG, WebP, AVIF.
+      </p>
+    </label>
+  </div>
+
+  <!-- Existing Images (Edit Mode) -->
+  {existingImages.length > 0 && (
+    <fieldset class="admin-existing-images space-y-4">
+      <legend class="admin-form-section-title">Imágenes actuales</legend>
+      <p class="form-help">Desmarca las imágenes que quieres eliminar. Arrastra para reordenar.</p>
+
+      <div class="admin-images-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3" role="list" aria-label="Imágenes del producto">
+        {existingImages.map((imageUrl, index) => (
+          <div class="admin-image-item admin-hover-group relative" data-index={index} role="listitem" draggable="true">
+            <input
+              type="hidden"
+              name={`${fieldName}_existing[]`}
+              value={imageUrl}
+            />
+            <input
+              type="checkbox"
+              name={`${fieldName}_keep[]`}
+              value={imageUrl}
+              checked
+              class="sr-only peer"
+              id={`keep-${index}`}
+            />
+            <label for={`keep-${index}`} class="absolute top-2 right-2 z-10 p-1 bg-white/90 dark:bg-gray-900/90 rounded-full shadow-lg opacity-0 admin-hover-show peer-checked:ring-2 peer-checked:ring-red-500 transition-opacity" aria-label="Mantener esta imagen">
+              <svg class="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+            </label>
+            <img
+              src={imageUrl}
+              alt={`Imagen ${index + 1} del producto`}
+              class="w-full aspect-square object-cover rounded-lg border border-border admin-peer-checked transition-all"
+              loading="lazy"
+            />
+            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2 opacity-0 admin-hover-show transition-opacity">
+              <p class="text-xs text-white truncate">Posición: {index + 1}</p>
+            </div>
+            <button
+              type="button"
+              class="absolute top-2 left-2 p-1 bg-white/90 dark:bg-gray-900/90 rounded-full shadow-lg opacity-0 admin-hover-show transition-opacity"
+              onclick="moveImage(this, -1)"
+              aria-label="Mover arriba"
+              disabled={index === 0}
+            >
+              <svg class="w-5 h-5 text-text-dark dark:text-text-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
+            </button>
+            <button
+              type="button"
+              class="absolute top-2 right-2 p-1 bg-white/90 dark:bg-gray-900/90 rounded-full shadow-lg opacity-0 admin-hover-show transition-opacity"
+              onclick="moveImage(this, 1)"
+              aria-label="Mover abajo"
+              disabled={index === existingImages.length - 1}
+            >
+              <svg class="w-5 h-5 text-text-dark dark:text-text-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V4" /></svg>
+            </button>
+          </div>
+        ))}
+      </div>
+    </fieldset>
+  )}
+
+  <!-- New Image Previews -->
+  <div id="new-image-previews" class="admin-new-previews grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 hidden" role="list" aria-label="Nuevas imágenes seleccionadas">
+    <!-- Previews inserted here by JS -->
+  </div>
+
+  <!-- Hidden inputs for final image URLs (populated after upload) -->
+  <div id="image-url-inputs" class="hidden" aria-hidden="true">
+    <!-- Filled by parent page after upload -->
+  </div>
+
+  <!-- Upload Status (ARIA live region) -->
+  <div id="upload-status" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+</div>
+
+<script is:inline>
+  const uploadZone = document.querySelector('.admin-image-upload');
+  const fileInput = document.getElementById('image-upload-input');
+  const previewsContainer = document.getElementById('new-image-previews');
+  const urlInputsContainer = document.getElementById('image-url-inputs');
+  const statusRegion = document.getElementById('upload-status');
+  const maxFiles = parseInt(uploadZone?.dataset.maxFiles || '5', 10);
+  const maxSize = parseInt(uploadZone?.dataset.maxSize || '5242880', 10);
+  const fieldName = uploadZone?.dataset.fieldName || 'images';
+
+  let selectedFiles = [];
+  let uploadedUrls = [];
+
+  function announce(message) {
+    statusRegion.textContent = message;
+  }
+
+  function updatePreviews() {
+    previewsContainer.innerHTML = '';
+    if (selectedFiles.length === 0) {
+      previewsContainer.classList.add('hidden');
+      return;
+    }
+    previewsContainer.classList.remove('hidden');
+    selectedFiles.forEach((file, index) => {
+      const url = URL.createObjectURL(file);
+      const item = document.createElement('div');
+      item.className = 'admin-image-item admin-hover-group relative';
+      item.dataset.index = String(index);
+      item.setAttribute('role', 'listitem');
+      item.innerHTML = `
+        <img src="${url}" alt="Vista previa ${index + 1}" class="w-full aspect-square object-cover rounded-lg border border-border" loading="lazy" />
+        <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 admin-hover-show transition-opacity">
+          <button type="button" class="btn btn-primary btn-sm" onclick="removeNewImage(${index})" aria-label="Eliminar vista previa ${index + 1}">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+          </button>
+        </div>
+        <p class="absolute bottom-1 left-1 right-1 text-xs text-white text-center truncate bg-black/50 px-1 rounded">${file.name}</p>
+      `;
+      previewsContainer.appendChild(item);
+    });
+  }
+
+  function validateFile(file) {
+    if (!file.type.startsWith('image/')) {
+      return 'El archivo debe ser una imagen.';
+    }
+    if (file.size > maxSize) {
+      return `El archivo "${file.name}" excede el tamaño máximo de ${maxSize / 1024 / 1024}MB.`;
+    }
+    return null;
+  }
+
+  function handleFiles(files) {
+    const newFiles = Array.from(files);
+    const checkedExisting = document.querySelectorAll('.admin-existing-images input[name$="_keep[]"]:checked').length;
+    const remainingSlots = maxFiles - selectedFiles.length - uploadedUrls.length - checkedExisting;
+
+    if (remainingSlots <= 0) {
+      announce(`Ya has alcanzado el máximo de ${maxFiles} imágenes.`);
+      return;
+    }
+
+    for (const file of newFiles) {
+      if (selectedFiles.length >= remainingSlots) {
+        announce(`Solo se pueden agregar ${remainingSlots} imágenes más.`);
+        break;
+      }
+      const error = validateFile(file);
+      if (error) {
+        announce(error);
+        continue;
+      }
+      selectedFiles.push(file);
+    }
+    updatePreviews();
+    announce(`${selectedFiles.length} imagen${selectedFiles.length !== 1 ? 'es' : ''} seleccionada${selectedFiles.length !== 1 ? 's' : ''}.`);
+  }
+
+  // Drag and drop
+  const dropZone = uploadZone?.querySelector('.admin-upload-zone');
+  dropZone?.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('border-primary', 'bg-primary/5');
+  });
+  dropZone?.addEventListener('dragleave', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('border-primary', 'bg-primary/5');
+  });
+  dropZone?.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('border-primary', 'bg-primary/5');
+    if (e.dataTransfer?.files) {
+      handleFiles(e.dataTransfer.files);
+    }
+  });
+
+  fileInput?.addEventListener('change', (e) => {
+    if (e.target instanceof HTMLInputElement && e.target.files) {
+      handleFiles(e.target.files);
+      e.target.value = ''; // Allow re-selecting same file
+    }
+  });
+
+  // Keyboard support for drop zone
+  dropZone?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      fileInput?.click();
+    }
+  });
+
+  // Remove new image
+  window.removeNewImage = (index) => {
+    URL.revokeObjectURL(selectedFiles[index]?.previewUrl);
+    selectedFiles.splice(index, 1);
+    updatePreviews();
+    announce(`${selectedFiles.length} imagen${selectedFiles.length !== 1 ? 'es' : ''} restante${selectedFiles.length !== 1 ? 's' : ''}.`);
+  };
+
+  // Move existing image (reorder)
+  window.moveImage = (button, direction) => {
+    const item = button.closest('.admin-image-item');
+    const container = item?.parentElement;
+    const items = Array.from(container?.querySelectorAll('.admin-image-item') || []);
+    const index = items.indexOf(item);
+    const newIndex = index + direction;
+    if (newIndex >= 0 && newIndex < items.length) {
+      container?.insertBefore(items[newIndex], direction > 0 ? item?.nextSibling : item);
+      // Update hidden input order will be handled by form submission order
+      announce(`Imagen movida a posición ${newIndex + 1}`);
+    }
+  };
+
+  // Expose for parent form to collect files before submit
+  window.getUploadFiles = () => selectedFiles;
+  window.getUploadedUrls = () => uploadedUrls;
+  window.setUploadedUrls = (urls) => {
+    uploadedUrls = urls;
+    // Add hidden inputs for the URLs
+    urlInputsContainer.innerHTML = '';
+    urls.forEach((url, i) => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = `${fieldName}[]`;
+      input.value = url;
+      urlInputsContainer.appendChild(input);
+    });
+  };
+
+  // Cleanup on page unload
+  window.addEventListener('beforeunload', () => {
+    selectedFiles.forEach(f => URL.revokeObjectURL(f.previewUrl));
+  });
+</script>
+
+<style>
+  @reference "../../styles/main.css";
+
+  .admin-upload-zone {
+    @apply border-2 border-dashed rounded-lg p-8 text-center transition-colors;
+    border-color: var(--color-border);
+  }
+
+  .admin-upload-zone.border-primary {
+    @apply border-primary bg-primary/5;
+  }
+
+  .admin-images-grid {
+    @apply grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3;
+  }
+
+  .admin-image-item {
+    @apply relative;
+  }
+
+  .admin-hover-group:hover .admin-hover-show {
+    opacity: 1;
+  }
+
+  .admin-peer-checked:has(input[type="checkbox"]:checked) {
+    opacity: 0.3;
+    filter: grayscale(1);
+  }
+
+  .admin-image-item img {
+    @apply w-full aspect-square object-cover rounded-lg border;
+    border-color: var(--color-border);
+  }
+
+  .admin-new-previews {
+    @apply grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3;
+  }
+
+  .admin-existing-images {
+    @apply space-y-4;
+  }
+
+  @media (max-width: 640px) {
+    .admin-images-grid,
+    .admin-new-previews {
+      @apply grid-cols-2;
+    }
+  }
+</style>

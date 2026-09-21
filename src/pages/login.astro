@@ -1,0 +1,117 @@
+---
+/**
+ * Login page — /login
+ *
+ * Magic link sign-in form for admin access.
+ * No framework JS — the form enhancement uses a minimal inline
+ * script with the Fetch API to show success/error feedback.
+ */
+import Base from '@/layouts/Base.astro';
+import config from '@/config/config.json';
+
+const redirect = Astro.url.searchParams.get('redirect') || '/';
+const errorMsg = Astro.url.searchParams.get('error');
+---
+
+<Base
+  meta_title={`Acceso | ${config.site.title} - Admin`}
+  description="Acceso administrativo mediante link mágico"
+  noindex
+>
+  <section class="section">
+    <div class="container max-w-sm mx-auto px-4">
+      <div class="bg-body border border-border rounded-xl shadow-sm p-8">
+        <h1 class="text-h3 text-center text-text-dark mb-2">Acceso administrativo</h1>
+        <p class="text-sm text-text-light text-center mb-8">
+          Ingresá tu email y recibí un link de acceso mágico.
+        </p>
+
+        {errorMsg && (
+          <div class="mb-6 p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md dark:bg-red-900/20 dark:border-red-800 dark:text-red-400">
+            No se pudo completar el acceso. Intentalo de nuevo.
+          </div>
+        )}
+
+        <form id="login-form" autocomplete="off">
+          <input type="hidden" name="redirect" value={redirect} />
+
+          <div class="admin-form-field">
+            <label for="email" class="admin-form-field-label">Correo electrónico</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              autocomplete="email"
+              class="form-input"
+              placeholder="tu@email.com"
+              minlength="3"
+            />
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg w-full mt-6">
+            Enviar link de acceso
+          </button>
+
+          <div id="form-status" class="mt-6 text-center" aria-live="polite"></div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <script is:inline>
+    (function () {
+      const form = document.getElementById('login-form');
+      const statusEl = document.getElementById('form-status');
+      const submitBtn = form ? form.querySelector('button[type="submit"]') : null;
+
+      function setLoading(loading) {
+        if (submitBtn) {
+          submitBtn.disabled = loading;
+          submitBtn.textContent = loading ? 'Enviando...' : 'Enviar link de acceso';
+        }
+      }
+
+      function showMessage(message, isError) {
+        if (!statusEl) return;
+        statusEl.innerHTML =
+          '<div class="text-sm ' +
+          (isError
+            ? 'text-red-600 dark:text-red-400'
+            : 'text-green-600 dark:text-green-400') +
+          '">' +
+          message +
+          '</div>';
+      }
+
+      if (!form) return;
+
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+        setLoading(true);
+        statusEl.innerHTML = '';
+
+        try {
+          const response = await fetch('/api/auth/signin', {
+            method: 'POST',
+            body: formData,
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            showMessage(data.message, false);
+          } else {
+            showMessage(data.error || 'Ocurrió un error al enviar el link.', true);
+            setLoading(false);
+          }
+        } catch (err) {
+          showMessage('Error de conexión. Intentalo de nuevo.', true);
+          setLoading(false);
+        }
+      });
+    })();
+  </script>
+</Base>

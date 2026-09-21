@@ -91,6 +91,23 @@ export const KitQuerySchema = z.object({
 
 export type KitQuery = z.infer<typeof KitQuerySchema>;
 
+// ============================================================
+// Admin Product List Query Schema (Task T02)
+// ============================================================
+
+// Admin product list query parameters
+export const ProductAdminListQuerySchema = z.object({
+  page: z.coerce.number().int().positive().default(1),
+  limit: z.coerce.number().int().positive().max(100).default(20),
+  search: z.string().optional(),
+  category: z.string().uuid().optional(),
+  availability: z.enum(['in-stock', 'limited', 'out-of-stock']).optional(),
+  sort: z.enum(['name-asc', 'name-desc', 'price-asc', 'price-desc', 'created-desc', 'updated-desc']).default('created-desc'),
+  showArchived: z.coerce.boolean().default(false),
+});
+
+export type ProductAdminListQuery = z.infer<typeof ProductAdminListQuerySchema>;
+
 // Slug param
 export const SlugSchema = z.object({
   slug: z.string().min(1),

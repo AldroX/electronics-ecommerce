@@ -11,12 +11,17 @@
   --color-accent: #eab308;
   --color-whatsapp: #25d366;
   --color-body: #ffffff;
+  --color-body-muted: #f1f5f9;
+  --color-body-dark: #0f172a;
+  --color-body-muted-dark: #1e293b;
   --color-light: #f8fafc;
   --color-border: #e2e8f0;
+  --color-border-dark: #334155;
   --color-dark: #0f172a;
   --color-text: #334155;
   --color-text-dark: #0f172a;
   --color-text-light: #64748b;
+  --color-text-light-dark: #94a3b8;
 
   /* === Font Families === */
   --font-primary: Inter, sans-serif;

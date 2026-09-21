@@ -22,7 +22,7 @@ const imageAlt = guide.title;
 
 <a
   href={`/guias/${guide.slug}`}
-  class="group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-white shadow transition hover:shadow-lg scroll-mt-24 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+  class="admin-card-group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-white shadow transition hover:shadow-lg scroll-mt-24 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
   aria-label={`Leer guía: ${guide.title}`}
 >
   <div class="relative aspect-[16/9] w-full overflow-hidden bg-light">
@@ -33,7 +33,7 @@ const imageAlt = guide.title;
       width="640"
       height="360"
       decoding="async"
-      class="h-full w-full object-cover transition-transform duration-300 motion-safe:group-hover:scale-105"
+      class="h-full w-full object-cover transition-transform duration-300 admin-card-image-hover"
       onerror={`this.onerror=null;this.src='${PLACEHOLDER}';this.alt='${imageAlt}';`}
     />
     <span
@@ -49,3 +49,15 @@ const imageAlt = guide.title;
     {guide.description && <p class="line-clamp-2 text-sm text-text-light">{guide.description}</p>}
   </div>
 </a>
+
+<style>
+  .admin-card-group:hover .admin-card-image-hover {
+    transform: scale(1.05);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .admin-card-image-hover {
+      transform: none;
+    }
+  }
+</style>

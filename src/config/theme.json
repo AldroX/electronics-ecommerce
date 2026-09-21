@@ -7,14 +7,19 @@
         "accent": "#eab308",
         "whatsapp": "#25d366",
         "body": "#ffffff",
+        "body-muted": "#f1f5f9",
+        "body-dark": "#0f172a",
+        "body-muted-dark": "#1e293b",
         "light": "#f8fafc",
         "border": "#e2e8f0",
+        "border-dark": "#334155",
         "dark": "#0f172a"
       },
       "text_color": {
         "text": "#334155",
         "text-dark": "#0f172a",
-        "text-light": "#64748b"
+        "text-light": "#64748b",
+        "text-light-dark": "#94a3b8"
       }
     }
   },

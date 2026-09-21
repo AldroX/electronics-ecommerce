@@ -1,0 +1,177 @@
+---
+import AdminLayout from '@/layouts/Admin.astro';
+import ProductForm from '@/components/admin/ProductForm.astro';
+import ImageUpload from '@/components/admin/ImageUpload.astro';
+import { fetchCategories } from '@/lib/api/fetchers';
+import { verifyAdminSession } from '@/lib/auth/admin-guard';
+import type { ProductAdminDetail } from '@/data/types';
+
+/**
+ * Admin Product Edit Page
+ * - Fetches product by ID from GET /api/admin/products/[id]
+ * - Fetches categories for dropdown
+ * - Renders ProductForm in edit mode (pre-filled)
+ * - Embeds ImageUpload with existing images as removable thumbnails
+ * - Handles form submission via PATCH to /api/admin/products/[id]
+ */
+
+// Verify admin session
+const adminUser = await verifyAdminSession(Astro.request);
+if (!adminUser) {
+  const loginUrl = new URL('/login', Astro.url.origin);
+  loginUrl.searchParams.set('redirect', Astro.url.pathname + Astro.url.search);
+  return Astro.redirect(loginUrl.toString());
+}
+
+// Get product ID from params
+const { id } = Astro.params;
+if (!id || typeof id !== 'string') {
+  return Astro.redirect('/admin/products?toast=error&message=' + encodeURIComponent('ID de producto inválido'));
+}
+
+// Fetch product from API
+const productRes = await fetch(`${Astro.url.origin}/api/admin/products/${id}`, {
+  headers: {
+    Cookie: Astro.request.headers.get('Cookie') || '',
+  },
+});
+
+let product: ProductAdminDetail | null = null;
+if (productRes.ok) {
+  const json = await productRes.json();
+  if (json.ok && json.data) {
+    product = json.data;
+  }
+}
+
+// 404 if product not found
+if (!product) {
+  return Astro.redirect('/admin/products?toast=error&message=' + encodeURIComponent('Producto no encontrado'));
+}
+
+// Fetch categories for dropdown
+let categories: { id: string; name: string; slug: string; description: string; image: string }[] = [];
+try {
+  const catsResult = await fetchCategories({ limit: 100 });
+  categories = catsResult.data;
+} catch (e) {
+  console.error('Error fetching categories:', e);
+}
+
+// Check for validation errors from redirect (if any)
+const url = new URL(Astro.request.url);
+const errorParam = url.searchParams.get('errors');
+const formDataParam = url.searchParams.get('formData');
+
+let errors: Record<string, string[]> = {};
+let formData: Record<string, any> = {};
+
+if (errorParam) {
+  try {
+    errors = JSON.parse(decodeURIComponent(errorParam));
+  } catch (e) {
+    console.error('Error parsing errors:', e);
+  }
+}
+if (formDataParam) {
+  try {
+    formData = JSON.parse(decodeURIComponent(formDataParam));
+  } catch (e) {
+    console.error('Error parsing formData:', e);
+  }
+}
+---
+
+<AdminLayout title={`Editar: ${product.name}`} currentPath="/admin/products">
+  <div class="admin-page-header">
+    <div>
+      <h1 class="text-2xl font-bold text-text-dark dark:text-text-dark">Editar producto</h1>
+      <p class="text-text-light dark:text-text-light-dark mt-1">
+        <span class="font-mono text-sm">/{product.slug}</span> — ID: <span class="font-mono text-sm">{product.id}</span>
+      </p>
+    </div>
+    <div class="flex flex-col sm:flex-row items-center gap-2">
+      <a href="/admin/products" class="btn btn-outline-primary min-h-[44px] touch-target">Volver a la lista</a>
+      <a href={`/admin/products/${id}/delete`} class="btn btn-outline-primary min-h-[44px] touch-target text-red-600 border-red-300 hover:bg-red-50 dark:hover:bg-red-900/20">Archivar</a>
+    </div>
+  </div>
+
+  <ProductForm
+    mode="edit"
+    product={product}
+    categories={categories}
+    errors={errors}
+    formData={formData}
+    action={`/api/admin/products/${id}?_method=PATCH`}
+    method="POST"
+  >
+    <ImageUpload
+      slot="images"
+      existingImages={product.images}
+      maxFiles={5}
+      maxSizeMB={5}
+      fieldName="images"
+    />
+  </ProductForm>
+
+  <script is:inline>
+    // Handle form submission with image upload
+    document.querySelector('.admin-form')?.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const form = this;
+      const submitBtn = document.getElementById('submit-btn');
+      const btnText = submitBtn?.querySelector('.btn-text');
+      const btnLoading = submitBtn?.querySelector('.btn-loading');
+
+      // Get files from ImageUpload component
+      const uploadFiles = window.getUploadFiles?.() || [];
+      const existingKeep = Array.from(form.querySelectorAll('input[name="images_keep[]"]:checked')).map(cb => cb.value);
+
+      // Show loading state
+      if (btnText) btnText.classList.add('hidden');
+      if (btnLoading) btnLoading.classList.remove('hidden');
+      if (submitBtn) submitBtn.disabled = true;
+
+      try {
+        // Upload new images first
+        let uploadedUrls = [];
+        for (const file of uploadFiles) {
+          const uploadFormData = new FormData();
+          uploadFormData.append('file', file);
+          uploadFormData.append('fileName', file.name);
+
+          const res = await fetch('/api/upload', {
+            method: 'POST',
+            body: uploadFormData,
+            credentials: 'include',
+          });
+
+          const data = await res.json();
+          if (data.ok && data.data?.url) {
+            uploadedUrls.push(data.data.url);
+          } else {
+            throw new Error(data.error?.message || 'Error subiendo imagen');
+          }
+        }
+
+        // Combine kept existing images with new uploaded URLs
+        const finalUrls = [...existingKeep, ...uploadedUrls];
+
+        // Set final URLs in ImageUpload component
+        window.setUploadedUrls?.(finalUrls);
+
+        // Submit the form
+        form.submit();
+      } catch (err) {
+        console.error('Error updating product:', err);
+        alert('Error al actualizar producto: ' + (err instanceof Error ? err.message : String(err)));
+
+        // Reset button state
+        if (btnText) btnText.classList.remove('hidden');
+        if (btnLoading) btnLoading.classList.add('hidden');
+        if (submitBtn) submitBtn.disabled = false;
+      }
+    });
+  </script>
+</AdminLayout>

@@ -1,0 +1,93 @@
+---
+import AdminLayout from '@/layouts/Admin.astro';
+import ProductTable from '@/components/admin/ProductTable.astro';
+import { fetchCategories } from '@/lib/api/fetchers';
+import type { ProductAdminListResponse } from '@/data/types';
+import { ProductAdminListQuerySchema } from '@/lib/api/validation';
+import { verifyAdminSession } from '@/lib/auth/admin-guard';
+
+/**
+ * Admin Product List Page
+ * - Fetches products with filters/pagination from GET /api/admin/products
+ * - Fetches categories for filter dropdown
+ * - Renders ProductTable component
+ */
+
+// Verify admin session
+const adminUser = await verifyAdminSession(Astro.request);
+if (!adminUser) {
+  const loginUrl = new URL('/login', Astro.url.origin);
+  loginUrl.searchParams.set('redirect', Astro.url.pathname + Astro.url.search);
+  return Astro.redirect(loginUrl.toString());
+}
+
+// Parse query parameters
+const url = new URL(Astro.request.url);
+const queryResult = ProductAdminListQuerySchema.safeParse(Object.fromEntries(url.searchParams));
+
+if (!queryResult.success) {
+  return Astro.redirect('/admin/products');
+}
+
+const { page, limit, search, category, availability, sort, showArchived } = queryResult.data;
+
+// Fetch products from API (server-side)
+const productsRes = await fetch(`${Astro.url.origin}/api/admin/products${url.search}`, {
+  headers: {
+    Cookie: Astro.request.headers.get('Cookie') || '',
+  },
+});
+
+let productsData: ProductAdminListResponse = {
+  products: [],
+  pagination: { page: 1, limit: 20, total: 0, totalPages: 0 },
+};
+
+if (productsRes.ok) {
+  const json = await productsRes.json();
+  if (json.ok && json.data) {
+    productsData = json.data;
+  }
+}
+
+// Fetch categories for filter dropdown
+let categories: { id: string; name: string }[] = [];
+try {
+  const catsResult = await fetchCategories({ limit: 100 });
+  categories = catsResult.data.map(c => ({ id: c.id, name: c.name }));
+} catch (e) {
+  console.error('Error fetching categories:', e);
+}
+
+const filters = {
+  search: search || '',
+  category: category || '',
+  availability: availability || '',
+  sort: sort || 'created-desc',
+  showArchived: showArchived || false,
+};
+---
+
+<AdminLayout title="Productos" currentPath="/admin/products">
+  <div class="admin-page-header">
+    <div>
+      <h1 class="text-2xl font-bold text-text-dark dark:text-text-dark">Productos</h1>
+      <p class="text-text-light dark:text-text-light-dark mt-1">
+        Gestiona tu catálogo de productos. <span class="font-medium">{productsData.pagination.total}</span> productos en total.
+      </p>
+    </div>
+    <a href="/admin/products/new" class="btn btn-primary min-h-[44px] touch-target w-full sm:w-auto">
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+      </svg>
+      Nuevo producto
+    </a>
+  </div>
+
+  <ProductTable
+    data={productsData}
+    categories={categories}
+    filters={filters}
+    currentPath="/admin/products"
+  />
+</AdminLayout>

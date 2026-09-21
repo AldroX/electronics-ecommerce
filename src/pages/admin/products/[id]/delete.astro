@@ -1,0 +1,105 @@
+---
+import AdminLayout from '@/layouts/Admin.astro';
+import ConfirmModal from '@/components/admin/ConfirmModal.astro';
+import { verifyAdminSession } from '@/lib/auth/admin-guard';
+
+/**
+ * Admin Product Archive/Delete Confirmation Page
+ * - Fetches product for display
+ * - Renders ConfirmModal with product name
+ * - Form POST to same URL calls DELETE /api/admin/products/[id]
+ * - On success redirects to /admin/products with success toast
+ */
+
+// Verify admin session
+const adminUser = await verifyAdminSession(Astro.request);
+if (!adminUser) {
+  const loginUrl = new URL('/login', Astro.url.origin);
+  loginUrl.searchParams.set('redirect', Astro.url.pathname + Astro.url.search);
+  return Astro.redirect(loginUrl.toString());
+}
+
+// Get product ID from params
+const { id } = Astro.params;
+if (!id || typeof id !== 'string') {
+  return Astro.redirect('/admin/products?toast=error&message=' + encodeURIComponent('ID de producto inválido'));
+}
+
+// Fetch product for display
+const productRes = await fetch(`${Astro.url.origin}/api/admin/products/${id}`, {
+  headers: {
+    Cookie: Astro.request.headers.get('Cookie') || '',
+  },
+});
+
+let product: { id: string; name: string; slug: string } | null = null;
+if (productRes.ok) {
+  const json = await productRes.json();
+  if (json.ok && json.data) {
+    product = json.data;
+  }
+}
+
+// 404 if product not found
+if (!product) {
+  return Astro.redirect('/admin/products?toast=error&message=' + encodeURIComponent('Producto no encontrado'));
+}
+
+// Handle POST (archive action)
+if (Astro.request.method === 'POST') {
+  const deleteRes = await fetch(`${Astro.url.origin}/api/admin/products/${id}`, {
+    method: 'DELETE',
+    headers: {
+      Cookie: Astro.request.headers.get('Cookie') || '',
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (deleteRes.ok || deleteRes.status === 204) {
+    // Redirect to list with success toast
+    return Astro.redirect('/admin/products?toast=success&message=' + encodeURIComponent(`Producto "${product.name}" archivado correctamente`));
+  } else {
+    // Error - show error toast and stay on page
+    const errorJson = await deleteRes.json().catch(() => ({}));
+    return Astro.redirect(`/admin/products/${id}/delete?toast=error&message=` + encodeURIComponent(errorJson.error?.message || 'Error al archivar el producto'));
+  }
+}
+
+// Get referrer for cancel link
+const referrer = Astro.request.headers.get('Referer') || `/admin/products/${id}`;
+---
+
+<AdminLayout title={`Archivar: ${product.name}`} currentPath="/admin/products">
+  <div class="admin-page-header">
+    <div>
+      <h1 class="text-2xl font-bold text-text-dark dark:text-text-dark">Archivar producto</h1>
+      <p class="text-text-light dark:text-text-light-dark mt-1">Confirmar archivado de <span class="font-medium text-text-dark dark:text-text-dark">{product.name}</span></p>
+    </div>
+    <a href={referrer} class="btn btn-outline-primary min-h-[44px] touch-target">Cancelar</a>
+  </div>
+
+  <div class="max-w-2xl mx-auto">
+    <ConfirmModal
+      id="archive-product"
+      title="Archivar producto"
+      message={`¿Archivar "${product.name}"? Se ocultará de la tienda pero se puede restaurar más tarde.`}
+      confirmText="Archivar"
+      cancelText="Cancelar"
+      cancelHref={referrer}
+      action={`/admin/products/${id}/delete`}
+      method="POST"
+      open
+    />
+  </div>
+
+  <style>
+    .admin-page-header .btn {
+      width: 100%;
+    }
+    @media (min-width: 640px) {
+      .admin-page-header .btn {
+        width: auto;
+      }
+    }
+  </style>
+</AdminLayout>

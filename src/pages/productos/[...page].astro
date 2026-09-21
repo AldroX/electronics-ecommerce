@@ -200,7 +200,7 @@ const description =
               </svg>
               Filtros
             </button>
-            <div id="mobile-filters" class="mt-4 hidden" role="region" aria-label="Filtros móviles">
+            <div id="mobile-filters" class="mt-4" hidden role="region" aria-label="Filtros móviles">
               <ProductFilters />
             </div>
           </div>
@@ -308,7 +308,7 @@ const description =
         return (
           '<a href="/producto/' +
           product.slug +
-          '" class="group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-white shadow transition hover:shadow-lg scroll-mt-24 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary" aria-label="Ver ' +
+          '" class="admin-card-group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-white shadow transition hover:shadow-lg scroll-mt-24 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary" aria-label="Ver ' +
           product.name +
           '">' +
           '<div class="relative aspect-[4/3] w-full overflow-hidden bg-light">' +
@@ -316,7 +316,7 @@ const description =
           (product.images[0] || PLACEHOLDER) +
           '" alt="' +
           imgAlt +
-          '" loading="lazy" width="400" height="300" decoding="async" class="h-full w-full object-cover transition-transform duration-300 motion-safe:group-hover:scale-105" onerror="this.onerror=null;this.src=\'' +
+          '" loading="lazy" width="400" height="300" decoding="async" class="h-full w-full object-cover transition-transform duration-300 admin-card-image-hover" onerror="this.onerror=null;this.src=\'' +
           PLACEHOLDER +
           "';this.srcset='';this.alt='Imagen no disponible para " +
           product.name +
@@ -504,4 +504,17 @@ const description =
       });
     })();
   </script>
+
+<style is:global>
+  .admin-card-group:hover .admin-card-image-hover {
+    transform: scale(1.05);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .admin-card-image-hover {
+      transform: none;
+    }
+  }
+</style>
+
 </Base>

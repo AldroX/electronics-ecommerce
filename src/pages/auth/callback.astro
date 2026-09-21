@@ -1,0 +1,32 @@
+---
+/// ============================================================
+/// /auth/callback - PKCE magic link callback
+/// Exchanges the authorization code for a session, then
+/// redirects to the original destination (admin or home).
+/// ============================================================
+import { createServerSupabaseClient } from '@/lib/supabase/server';
+
+export const prerender = false;
+
+const code = Astro.url.searchParams.get('code');
+const redirect = Astro.url.searchParams.get('redirect') || '/';
+
+if (!code) {
+  return Astro.redirect('/login?error=no_code');
+}
+
+const supabase = createServerSupabaseClient(Astro.request.headers, Astro.cookies);
+
+const { data: { user }, error } = await supabase.auth.exchangeCodeForSession(code);
+
+if (error || !user) {
+  console.error('Auth callback exchange error:', error?.message);
+  return Astro.redirect('/login?error=exchange_failed');
+}
+
+const isAdmin = user.user_metadata?.role === 'admin';
+
+return Astro.redirect(
+  redirect && redirect !== '/' ? redirect : (isAdmin ? '/admin/products' : '/')
+);
+---

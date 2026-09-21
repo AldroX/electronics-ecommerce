@@ -80,7 +80,8 @@ export const GET: APIRoute = async (context) => {
         .from('categories')
         .select('id')
         .eq('slug', parsed.category)
-        .maybeSingle();
+        .maybeSingle()
+        .returns<{ id: string } | null>();
 
       if (categoryRow?.id) {
         querySupabase = querySupabase.eq('category_id', categoryRow.id);
@@ -97,8 +98,9 @@ export const GET: APIRoute = async (context) => {
         .eq('id', parsed.solution)
         .single();
 
-      if (solution && (solution as any).product_ids && (solution as any).product_ids.length > 0) {
-        querySupabase = querySupabase.in('id', (solution as any).product_ids);
+      const solutionData = solution as { product_ids: string[] } | null;
+      if (solutionData?.product_ids && solutionData.product_ids.length > 0) {
+        querySupabase = querySupabase.in('id', solutionData.product_ids);
       }
     }
 

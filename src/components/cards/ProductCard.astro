@@ -103,7 +103,7 @@ const compareAt = showCompareAt ? formatter.format(product.compareAtPrice!) : nu
 ---
 
 <article
-  class="group flex h-full min-w-0 flex-col overflow-hidden rounded-lg border border-border bg-white shadow transition hover:shadow-lg"
+  class="admin-card-group flex h-full min-w-0 flex-col overflow-hidden rounded-lg border border-border bg-white shadow transition hover:shadow-lg"
 >
   <!-- Producto -->
   <a href={`/producto/${product.slug}`} class="flex h-full flex-1 flex-col" aria-label={`Ver ${product.name}`}>
@@ -118,7 +118,7 @@ const compareAt = showCompareAt ? formatter.format(product.compareAtPrice!) : nu
             widths={[480, 640, 800]}
             sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
             formats={['avif', 'webp']}
-            class="h-full w-full object-cover transition-transform duration-300 motion-safe:group-hover:scale-105"
+            class="h-full w-full object-cover transition-transform duration-300 admin-card-image-hover"
           />
         )
       }
@@ -133,7 +133,7 @@ const compareAt = showCompareAt ? formatter.format(product.compareAtPrice!) : nu
               width="400"
               height="300"
               decoding="async"
-              class="h-full w-full object-cover transition-transform duration-300 motion-safe:group-hover:scale-105"
+              class="h-full w-full object-cover transition-transform duration-300 admin-card-image-hover"
             />
           </picture>
         )
@@ -172,7 +172,34 @@ const compareAt = showCompareAt ? formatter.format(product.compareAtPrice!) : nu
   </a>
 
   <!-- WhatsApp -->
-  <div class="shrink-0 px-2 pb-2">
-    <CTAWhatsApp variant="inline" productName={product.name} messageTemplate={whatsappMessage} class="w-full" />
+  <div class="mt-auto shrink-0 border-t border-border px-3 pb-3 pt-3">
+    <CTAWhatsApp
+      variant="inline"
+      productName={product.name}
+      messageTemplate={whatsappMessage}
+      class="product-card-whatsapp w-full font-semibold"
+    />
   </div>
 </article>
+
+<style>
+  :global(.product-card-whatsapp) {
+    border: 1px solid var(--color-whatsapp, #25d366);
+    background-color: var(--color-whatsapp, #25d366);
+    color: #fff;
+  }
+
+  :global(.product-card-whatsapp:hover) {
+    background-color: #1da851;
+  }
+
+  .admin-card-group:hover .admin-card-image-hover {
+    transform: scale(1.05);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .admin-card-image-hover {
+      transform: none;
+    }
+  }
+</style>

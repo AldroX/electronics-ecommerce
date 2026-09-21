@@ -41,12 +41,19 @@ type CategoryRow = {
   image: string;
 };
 
-function getServiceClient() {
-  return createClient<Database>(
-    import.meta.env.PUBLIC_SUPABASE_URL,
-    import.meta.env.SUPABASE_SERVICE_ROLE_KEY,
-    { auth: { autoRefreshToken: false, persistSession: false } }
-  );
+function getPublicClient() {
+  const url = import.meta.env.PUBLIC_SUPABASE_URL;
+  const key = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!url || !key) {
+    throw new Error(
+      'Supabase configuration is missing: PUBLIC_SUPABASE_URL and PUBLIC_SUPABASE_ANON_KEY are required.'
+    );
+  }
+
+  return createClient<Database>(url, key, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
 }
 
 // ============================================================
@@ -164,7 +171,7 @@ export async function fetchProducts(filters?: {
   page?: number;
   limit?: number;
 }): Promise<FetchProductsResult> {
-  const supabase = getServiceClient();
+  const supabase = getPublicClient();
   
   let query = supabase
     .from('products')
@@ -211,7 +218,7 @@ export async function fetchProducts(filters?: {
 
   const products = (data as ProductListRow[] | null | undefined) ?? [];
 
-  const { data: categoriesData } = await supabase.from('categories').select('id, slug');
+  const { data: categoriesData } = await supabase.from('categories').select('id, slug').returns<{ id: string; slug: string }[]>();
   const categorySlugMap = new Map((categoriesData ?? []).map((category) => [category.id, category.slug]));
 
   return {
@@ -255,7 +262,7 @@ export async function fetchProducts(filters?: {
  * fetchProduct - Detalle de producto por slug para getStaticPaths
  */
 export async function fetchProduct(slug: string): Promise<FetchProductResult | null> {
-  const supabase = getServiceClient();
+  const supabase = getPublicClient();
 
   const { data, error } = await supabase
     .from('products')
@@ -340,7 +347,7 @@ export async function fetchCategories(filters?: {
   page?: number;
   limit?: number;
 }): Promise<FetchCategoriesResult> {
-  const supabase = getServiceClient();
+  const supabase = getPublicClient();
   
   let query = supabase
     .from('categories')
@@ -388,7 +395,7 @@ export async function fetchCategory(slug: string, options?: {
   page?: number;
   perPage?: number;
 }): Promise<FetchCategoryResult | null> {
-  const supabase = getServiceClient();
+  const supabase = getPublicClient();
 
   // Get category
   const categoryResult = await supabase

@@ -3,7 +3,12 @@ html {
 }
 
 body {
-  @apply bg-body text-base font-primary font-normal leading-relaxed text-text;
+  background-color: var(--color-body);
+  color: var(--color-text);
+  font-family: var(--font-primary);
+  font-size: var(--text-base);
+  font-weight: var(--font-normal);
+  line-height: var(--leading-relaxed);
 }
 
 h1,
@@ -12,44 +17,107 @@ h3,
 h4,
 h5,
 h6 {
-  @apply font-primary font-bold leading-tight text-text-dark;
+  font-family: var(--font-primary);
+  font-weight: var(--font-bold);
+  line-height: var(--leading-tight);
+  color: var(--color-text-dark);
 }
 
-h1,
+h1 {
+  font-size: var(--text-h1-sm);
+}
+@media (min-width: 48em) {
+  h1 {
+    font-size: var(--text-h1);
+  }
+}
+
 .h1 {
-  @apply text-h1-sm md:text-h1;
+  font-size: var(--text-h1-sm);
+}
+@media (min-width: 48em) {
+  .h1 {
+    font-size: var(--text-h1);
+  }
 }
 
-h2,
+h2 {
+  font-size: var(--text-h2-sm);
+}
+@media (min-width: 48em) {
+  h2 {
+    font-size: var(--text-h2);
+  }
+}
+
 .h2 {
-  @apply text-h2-sm md:text-h2;
+  font-size: var(--text-h2-sm);
+}
+@media (min-width: 48em) {
+  .h2 {
+    font-size: var(--text-h2);
+  }
 }
 
-h3,
+h3 {
+  font-size: var(--text-h3-sm);
+}
+@media (min-width: 48em) {
+  h3 {
+    font-size: var(--text-h3);
+  }
+}
+
 .h3 {
-  @apply text-h3-sm md:text-h3;
+  font-size: var(--text-h3-sm);
+}
+@media (min-width: 48em) {
+  .h3 {
+    font-size: var(--text-h3);
+  }
 }
 
-h4,
+h4 {
+  font-size: var(--text-h4);
+}
+@media (min-width: 48em) {
+  h4 {
+    font-size: var(--text-h4);
+  }
+}
+
 .h4 {
-  @apply text-h4;
+  font-size: var(--text-h4);
+}
+@media (min-width: 48em) {
+  .h4 {
+    font-size: var(--text-h4);
+  }
 }
 
-h5,
-.h5 {
-  @apply text-h5;
+h5 {
+  font-size: var(--text-h5);
+}
+@media (min-width: 48em) {
+  h5 {
+    font-size: var(--text-h5);
+  }
 }
 
-h6,
-.h6 {
-  @apply text-h6;
+h6 {
+  font-size: var(--text-h6);
+}
+@media (min-width: 48em) {
+  h6 {
+    font-size: var(--text-h6);
+  }
 }
 
 b,
 strong {
-  @apply font-semibold;
+  font-weight: var(--font-semibold);
 }
 
 button {
-  @apply cursor-pointer;
+  cursor: pointer;
 }
