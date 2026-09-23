@@ -133,6 +133,8 @@ export interface Offer {
   currency: string;
   whatsappMessage: string;
   productSlug: string;
+  /** Optional explicit target URL (e.g. /kits/... when the offer sells a kit). */
+  href?: string;
   seo?: SEOData;
 }
 
