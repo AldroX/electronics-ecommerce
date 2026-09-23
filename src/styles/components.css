@@ -474,7 +474,9 @@
   border-radius: 0.5rem;
   font-size: 0.875rem;
   font-weight: 500;
-  transition: color 0.2s, background-color 0.2s;
+  transition:
+    color 0.2s,
+    background-color 0.2s;
   min-height: 44px;
 }
 @media (prefers-color-scheme: dark) {
@@ -666,7 +668,9 @@
   border-radius: 0.5rem;
   padding: 2rem;
   text-align: center;
-  transition: border-color 0.2s, background-color 0.2s;
+  transition:
+    border-color 0.2s,
+    background-color 0.2s;
 }
 @media (prefers-color-scheme: dark) {
   .admin-upload-zone {
@@ -740,7 +744,9 @@
   gap: 0.75rem;
   padding: 0.75rem 1rem;
   border-radius: 0.5rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
   border: 1px solid;
   min-width: 0;
 }
@@ -817,7 +823,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s, color 0.2s;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
 }
 
 .admin-pagination-page.active {
@@ -850,8 +858,6 @@
   padding: 1rem;
   margin-bottom: 1.5rem;
 }
-
-
 
 /* Scrollbar styling for admin areas */
 .admin-sidebar::-webkit-scrollbar,
@@ -950,9 +956,9 @@
 .offer-cta-row cta-whatsapp {
   width: 100%;
 }
-  @media (min-width: 640px) {
-    .offer-cta-row .btn,
-    .offer-cta-row cta-whatsapp {
-      width: auto;
-}
+@media (min-width: 640px) {
+  .offer-cta-row .btn,
+  .offer-cta-row cta-whatsapp {
+    width: auto;
+  }
 }

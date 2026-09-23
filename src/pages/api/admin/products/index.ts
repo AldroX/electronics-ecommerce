@@ -224,9 +224,8 @@ export const GET: APIRoute = async (context) => {
     const supabase = getServiceClient();
 
     // Build base query
-    let query = supabase
-      .from('products')
-      .select(`
+    let query = supabase.from('products').select(
+      `
         id,
         name,
         slug,
@@ -242,7 +241,9 @@ export const GET: APIRoute = async (context) => {
         categories!inner (
           name
         )
-      `, { count: 'exact' });
+      `,
+      { count: 'exact' }
+    );
 
     // Filter out archived (soft-deleted) products unless showArchived is true
     if (!showArchived) {

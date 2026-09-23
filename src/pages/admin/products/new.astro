@@ -71,18 +71,12 @@ if (formDataParam) {
     action="/api/admin/products"
     method="POST"
   >
-    <ImageUpload
-      slot="images"
-      existingImages={[]}
-      maxFiles={5}
-      maxSizeMB={5}
-      fieldName="images"
-    />
+    <ImageUpload slot="images" existingImages={[]} maxFiles={5} maxSizeMB={5} fieldName="images" />
   </ProductForm>
 
   <script is:inline>
     // Handle form submission with image upload
-    document.querySelector('.admin-form')?.addEventListener('submit', async function(e) {
+    document.querySelector('.admin-form')?.addEventListener('submit', async function (e) {
       e.preventDefault();
 
       const form = this;

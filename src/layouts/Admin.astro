@@ -76,7 +76,7 @@ const navItems = [
 
     <script is:inline>
       // Theme initialization - must run before paint to avoid flash
-      (function() {
+      (function () {
         const stored = localStorage.getItem('theme');
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         const isDark = stored ? stored === 'dark' : prefersDark;
@@ -87,38 +87,42 @@ const navItems = [
     <!-- Global styles -->
     <link rel="stylesheet" href="/styles/main.css" />
   </head>
-  <body class="flex h-screen min-h-screen bg-body font-primary text-text dark:bg-body-dark dark:text-text-dark antialiased">
+  <body
+    class="flex h-screen min-h-screen bg-body font-primary text-text dark:bg-body-dark dark:text-text-dark antialiased"
+  >
     <!-- Toast notification -->
-    {toast && (
-      <div
-        class="fixed top-4 right-4 z-50 max-w-sm w-full animate-slide-in"
-        role="alert"
-        aria-live="polite"
-        aria-atomic="true"
-      >
+    {
+      toast && (
         <div
-          class={`flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg border min-w-0 ${
-            toast.type === 'success'
-              ? 'bg-green-600 text-white border-green-700'
-              : toast.type === 'error'
-              ? 'bg-red-600 text-white border-red-700'
-              : 'bg-blue-600 text-white border-blue-700'
-          }`}
+          class="fixed top-4 right-4 z-50 max-w-sm w-full animate-slide-in"
+          role="alert"
+          aria-live="polite"
+          aria-atomic="true"
         >
-          <span class="flex-1 text-sm font-medium">{toast.message}</span>
-          <button
-            type="button"
-            class="text-current opacity-70 hover:opacity-100 transition-opacity p-1 ml-2 flex-shrink-0"
-            aria-label="Cerrar notificación"
-            onclick="this.parentElement.parentElement.remove()"
+          <div
+            class={`flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg border min-w-0 ${
+              toast.type === 'success'
+                ? 'bg-green-600 text-white border-green-700'
+                : toast.type === 'error'
+                  ? 'bg-red-600 text-white border-red-700'
+                  : 'bg-blue-600 text-white border-blue-700'
+            }`}
           >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+            <span class="flex-1 text-sm font-medium">{toast.message}</span>
+            <button
+              type="button"
+              class="text-current opacity-70 hover:opacity-100 transition-opacity p-1 ml-2 flex-shrink-0"
+              aria-label="Cerrar notificación"
+              onclick="this.parentElement.parentElement.remove()"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
         </div>
-      </div>
-    )}
+      )
+    }
 
     <div class="flex flex-1 overflow-hidden">
       <!-- Sidebar -->
@@ -131,38 +135,50 @@ const navItems = [
           <!-- Logo / Brand -->
           <div class="flex items-center gap-3 px-6 py-5 border-b border-border dark:border-border-dark">
             <svg class="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"
+              ></path>
             </svg>
             <span class="text-lg font-semibold text-text dark:text-text-dark">{config.site.title}</span>
             <span class="ml-auto px-2 py-1 text-xs font-medium bg-primary/10 text-primary rounded-full">Admin</span>
           </div>
 
           <!-- Navigation -->
-          <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto" role="navigation" aria-label="Menú principal de administración">
+          <nav
+            class="flex-1 px-3 py-4 space-y-1 overflow-y-auto"
+            role="navigation"
+            aria-label="Menú principal de administración"
+          >
             <ul class="space-y-1" role="list">
-              {navItems.map((item) => (
-                <li>
-                  <a
-                    href={item.href}
-                    class={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors min-h-[44px] touch-target ${
-                      currentPath.startsWith(item.href)
-                        ? 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary'
-                        : 'text-text-light dark:text-text-light-dark hover:bg-body-muted dark:hover:bg-body-muted-dark hover:text-text dark:hover:text-text'
-                    }`}
-                    aria-current={currentPath.startsWith(item.href) ? 'page' : undefined}
-                  >
-                    <span aria-hidden="true" class="text-base">{item.icon}</span>
-                    <span>{item.label}</span>
-                  </a>
-                </li>
-              ))}
+              {
+                navItems.map((item) => (
+                  <li>
+                    <a
+                      href={item.href}
+                      class={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors min-h-[44px] touch-target ${
+                        currentPath.startsWith(item.href)
+                          ? 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary'
+                          : 'text-text-light dark:text-text-light-dark hover:bg-body-muted dark:hover:bg-body-muted-dark hover:text-text dark:hover:text-text'
+                      }`}
+                      aria-current={currentPath.startsWith(item.href) ? 'page' : undefined}
+                    >
+                      <span aria-hidden="true" class="text-base">
+                        {item.icon}
+                      </span>
+                      <span>{item.label}</span>
+                    </a>
+                  </li>
+                ))
+              }
             </ul>
           </nav>
 
           <!-- User info / Logout -->
           <div class="p-3 border-t border-border dark:border-border-dark">
             <div class="flex items-center gap-3 px-3 py-2">
-              <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium text-sm">
+              <div
+                class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium text-sm"
+              >
                 {adminUser.email?.charAt(0).toUpperCase() ?? 'A'}
               </div>
               <div class="flex-1 min-w-0">
@@ -177,7 +193,12 @@ const navItems = [
                 class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-text-light dark:text-text-light-dark hover:text-text dark:hover:text-text hover:bg-body-muted dark:hover:bg-body-muted-dark rounded-lg transition-colors min-h-[44px] touch-target"
               >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                  ></path>
                 </svg>
                 Cerrar sesión
               </button>
@@ -192,12 +213,15 @@ const navItems = [
         class="fixed inset-0 z-30 bg-black/50 lg:hidden hidden transition-opacity"
         aria-hidden="true"
         onclick="document.getElementById('admin-sidebar')?.classList.add('-translate-x-full'); this.classList.add('hidden')"
-      ></div>
+      >
+      </div>
 
       <!-- Main content -->
       <main class="flex-1 flex flex-col min-w-0 lg:ml-64">
         <!-- Top bar -->
-        <header class="sticky top-0 z-20 flex items-center gap-4 px-4 py-3 bg-body/80 dark:bg-body-dark/80 backdrop-blur-sm border-b border-border dark:border-border-dark">
+        <header
+          class="sticky top-0 z-20 flex items-center gap-4 px-4 py-3 bg-body/80 dark:bg-body-dark/80 backdrop-blur-sm border-b border-border dark:border-border-dark"
+        >
           <button
             type="button"
             id="sidebar-toggle"
@@ -208,10 +232,12 @@ const navItems = [
             onclick="document.getElementById('admin-sidebar')?.classList.remove('-translate-x-full'); document.getElementById('sidebar-overlay')?.classList.remove('hidden'); this.setAttribute('aria-expanded', 'true')"
           >
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
             </svg>
           </button>
-          <h1 class="text-lg font-semibold text-text dark:text-text-dark truncate">{title || 'Panel de administración'}</h1>
+          <h1 class="text-lg font-semibold text-text dark:text-text-dark truncate">
+            {title || 'Panel de administración'}
+          </h1>
           <div class="flex-1"></div>
           <!-- Theme toggle -->
           <button
@@ -222,10 +248,25 @@ const navItems = [
             onclick="document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light')"
           >
             <svg class="w-5 h-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
             </svg>
-            <svg class="hidden w-5 h-5 dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            <svg
+              class="hidden w-5 h-5 dark:block"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+              ></path>
             </svg>
           </button>
         </header>

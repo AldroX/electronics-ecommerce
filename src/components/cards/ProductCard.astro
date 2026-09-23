@@ -59,8 +59,7 @@ function toGlobKey(path: string): string {
 }
 
 const hasImages = product.images.length > 0;
-const primaryPublic =
-  product.images[0]?.replace('/images/placeholder-product.webp', PLACEHOLDER) ?? PLACEHOLDER;
+const primaryPublic = product.images[0]?.replace('/images/placeholder-product.webp', PLACEHOLDER) ?? PLACEHOLDER;
 
 // Try to resolve as importable asset (future: real product images in src/assets)
 // Normalize glob keys for cross-platform compatibility

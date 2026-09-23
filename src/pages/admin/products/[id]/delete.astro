@@ -57,11 +57,17 @@ if (Astro.request.method === 'POST') {
 
   if (deleteRes.ok || deleteRes.status === 204) {
     // Redirect to list with success toast
-    return Astro.redirect('/admin/products?toast=success&message=' + encodeURIComponent(`Producto "${product.name}" archivado correctamente`));
+    return Astro.redirect(
+      '/admin/products?toast=success&message=' +
+        encodeURIComponent(`Producto "${product.name}" archivado correctamente`)
+    );
   } else {
     // Error - show error toast and stay on page
     const errorJson = await deleteRes.json().catch(() => ({}));
-    return Astro.redirect(`/admin/products/${id}/delete?toast=error&message=` + encodeURIComponent(errorJson.error?.message || 'Error al archivar el producto'));
+    return Astro.redirect(
+      `/admin/products/${id}/delete?toast=error&message=` +
+        encodeURIComponent(errorJson.error?.message || 'Error al archivar el producto')
+    );
   }
 }
 
@@ -73,7 +79,9 @@ const referrer = Astro.request.headers.get('Referer') || `/admin/products/${id}`
   <div class="admin-page-header">
     <div>
       <h1 class="text-2xl font-bold text-text-dark dark:text-text-dark">Archivar producto</h1>
-      <p class="text-text-light dark:text-text-light-dark mt-1">Confirmar archivado de <span class="font-medium text-text-dark dark:text-text-dark">{product.name}</span></p>
+      <p class="text-text-light dark:text-text-light-dark mt-1">
+        Confirmar archivado de <span class="font-medium text-text-dark dark:text-text-dark">{product.name}</span>
+      </p>
     </div>
     <a href={referrer} class="btn btn-outline-primary min-h-[44px] touch-target">Cancelar</a>
   </div>
