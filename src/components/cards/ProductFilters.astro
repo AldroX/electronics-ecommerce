@@ -13,9 +13,14 @@
  * Accessibility: fieldset + legend for each group, proper labels,
  * aria-describedby for price inputs, logical tab order.
  */
-import { getAllCategories } from '@/data/helpers/categories';
+import { fetchCategories, type FetchCategoriesResult } from '@/lib/api/fetchers';
 
-const categories = getAllCategories();
+let categories: FetchCategoriesResult['data'] = [];
+try {
+  categories = (await fetchCategories({ limit: 100 })).data;
+} catch (error) {
+  console.error('ProductFilters: failed to fetch categories from Supabase', error);
+}
 ---
 
 <form id="catalog-filters" class="space-y-6" role="search" aria-label="Filtros de productos" onsubmit="return false">
