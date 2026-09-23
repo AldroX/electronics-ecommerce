@@ -21,7 +21,7 @@ export interface Props {
 }
 
 const { offer, href } = Astro.props;
-const linkHref = href || `/producto/${offer.productSlug}`;
+const linkHref = href || offer.href || `/producto/${offer.productSlug}`;
 
 const isOutOfStock = offer.availability === 'out-of-stock';
 

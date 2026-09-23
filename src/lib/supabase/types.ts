@@ -78,6 +78,9 @@ export interface Database {
           seo_canonical: string | null;
           related_product_ids: string[];
           battery_wh: number | null;
+          rating: number | null;
+          rating_count: number | null;
+          details: Json | null;
           created_at: string;
           updated_at: string;
         };
@@ -106,6 +109,9 @@ export interface Database {
           seo_canonical?: string | null;
           related_product_ids?: string[];
           battery_wh?: number | null;
+          rating?: number | null;
+          rating_count?: number | null;
+          details?: Json | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -134,6 +140,9 @@ export interface Database {
           seo_canonical?: string | null;
           related_product_ids?: string[];
           battery_wh?: number | null;
+          rating?: number | null;
+          rating_count?: number | null;
+          details?: Json | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -353,7 +362,7 @@ export interface Database {
           answer: string;
           created_at: string;
           updated_at: string;
-        Relationships: [];
+          Relationships: [];
         };
         Insert: {
           id?: string;
@@ -456,7 +465,7 @@ export interface Database {
           utm_campaign: string | null;
           created_at: string;
           updated_at: string;
-        Relationships: [];
+          Relationships: [];
         };
         Insert: {
           id?: string;

@@ -1,0 +1,53 @@
+---
+/**
+ * Testimonial — Single testimonial card (molecule), part of required set.
+ *
+ * Card with name, role/context, quote and a decorative star row. The star
+ * count is presentation only (not real product ratings), so it ships with
+ * role="img" + aria-label to stay accessible.
+ *
+ * No props beyond the testimonial. Zero framework JS.
+ */
+import type { Testimonial } from '@/data/types';
+
+interface Props {
+  testimonial: Testimonial;
+}
+
+const { testimonial } = Astro.props;
+const stars = Math.min(5, Math.max(1, testimonial.stars ?? 5));
+---
+
+<figure class="flex h-full flex-col justify-between rounded-lg border border-border bg-white p-6">
+  <blockquote class="m-0">
+    <p class="text-text-light leading-relaxed">“{testimonial.quote}”</p>
+  </blockquote>
+  <figcaption class="mt-6">
+    <div class="flex items-center gap-3">
+      <span
+        class="flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 font-bold text-primary"
+        aria-hidden="true"
+      >
+        {testimonial.name.charAt(0)}
+      </span>
+      <div>
+        <p class="font-semibold text-text-dark">{testimonial.name}</p>
+        <p class="text-sm text-text-light">{testimonial.role}</p>
+      </div>
+    </div>
+    <div class="mt-4 flex gap-0.5" role="img" aria-label={`${stars} de 5 estrellas (valoración decorativa)`}>
+      {
+        Array.from({ length: 5 }).map((_, i) => (
+          <svg
+            class={i < stars ? 'h-4 w-4 text-accent' : 'h-4 w-4 text-border'}
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+          </svg>
+        ))
+      }
+    </div>
+  </figcaption>
+</figure>

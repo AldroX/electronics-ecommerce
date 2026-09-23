@@ -98,9 +98,17 @@ interface CatalogPage {
 const currentPageParam = Math.max(1, parseInt(Astro.params.page ?? '1', 10) || 1);
 const size = 12;
 
+// Text search is server-driven (supports SSR reload, pagination and no-JS):
+// ?search= is read on every request and applied by fetchProducts.
+const searchParam = Astro.url.searchParams.get('search')?.trim() ?? '';
+
 let result: FetchProductsResult;
 try {
-  result = await fetchProducts({ limit: size, page: currentPageParam });
+  result = await fetchProducts({
+    limit: size,
+    page: currentPageParam,
+    search: searchParam || undefined,
+  });
 } catch (error) {
   console.error('Productos catalog: failed to fetch products from Supabase', error);
   result = { data: [], meta: { totalPages: 1, currentPage: 1, totalCount: 0 } };
@@ -136,7 +144,7 @@ const metaTitle =
     ? `Catálogo de Productos — Página ${page.currentPage}`
     : 'Catálogo de Productos | Energía Solar, Respaldo e Iluminación';
 const description =
-  'Explora nuestro catálogo de paneles solares, power stations, baterías LiFePO4, iluminación LED y accesorios. Filtra por categoría, precio y disponibilidad. Compra por WhatsApp.';
+  'Explora nuestro catálogo de paneles solares, power stations, baterías LiFePO4, iluminación LED y accesorios. Filtra por búsqueda, categoría, precio y disponibilidad. Compra por WhatsApp.';
 ---
 
 <Base meta_title={metaTitle} description={description} image={productsHeroBg.src}>
@@ -162,8 +170,8 @@ const description =
       <div class="max-w-3xl">
         <h1 id="catalog-title" class="text-h1-sm md:text-h1 text-white">Catálogo de Productos</h1>
         <p class="mt-4 max-w-2xl text-base text-gray-300 md:text-lg">
-          Encuentra la solución energética que necesitas. Filtra por categoría, precio y disponibilidad. Asesoría gratis
-          por WhatsApp.
+          Encuentra la solución energética que necesitas. Filtra por búsqueda, categoría, precio y disponibilidad.
+          Asesoría gratis por WhatsApp.
         </p>
       </div>
     </div>
@@ -210,7 +218,7 @@ const description =
           </div>
 
           <!-- Catalog Grid (shared component) -->
-          <CatalogGrid page={page} />
+          <CatalogGrid page={page} query={searchParam ? `search=${encodeURIComponent(searchParam)}` : undefined} />
         </div>
       </div>
     </div>
@@ -398,10 +406,14 @@ const description =
         document.querySelectorAll('[data-filter="availability"]:checked').forEach(function (cb) {
           avail.push(cb.value);
         });
-        // Price inputs live in two panels (desktop sidebar + mobile). Read from the
+        // Inputs live in two panels (desktop sidebar + mobile). Read from the
         // visible one so both panels drive the same filter state with no ID clash.
+        var searchEl = null;
         var minEl = null,
           maxEl = null;
+        document.querySelectorAll('[data-scope="search"]').forEach(function (el) {
+          if (visible(el)) searchEl = el;
+        });
         document.querySelectorAll('[data-scope="price-min"]').forEach(function (el) {
           if (visible(el)) minEl = el;
         });
@@ -409,7 +421,7 @@ const description =
           if (visible(el)) maxEl = el;
         });
         return {
-          search: '',
+          search: searchEl ? searchEl.value.trim() : '',
           categories: cats,
           priceMin: minEl && minEl.value !== '' ? Number(minEl.value) : NaN,
           priceMax: maxEl && maxEl.value !== '' ? Number(maxEl.value) : NaN,
@@ -423,9 +435,11 @@ const description =
           .forEach(function (cb) {
             cb.checked = false;
           });
-        document.querySelectorAll('[data-scope="price-min"], [data-scope="price-max"]').forEach(function (el) {
-          el.value = '';
-        });
+        document
+          .querySelectorAll('[data-scope="search"], [data-scope="price-min"], [data-scope="price-max"]')
+          .forEach(function (el) {
+            el.value = '';
+          });
         currentFilters = { search: '', categories: [], priceMin: NaN, priceMax: NaN, availability: [] };
         currentSort = 'newest';
         var sortEl = document.getElementById('sort-select');
@@ -459,6 +473,17 @@ const description =
               currentFilters = collectFilters();
               updateGrid();
             }, 400);
+          });
+        });
+
+        var searchTimer;
+        document.querySelectorAll('[data-scope="search"]').forEach(function (el) {
+          el.addEventListener('input', function () {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(function () {
+              currentFilters = collectFilters();
+              updateGrid();
+            }, 300);
           });
         });
 

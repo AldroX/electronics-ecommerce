@@ -1,22 +1,37 @@
 ---
 /**
- * RelatedProducts — Grid of ProductCards from the same category.
+ * RelatedProducts — Grid of ProductCards related to the current product.
  *
- * Filters products by the same category, excludes the current product,
- * and renders up to 4 ProductCards. Renders nothing if fewer than 2
- * related products exist (avoids a nearly-empty section).
+ * Two sources, in priority order:
+ *  1. Explicit curated `relatedSlugs` (slugs, in display order) when the
+ *     list is non-empty — missing slugs are skipped gracefully.
+ *  2. Fallback: products from the same category, excluding the current one.
+ *
+ * Renders nothing when fewer than 2 related products exist (avoids a
+ * nearly-empty section). Zero framework JS.
  */
 import type { Product } from '@/data/types';
-import ProductCard from '../cards/ProductCard.astro';
+import ProductGrid from '../cards/ProductGrid.astro';
 
 export interface Props {
   product: Product;
   allProducts: Product[];
+  /** Explicitly curated related product slugs in display order. */
+  relatedSlugs?: string[];
 }
 
-const { product, allProducts } = Astro.props;
+const { product, allProducts, relatedSlugs = [] } = Astro.props;
 
-const related = allProducts.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4);
+const explicitRelated = relatedSlugs
+  .map((slug) => allProducts.find((p) => p.slug === slug))
+  .filter((p): p is Product => Boolean(p))
+  .filter((p) => p.id !== product.id)
+  .slice(0, 4);
+
+const related =
+  explicitRelated.length > 0
+    ? explicitRelated
+    : allProducts.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4);
 
 // Avoid rendering a nearly-empty related section
 const shouldRender = related.length >= 2;
@@ -26,11 +41,7 @@ const shouldRender = related.length >= 2;
   shouldRender && (
     <section>
       <h2 class="mb-6 text-h5 font-bold text-text-dark">Productos relacionados</h2>
-      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {related.map((p) => (
-          <ProductCard product={p} />
-        ))}
-      </div>
+      <ProductGrid products={related} />
     </section>
   )
 }

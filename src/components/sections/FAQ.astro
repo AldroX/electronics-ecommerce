@@ -1,0 +1,84 @@
+---
+/**
+ * FAQ — Reusable accordion section (organism), part of required component set.
+ *
+ * Extracted from the /faq page so the accordion UI + vanilla JS toggle are
+ * shared. Defaults to all FAQs from the data layer; callers may pass a subset.
+ *
+ * Zero framework JS. Accessible accordion: aria-expanded, aria-controls,
+ * aria-labelledby on the region.
+ */
+import type { FAQItem } from '@/data/types';
+import { getAllFAQs } from '@/data/helpers/faq';
+
+interface Props {
+  items?: FAQItem[];
+}
+
+const { items } = Astro.props;
+const faqs = items ?? getAllFAQs();
+---
+
+{
+  faqs.length > 0 && (
+    <div class="max-w-3xl mx-auto">
+      {faqs.map((faq) => (
+        <div class="accordion" id={`accordion-${faq.id}`}>
+          <button class="accordion-header" aria-expanded="false" aria-controls={`content-${faq.id}`} type="button">
+            <span class="font-medium text-start pr-4">{faq.question}</span>
+            <svg
+              class="accordion-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+          <div class="accordion-content" id={`content-${faq.id}`} role="region" aria-labelledby={`accordion-${faq.id}`}>
+            <div class="text-text-light leading-relaxed" set:html={faq.answer} />
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+<script>
+  // Vanilla JS accordion toggle — zero framework JS
+  document.addEventListener('DOMContentLoaded', () => {
+    const accordions = document.querySelectorAll('.accordion');
+
+    accordions.forEach((accordion) => {
+      const header = accordion.querySelector('.accordion-header') as HTMLElement | null;
+      const content = accordion.querySelector('.accordion-content') as HTMLElement | null;
+      const icon = accordion.querySelector('.accordion-icon') as HTMLElement | null;
+
+      if (!header || !content || !icon) return;
+
+      header.addEventListener('click', () => {
+        const isActive = accordion.classList.contains('active');
+
+        // Close all accordions
+        accordions.forEach((acc) => {
+          acc.classList.remove('active');
+          const btn = acc.querySelector('.accordion-header') as HTMLElement | null;
+          const cont = acc.querySelector('.accordion-content') as HTMLElement | null;
+          if (btn) btn.setAttribute('aria-expanded', 'false');
+          if (cont) cont.style.maxHeight = '0';
+        });
+
+        // Open clicked one if it wasn't active
+        if (!isActive) {
+          accordion.classList.add('active');
+          header.setAttribute('aria-expanded', 'true');
+          content.style.maxHeight = content.scrollHeight + 'px';
+        }
+      });
+    });
+  });
+</script>

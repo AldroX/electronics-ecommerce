@@ -28,6 +28,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
   }));
 };
 
+// Static: build-time fetch from Supabase, no per-request DB hits (§19 perf budget).
+export const prerender = true;
+
 const allProductsResult = await fetchProducts({ limit: 1000 });
 const allProducts = allProductsResult.data as Product[];
 const slug = Astro.params.slug;
@@ -37,6 +40,12 @@ const product = productFromProps ?? allProducts.find((item) => item.slug === slu
 if (!product) {
   throw new Error('No se encontró el producto solicitado');
 }
+
+// Resolve curated related products (ids or slugs, whatever the data layer
+// returns) into display slugs, preserving DB order and skipping missing ones.
+const relatedSlugs: string[] = product.relatedProducts
+  .map((ref) => allProducts.find((p) => p.id === ref || p.slug === ref)?.slug)
+  .filter((s): s is string => Boolean(s));
 
 // Fetch all products and categories for related products and breadcrumbs
 const [categoriesResult] = await Promise.all([fetchCategories()]);
@@ -84,6 +93,28 @@ const isOutOfStock = product.availability === 'out-of-stock';
 const whatsappMessage = isOutOfStock
   ? `${product.whatsappMessage} (Producto agotado, consultar reposición)`
   : undefined;
+
+// Rating: rendered only when the DB provides it (rating column, post-migration).
+const rating = product.rating;
+const hasRating = typeof rating === 'number' && rating > 0;
+const ratingText = hasRating ? String(Math.round(rating * 10) / 10) : '';
+const ratingPercent = hasRating ? Math.min(100, Math.max(0, (rating / 5) * 100)) : 0;
+const ratingLabel = hasRating
+  ? `Valoración ${ratingText} de 5 estrellas${product.ratingCount ? ` (${product.ratingCount} valoraciones)` : ''}`
+  : '';
+
+// Descriptive blocks fed by the optional `details` column. Rendered only when
+// at least one block is present — no empty blocks when details is absent.
+const detailLabels = {
+  whatIs: '¿Qué es?',
+  purpose: '¿Para qué sirve?',
+  forWhom: '¿Quién debería comprarlo?',
+} as const;
+
+const detailsBlocks: { title: string; text: string }[] = Object.entries(detailLabels).flatMap(([key, title]) => {
+  const text = product.details?.[key as keyof typeof detailLabels]?.trim();
+  return text ? [{ title, text }] : [];
+});
 ---
 
 <Base
@@ -107,6 +138,49 @@ const whatsappMessage = isOutOfStock
           {product.name}
         </h1>
 
+        {/* Star rating — accessible shape (role="img" + aria-label), only when present */}
+        {
+          hasRating && (
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="relative inline-flex" role="img" aria-label={ratingLabel}>
+                {/* Base (empty) stars */}
+                <span class="flex gap-0.5 text-border" aria-hidden="true">
+                  {Array.from({ length: 5 }).map(() => (
+                    <svg
+                      class="h-5 w-5"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      aria-hidden="true"
+                    >
+                      <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                    </svg>
+                  ))}
+                </span>
+                {/* Filled overlay clipped to the rating percentage */}
+                <span
+                  class="absolute inset-y-0 left-0 overflow-hidden"
+                  style={`width:${ratingPercent}%`}
+                  aria-hidden="true"
+                >
+                  <span class="flex gap-0.5 text-accent">
+                    {Array.from({ length: 5 }).map(() => (
+                      <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                      </svg>
+                    ))}
+                  </span>
+                </span>
+              </span>
+              <span class="text-sm font-semibold text-text-dark">{ratingText}</span>
+              {product.ratingCount != null && (
+                <span class="text-sm text-text-light">({product.ratingCount} valoraciones)</span>
+              )}
+            </div>
+          )
+        }
+
         {product.shortDescription && <p class="text-base text-text-light">{product.shortDescription}</p>}
 
         {/* Price */}
@@ -127,6 +201,23 @@ const whatsappMessage = isOutOfStock
       </div>
     </div>
 
+    {/* Description blocks — definition-style grid, only when details are present */}
+    {
+      detailsBlocks.length > 0 && (
+        <div class="mt-12">
+          <h2 class="mb-6 text-h5 font-bold text-text-dark">Descripción</h2>
+          <dl class="grid grid-cols-1 gap-6 md:grid-cols-3">
+            {detailsBlocks.map((block) => (
+              <div class="rounded-lg border border-border bg-white p-5">
+                <dt class="mb-2 text-sm font-semibold uppercase tracking-wide text-primary">{block.title}</dt>
+                <dd class="m-0 whitespace-pre-line leading-relaxed text-text-light">{block.text}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      )
+    }
+
     {/* Specs */}
     <div class="mt-12">
       <ProductSpecs specs={product.specs} />
@@ -139,7 +230,7 @@ const whatsappMessage = isOutOfStock
 
     {/* Related products */}
     <div class="mt-12">
-      <RelatedProducts product={product} allProducts={allProducts} />
+      <RelatedProducts product={product} allProducts={allProducts} relatedSlugs={relatedSlugs} />
     </div>
   </section>
 </Base>

@@ -3,12 +3,15 @@
  * ProductFilters — Catalog page filter sidebar (molecule).
  *
  * Renders filter controls that dispatch CustomEvents on change:
+ *  - Search input (text; driven by ?search= on reload)
  *  - Category checkboxes (from data categories)
  *  - Price range: two number inputs (min/max)
  *  - Availability checkboxes (in-stock, limited, out-of-stock)
  *  - "Limpiar filtros" button
  *
  * No form submission — client-side interactivity via vanilla JS events.
+ * The search input is pre-filled from the ?search= query param on reload,
+ * mirroring the server-side filter state used by /productos.
  *
  * Accessibility: fieldset + legend for each group, proper labels,
  * aria-describedby for price inputs, logical tab order.
@@ -21,9 +24,27 @@ try {
 } catch (error) {
   console.error('ProductFilters: failed to fetch categories from Supabase', error);
 }
+
+// Keep the searched query visible after a reload (server-rendered value).
+const searchParam = Astro.url.searchParams.get('search')?.trim() ?? '';
 ---
 
 <form id="catalog-filters" class="space-y-6" role="search" aria-label="Filtros de productos" onsubmit="return false">
+  <!-- Search -->
+  <fieldset class="space-y-3">
+    <legend class="text-sm font-semibold text-text-dark">Buscar</legend>
+    <input
+      type="search"
+      name="search"
+      value={searchParam}
+      placeholder="panel solar, power station…"
+      data-scope="search"
+      autocomplete="off"
+      class="form-input text-sm"
+      aria-label="Buscar productos por nombre, descripción o etiqueta"
+    />
+  </fieldset>
+
   <!-- Categories -->
   <fieldset class="space-y-3">
     <legend class="text-sm font-semibold text-text-dark">Categorías</legend>

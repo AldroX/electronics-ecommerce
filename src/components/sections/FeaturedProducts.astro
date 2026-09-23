@@ -10,7 +10,7 @@
  * No props. <h2> section title (REQ-HP-003). Zero framework JS.
  */
 import { getFeaturedProducts } from '@/data/helpers/products';
-import ProductCard from '../cards/ProductCard.astro';
+import ProductGrid from '../cards/ProductGrid.astro';
 
 const featured = getFeaturedProducts();
 ---
@@ -20,14 +20,12 @@ const featured = getFeaturedProducts();
     <section class="section section-deferred bg-light" aria-labelledby="featured-title">
       <div class="container">
         <div class="mb-8 md:mb-10">
-          <h2 id="featured-title" class="section-title">Destacados</h2>
+          <h2 id="featured-title" class="section-title">
+            Destacados
+          </h2>
         </div>
 
-        <div class="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
-          {featured.map((product) => (
-            <ProductCard product={product} priority={false} />
-          ))}
-        </div>
+        <ProductGrid products={featured} />
       </div>
     </section>
   )

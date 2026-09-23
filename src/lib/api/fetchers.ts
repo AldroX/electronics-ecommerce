@@ -3,8 +3,9 @@
 /// Usan Supabase client directamente (no HTTP) para funcionar en build time
 /// ============================================================
 
-import { createClient } from "@supabase/supabase-js";
-import type { Database } from "@/lib/supabase/types";
+import { createClient } from '@supabase/supabase-js';
+import type { Database } from '@/lib/supabase/types';
+import type { ProductDetails } from '@/data/types';
 
 type ProductListRow = {
   id: string;
@@ -27,6 +28,9 @@ type ProductListRow = {
   compare_at_price: number | null;
   battery_wh: number | null;
   related_product_ids: string[] | null;
+  rating?: number | null;
+  rating_count?: number | null;
+  details?: Record<string, unknown> | null;
   seo_title: string | null;
   seo_description: string | null;
   seo_image: string | null;
@@ -56,6 +60,22 @@ function getPublicClient() {
   });
 }
 
+// Single source of truth for the product column list so list and detail
+// fetchers stay in sync. `rating`, `rating_count` and `details` are selected
+// but only populated after the columns exist (see migration script).
+const PRODUCT_COLUMNS =
+  'id, name, slug, description, short_description, price, currency, category_id, availability, featured, best_seller, kit_only, whatsapp_message, images, specs, features, tags, compare_at_price, battery_wh, related_product_ids, rating, rating_count, details, seo_title, seo_description, seo_image, seo_canonical';
+
+/** Normalize the optional `details` JSONB column into ProductDetails. */
+function mapDetails(raw: Record<string, unknown> | null | undefined): ProductDetails | undefined {
+  if (!raw) return undefined;
+  const whatIs = typeof raw.whatIs === 'string' ? raw.whatIs : undefined;
+  const purpose = typeof raw.purpose === 'string' ? raw.purpose : undefined;
+  const forWhom = typeof raw.forWhom === 'string' ? raw.forWhom : undefined;
+  // Only return a value when at least one block is present (no empty object).
+  return whatIs || purpose || forWhom ? { whatIs, purpose, forWhom } : undefined;
+}
+
 // ============================================================
 // Types
 // ============================================================
@@ -82,6 +102,9 @@ export interface FetchProductsResult {
     compareAtPrice?: number;
     batteryWh?: number;
     relatedProducts: string[];
+    rating?: number;
+    ratingCount?: number;
+    details?: ProductDetails;
     seo: {
       title: string;
       description: string;
@@ -109,6 +132,9 @@ export interface FetchProductResult {
   whatsappMessage: string;
   relatedProducts: string[];
   canPower: string[];
+  rating?: number;
+  ratingCount?: number;
+  details?: ProductDetails;
   seo: {
     title: string;
     description: string;
@@ -172,17 +198,14 @@ export async function fetchProducts(filters?: {
   limit?: number;
 }): Promise<FetchProductsResult> {
   const supabase = getPublicClient();
-  
-  let query = supabase
-    .from('products')
-    .select(
-      'id, name, slug, description, short_description, price, currency, category_id, availability, featured, best_seller, kit_only, whatsapp_message, images, specs, features, tags, compare_at_price, battery_wh, related_product_ids, seo_title, seo_description, seo_image, seo_canonical',
-      { count: 'exact' }
-    );
+
+  let query = supabase.from('products').select(PRODUCT_COLUMNS, { count: 'exact' });
 
   // Filtros
   if (filters?.search) {
-    query = query.or(`name.ilike.%${filters.search}%,description.ilike.%${filters.search}%,short_description.ilike.%${filters.search}%`);
+    query = query.or(
+      `name.ilike.%${filters.search}%,description.ilike.%${filters.search}%,short_description.ilike.%${filters.search}%`
+    );
   }
   if (filters?.category) {
     query = query.eq('category_id', filters.category);
@@ -199,8 +222,8 @@ export async function fetchProducts(filters?: {
     'price-asc': { col: 'price', asc: true },
     'price-desc': { col: 'price', asc: false },
     'name-asc': { col: 'name', asc: true },
-    'newest': { col: 'created_at', asc: false },
-    'popular': { col: 'best_seller', asc: false },
+    newest: { col: 'created_at', asc: false },
+    popular: { col: 'best_seller', asc: false },
   };
   const sort = sortMap[filters?.sort || 'newest'];
   query = query.order(sort.col, { ascending: sort.asc });
@@ -218,11 +241,16 @@ export async function fetchProducts(filters?: {
 
   const products = (data as ProductListRow[] | null | undefined) ?? [];
 
-  const { data: categoriesData } = await supabase.from('categories').select('id, slug').returns<{ id: string; slug: string }[]>();
-  const categorySlugMap = new Map((categoriesData ?? []).map((category) => [category.id, category.slug]));
+  const { data: categoriesData } = await supabase
+    .from('categories')
+    .select('id, slug')
+    .returns<{ id: string; slug: string }[]>();
+  const categorySlugMap = new Map(
+    (categoriesData ?? []).map((category) => [category.id, category.slug])
+  );
 
   return {
-    data: products.map(p => ({
+    data: products.map((p) => ({
       id: p.id,
       name: p.name,
       slug: p.slug,
@@ -243,6 +271,9 @@ export async function fetchProducts(filters?: {
       compareAtPrice: p.compare_at_price || undefined,
       batteryWh: p.battery_wh || undefined,
       relatedProducts: p.related_product_ids || [],
+      rating: p.rating ?? undefined,
+      ratingCount: p.rating_count ?? undefined,
+      details: mapDetails(p.details),
       seo: {
         title: p.seo_title || p.name,
         description: p.seo_description || p.short_description || p.description || '',
@@ -264,11 +295,7 @@ export async function fetchProducts(filters?: {
 export async function fetchProduct(slug: string): Promise<FetchProductResult | null> {
   const supabase = getPublicClient();
 
-  const { data, error } = await supabase
-    .from('products')
-    .select('*')
-    .eq('slug', slug)
-    .single();
+  const { data, error } = await supabase.from('products').select('*').eq('slug', slug).single();
 
   if (error || !data) return null;
 
@@ -285,6 +312,9 @@ export async function fetchProduct(slug: string): Promise<FetchProductResult | n
     whatsapp_message: string;
     related_product_ids: string[] | null;
     battery_wh: number | null;
+    rating: number | null;
+    rating_count: number | null;
+    details: Record<string, unknown> | null;
     seo_title: string | null;
     seo_description: string | null;
     short_description: string | null;
@@ -292,17 +322,21 @@ export async function fetchProduct(slug: string): Promise<FetchProductResult | n
     seo_canonical: string | null;
   };
 
-  // Fetch related products
+  // Fetch related products, preserving the order of related_product_ids
+  // (`.in()` does not guarantee order in Postgres). Missing ids are skipped.
   const relatedIds = product.related_product_ids || [];
   let relatedProducts: string[] = [];
   if (relatedIds.length > 0) {
-    const relatedResult = await supabase
+    const relatedResult = (await supabase
       .from('products')
-      .select('slug')
-      .in('id', relatedIds) as { data: Array<{ slug: string }> | null };
+      .select('id, slug')
+      .in('id', relatedIds)) as { data: Array<{ id: string; slug: string }> | null };
 
     const related = relatedResult.data ?? [];
-    relatedProducts = related.map(r => r.slug);
+    const slugById = new Map(related.map((r) => [r.id, r.slug]));
+    relatedProducts = relatedIds
+      .map((id) => slugById.get(id))
+      .filter((s): s is string => Boolean(s));
   }
 
   // Compute canPower
@@ -330,6 +364,9 @@ export async function fetchProduct(slug: string): Promise<FetchProductResult | n
     whatsappMessage: product.whatsapp_message,
     relatedProducts,
     canPower,
+    rating: product.rating ?? undefined,
+    ratingCount: product.rating_count ?? undefined,
+    details: mapDetails(product.details),
     seo: {
       title: product.seo_title || product.name,
       description: product.seo_description || product.short_description || '',
@@ -348,7 +385,7 @@ export async function fetchCategories(filters?: {
   limit?: number;
 }): Promise<FetchCategoriesResult> {
   const supabase = getPublicClient();
-  
+
   let query = supabase
     .from('categories')
     .select('id, name, slug, description, image', { count: 'exact' });
@@ -372,7 +409,7 @@ export async function fetchCategories(filters?: {
   const categories = (data as CategoryRow[] | null | undefined) ?? [];
 
   return {
-    data: categories.map(c => ({
+    data: categories.map((c) => ({
       id: c.id,
       name: c.name,
       slug: c.slug,
@@ -391,10 +428,13 @@ export async function fetchCategories(filters?: {
 /**
  * fetchCategory - Categoría con productos para getStaticPaths
  */
-export async function fetchCategory(slug: string, options?: {
-  page?: number;
-  perPage?: number;
-}): Promise<FetchCategoryResult | null> {
+export async function fetchCategory(
+  slug: string,
+  options?: {
+    page?: number;
+    perPage?: number;
+  }
+): Promise<FetchCategoryResult | null> {
   const supabase = getPublicClient();
 
   // Get category
@@ -422,15 +462,16 @@ export async function fetchCategory(slug: string, options?: {
     .eq('category_id', category.id)
     .order('created_at', { ascending: false });
 
-  const products = (productsResult.data as Array<{
-    id: string;
-    name: string;
-    slug: string;
-    price: number;
-    currency: string;
-    images: string[] | null;
-    featured: boolean;
-  }> | null) ?? [];
+  const products =
+    (productsResult.data as Array<{
+      id: string;
+      name: string;
+      slug: string;
+      price: number;
+      currency: string;
+      images: string[] | null;
+      featured: boolean;
+    }> | null) ?? [];
   const count = productsResult.count ?? 0;
 
   const page = options?.page || 1;
@@ -444,7 +485,7 @@ export async function fetchCategory(slug: string, options?: {
       description: category.description,
       image: category.image,
     },
-    products: (products || []).map(p => ({
+    products: (products || []).map((p) => ({
       id: p.id,
       name: p.name,
       slug: p.slug,
