@@ -12,7 +12,18 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
-  integrations: [sitemap()],
+  integrations: [
+    sitemap({
+      filter: (page) => {
+        return (
+          !page.includes('/admin/') &&
+          !page.includes('/login') &&
+          !page.includes('/auth/') &&
+          !page.includes('/api/')
+        );
+      },
+    }),
+  ],
   // API routes will use Supabase via Kysely for type-safe queries
   // Database types are in src/lib/supabase/types.ts
 });
