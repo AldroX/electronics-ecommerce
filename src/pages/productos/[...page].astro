@@ -509,16 +509,15 @@ const description =
     })();
   </script>
 
-<style is:global>
-  .admin-card-group:hover .admin-card-image-hover {
-    transform: scale(1.05);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .admin-card-image-hover {
-      transform: none;
+  <style is:global>
+    .admin-card-group:hover .admin-card-image-hover {
+      transform: scale(1.05);
     }
-  }
-</style>
 
+    @media (prefers-reduced-motion: reduce) {
+      .admin-card-image-hover {
+        transform: none;
+      }
+    }
+  </style>
 </Base>
