@@ -28,6 +28,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
   }));
 };
 
+// Static: build-time fetch from Supabase, no per-request DB hits (§19 perf budget).
+export const prerender = true;
+
 const allProductsResult = await fetchProducts({ limit: 1000 });
 const allProducts = allProductsResult.data as Product[];
 const slug = Astro.params.slug;
