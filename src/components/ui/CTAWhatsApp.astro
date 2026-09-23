@@ -27,9 +27,11 @@ export interface Props {
   messageTemplate?: string;
   /** Additional Tailwind classes merged onto the anchor. */
   class?: string;
+  /** Optional product slug, rendered as data-product-slug for click tracking. */
+  productSlug?: string;
 }
 
-const { variant = 'inline', productName, messageTemplate, class: customClass } = Astro.props;
+const { variant = 'inline', productName, messageTemplate, class: customClass, productSlug } = Astro.props;
 
 interface WhatsAppConfig {
   number?: string;
@@ -69,6 +71,7 @@ const baseClasses =
       target="_blank"
       rel="noopener noreferrer"
       aria-label={label}
+      data-product-slug={productSlug || undefined}
       class:list={['btn btn-whatsapp inline-flex items-center justify-center gap-2', baseClasses, customClass]}
     >
       <svg class="inline-block h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -85,6 +88,7 @@ const baseClasses =
       target="_blank"
       rel="noopener noreferrer"
       aria-label={label}
+      data-product-slug={productSlug || undefined}
       class:list={[
         'cta-whatsapp-floating fixed bottom-4 right-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-whatsapp text-white shadow-lg',
         'transition-transform duration-200 motion-safe:hover:scale-110',
