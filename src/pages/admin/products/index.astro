@@ -54,7 +54,7 @@ if (productsRes.ok) {
 let categories: { id: string; name: string }[] = [];
 try {
   const catsResult = await fetchCategories({ limit: 100 });
-  categories = catsResult.data.map(c => ({ id: c.id, name: c.name }));
+  categories = catsResult.data.map((c) => ({ id: c.id, name: c.name }));
 } catch (e) {
   console.error('Error fetching categories:', e);
 }
@@ -78,16 +78,11 @@ const filters = {
     </div>
     <a href="/admin/products/new" class="btn btn-primary min-h-[44px] touch-target w-full sm:w-auto">
       <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
       </svg>
       Nuevo producto
     </a>
   </div>
 
-  <ProductTable
-    data={productsData}
-    categories={categories}
-    filters={filters}
-    currentPath="/admin/products"
-  />
+  <ProductTable data={productsData} categories={categories} filters={filters} currentPath="/admin/products" />
 </AdminLayout>

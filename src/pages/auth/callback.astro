@@ -17,7 +17,10 @@ if (!code) {
 
 const supabase = createServerSupabaseClient(Astro.request.headers, Astro.cookies);
 
-const { data: { user }, error } = await supabase.auth.exchangeCodeForSession(code);
+const {
+  data: { user },
+  error,
+} = await supabase.auth.exchangeCodeForSession(code);
 
 if (error || !user) {
   console.error('Auth callback exchange error:', error?.message);
@@ -26,7 +29,5 @@ if (error || !user) {
 
 const isAdmin = user.user_metadata?.role === 'admin';
 
-return Astro.redirect(
-  redirect && redirect !== '/' ? redirect : (isAdmin ? '/admin/products' : '/')
-);
+return Astro.redirect(redirect && redirect !== '/' ? redirect : isAdmin ? '/admin/products' : '/');
 ---

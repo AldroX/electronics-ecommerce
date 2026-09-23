@@ -20,15 +20,7 @@ interface Props {
   method: 'POST' | 'PATCH';
 }
 
-const {
-  mode,
-  product,
-  categories,
-  errors = {},
-  formData = {},
-  action,
-  method,
-} = Astro.props;
+const { mode, product, categories, errors = {}, formData = {}, action, method } = Astro.props;
 
 const isEdit = mode === 'edit';
 const initialData = product ?? formData;
@@ -48,14 +40,14 @@ function hasError(field: string): boolean {
   return !!errors[field]?.length;
 }
 
-const initialName = getFieldValue('name') as string ?? '';
-const initialSlug = getFieldValue('slug') as string ?? '';
-const initialDescription = getFieldValue('description') as string ?? '';
-const initialShortDescription = getFieldValue('short_description') as string ?? '';
-const initialPrice = getFieldValue('price') as number ?? 0;
-const initialCompareAtPrice = getFieldValue('compare_at_price') as number | null ?? null;
+const initialName = (getFieldValue('name') as string) ?? '';
+const initialSlug = (getFieldValue('slug') as string) ?? '';
+const initialDescription = (getFieldValue('description') as string) ?? '';
+const initialShortDescription = (getFieldValue('short_description') as string) ?? '';
+const initialPrice = (getFieldValue('price') as number) ?? 0;
+const initialCompareAtPrice = (getFieldValue('compare_at_price') as number | null) ?? null;
 const initialCurrency = (getFieldValue('currency') as string) ?? 'ARS';
-const initialCategoryId = getFieldValue('category_id') as string ?? '';
+const initialCategoryId = (getFieldValue('category_id') as string) ?? '';
 const initialImages = (getFieldValue('images') as string[]) ?? [];
 const initialSpecs = (getFieldValue('specs') as Record<string, string>) ?? {};
 const initialFeatures = (getFieldValue('features') as string[]) ?? [];
@@ -63,14 +55,16 @@ const initialAvailability = (getFieldValue('availability') as string) ?? 'in-sto
 const initialFeatured = (getFieldValue('featured') as boolean) ?? false;
 const initialBestSeller = (getFieldValue('best_seller') as boolean) ?? false;
 const initialKitOnly = (getFieldValue('kit_only') as boolean) ?? false;
-const initialWhatsAppMessage = getFieldValue('whatsapp_message') as string ?? `Hola, estoy interesado en ${initialName || 'este producto'}. ¿Está disponible?`;
+const initialWhatsAppMessage =
+  (getFieldValue('whatsapp_message') as string) ??
+  `Hola, estoy interesado en ${initialName || 'este producto'}. ¿Está disponible?`;
 const initialTags = (getFieldValue('tags') as string[]) ?? [];
-const initialSeoTitle = getFieldValue('seo_title') as string | null ?? null;
-const initialSeoDescription = getFieldValue('seo_description') as string | null ?? null;
-const initialSeoImage = getFieldValue('seo_image') as string | null ?? null;
-const initialSeoCanonical = getFieldValue('seo_canonical') as string | null ?? null;
+const initialSeoTitle = (getFieldValue('seo_title') as string | null) ?? null;
+const initialSeoDescription = (getFieldValue('seo_description') as string | null) ?? null;
+const initialSeoImage = (getFieldValue('seo_image') as string | null) ?? null;
+const initialSeoCanonical = (getFieldValue('seo_canonical') as string | null) ?? null;
 const initialRelatedProductIds = (getFieldValue('related_product_ids') as string[]) ?? [];
-const initialBatteryWh = getFieldValue('battery_wh') as number | null ?? null;
+const initialBatteryWh = (getFieldValue('battery_wh') as number | null) ?? null;
 
 const specsEntries = Object.entries(initialSpecs);
 const featuresList = initialFeatures;
@@ -98,7 +92,9 @@ const currencyOptions = [
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <div class="admin-form-field">
-        <label for="name" class="form-label">Nombre del producto <span class="text-red-500" aria-hidden="true">*</span></label>
+        <label for="name" class="form-label"
+          >Nombre del producto <span class="text-red-500" aria-hidden="true">*</span></label
+        >
         <input
           type="text"
           id="name"
@@ -111,14 +107,23 @@ const currencyOptions = [
           aria-invalid={hasError('name') ? 'true' : 'false'}
           onblur="document.getElementById('slug')?.value || (document.getElementById('slug').value = this.value.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''))"
         />
-        {hasError('name') && <p id="name-error" class="form-error" role="alert">{getError('name')}</p>}
+        {
+          hasError('name') && (
+            <p id="name-error" class="form-error" role="alert">
+              {getError('name')}
+            </p>
+          )
+        }
         <p id="name-help" class="form-help">El slug se generará automáticamente al salir de este campo</p>
       </div>
 
       <div class="admin-form-field">
         <label for="slug" class="form-label">Slug (URL) <span class="text-red-500" aria-hidden="true">*</span></label>
         <div class="relative">
-          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-text-light dark:text-text-light-dark" aria-hidden="true">/</span>
+          <span
+            class="absolute left-3 top-1/2 -translate-y-1/2 text-text-light dark:text-text-light-dark"
+            aria-hidden="true">/</span
+          >
           <input
             type="text"
             id="slug"
@@ -132,13 +137,21 @@ const currencyOptions = [
             aria-invalid={hasError('slug') ? 'true' : 'false'}
           />
         </div>
-        {hasError('slug') && <p id="slug-error" class="form-error" role="alert">{getError('slug')}</p>}
+        {
+          hasError('slug') && (
+            <p id="slug-error" class="form-error" role="alert">
+              {getError('slug')}
+            </p>
+          )
+        }
         <p id="slug-help" class="form-help">Solo minúsculas, números y guiones. Debe ser único.</p>
       </div>
     </div>
 
     <div class="admin-form-field">
-      <label for="description" class="form-label">Descripción completa <span class="text-red-500" aria-hidden="true">*</span></label>
+      <label for="description" class="form-label"
+        >Descripción completa <span class="text-red-500" aria-hidden="true">*</span></label
+      >
       <textarea
         id="description"
         name="description"
@@ -146,14 +159,24 @@ const currencyOptions = [
         rows={6}
         class={`form-input ${hasError('description') ? 'border-red-500 focus:border-red-500' : ''}`}
         aria-describedby={hasError('description') ? 'description-error' : 'description-help'}
-        aria-invalid={hasError('description') ? 'true' : 'false'}
-      >{initialDescription}</textarea>
-      {hasError('description') && <p id="description-error" class="form-error" role="alert">{getError('description')}</p>}
-      <p id="description-help" class="form-help">Descripción detallada para la página del producto. Soporta HTML básico.</p>
+        aria-invalid={hasError('description') ? 'true' : 'false'}>{initialDescription}</textarea
+      >
+      {
+        hasError('description') && (
+          <p id="description-error" class="form-error" role="alert">
+            {getError('description')}
+          </p>
+        )
+      }
+      <p id="description-help" class="form-help">
+        Descripción detallada para la página del producto. Soporta HTML básico.
+      </p>
     </div>
 
     <div class="admin-form-field">
-      <label for="short_description" class="form-label">Descripción corta <span class="text-red-500" aria-hidden="true">*</span></label>
+      <label for="short_description" class="form-label"
+        >Descripción corta <span class="text-red-500" aria-hidden="true">*</span></label
+      >
       <textarea
         id="short_description"
         name="short_description"
@@ -162,9 +185,15 @@ const currencyOptions = [
         rows={3}
         class={`form-input ${hasError('short_description') ? 'border-red-500 focus:border-red-500' : ''}`}
         aria-describedby={hasError('short_description') ? 'short-description-error' : 'short-description-help'}
-        aria-invalid={hasError('short_description') ? 'true' : 'false'}
-      >{initialShortDescription}</textarea>
-      {hasError('short_description') && <p id="short-description-error" class="form-error" role="alert">{getError('short_description')}</p>}
+        aria-invalid={hasError('short_description') ? 'true' : 'false'}>{initialShortDescription}</textarea
+      >
+      {
+        hasError('short_description') && (
+          <p id="short-description-error" class="form-error" role="alert">
+            {getError('short_description')}
+          </p>
+        )
+      }
       <p id="short-description-help" class="form-help">Máximo 500 caracteres. Se muestra en tarjetas y listados.</p>
     </div>
 
@@ -183,7 +212,13 @@ const currencyOptions = [
           aria-describedby={hasError('price') ? 'price-error' : 'price-help'}
           aria-invalid={hasError('price') ? 'true' : 'false'}
         />
-        {hasError('price') && <p id="price-error" class="form-error" role="alert">{getError('price')}</p>}
+        {
+          hasError('price') && (
+            <p id="price-error" class="form-error" role="alert">
+              {getError('price')}
+            </p>
+          )
+        }
         <p id="price-help" class="form-help">Precio de venta</p>
       </div>
 
@@ -200,29 +235,68 @@ const currencyOptions = [
           aria-describedby={hasError('compare_at_price') ? 'compare-at-price-error' : 'compare-at-price-help'}
           aria-invalid={hasError('compare_at_price') ? 'true' : 'false'}
         />
-        {hasError('compare_at_price') && <p id="compare-at-price-error" class="form-error" role="alert">{getError('compare_at_price')}</p>}
+        {
+          hasError('compare_at_price') && (
+            <p id="compare-at-price-error" class="form-error" role="alert">
+              {getError('compare_at_price')}
+            </p>
+          )
+        }
         <p id="compare-at-price-help" class="form-help">Precio original para mostrar descuento (opcional)</p>
       </div>
 
       <div class="admin-form-field">
         <label for="currency" class="form-label">Moneda</label>
-        <select id="currency" name="currency" class={`form-input ${hasError('currency') ? 'border-red-500 focus:border-red-500' : ''}`} aria-invalid={hasError('currency') ? 'true' : 'false'}>
-          {currencyOptions.map((opt) => (
-            <option value={opt.value} selected={initialCurrency === opt.value}>{opt.label}</option>
-          ))}
+        <select
+          id="currency"
+          name="currency"
+          class={`form-input ${hasError('currency') ? 'border-red-500 focus:border-red-500' : ''}`}
+          aria-invalid={hasError('currency') ? 'true' : 'false'}
+        >
+          {
+            currencyOptions.map((opt) => (
+              <option value={opt.value} selected={initialCurrency === opt.value}>
+                {opt.label}
+              </option>
+            ))
+          }
         </select>
-        {hasError('currency') && <p id="currency-error" class="form-error" role="alert">{getError('currency')}</p>}
+        {
+          hasError('currency') && (
+            <p id="currency-error" class="form-error" role="alert">
+              {getError('currency')}
+            </p>
+          )
+        }
       </div>
 
       <div class="admin-form-field">
-        <label for="category_id" class="form-label">Categoría <span class="text-red-500" aria-hidden="true">*</span></label>
-        <select id="category_id" name="category_id" required class={`form-input ${hasError('category_id') ? 'border-red-500 focus:border-red-500' : ''}`} aria-invalid={hasError('category_id') ? 'true' : 'false'}>
+        <label for="category_id" class="form-label"
+          >Categoría <span class="text-red-500" aria-hidden="true">*</span></label
+        >
+        <select
+          id="category_id"
+          name="category_id"
+          required
+          class={`form-input ${hasError('category_id') ? 'border-red-500 focus:border-red-500' : ''}`}
+          aria-invalid={hasError('category_id') ? 'true' : 'false'}
+        >
           <option value="">Seleccionar categoría</option>
-          {categories.map((cat) => (
-            <option value={cat.id} selected={initialCategoryId === cat.id}>{cat.name}</option>
-          ))}
+          {
+            categories.map((cat) => (
+              <option value={cat.id} selected={initialCategoryId === cat.id}>
+                {cat.name}
+              </option>
+            ))
+          }
         </select>
-        {hasError('category_id') && <p id="category-id-error" class="form-error" role="alert">{getError('category_id')}</p>}
+        {
+          hasError('category_id') && (
+            <p id="category-id-error" class="form-error" role="alert">
+              {getError('category_id')}
+            </p>
+          )
+        }
       </div>
     </div>
   </fieldset>
@@ -239,20 +313,59 @@ const currencyOptions = [
   <fieldset class="admin-form-section space-y-6">
     <legend class="admin-form-section-title flex items-center justify-between">
       Especificaciones técnicas
-      <button type="button" class="btn btn-outline-primary btn-sm" onclick="addSpecRow()" aria-label="Agregar especificación">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+      <button
+        type="button"
+        class="btn btn-outline-primary btn-sm"
+        onclick="addSpecRow()"
+        aria-label="Agregar especificación"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"
+          ><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg
+        >
         Agregar
       </button>
     </legend>
 
     <div id="specs-container" class="space-y-3" role="list" aria-label="Especificaciones técnicas">
-      {specsEntries.length > 0 ? (
-        specsEntries.map(([key, value], index) => (
-          <div class="admin-dynamic-row flex items-center gap-3" role="listitem" data-index={index}>
+      {
+        specsEntries.length > 0 ? (
+          specsEntries.map(([key, value], index) => (
+            <div class="admin-dynamic-row flex items-center gap-3" role="listitem" data-index={index}>
+              <input
+                type="text"
+                name="specs_key[]"
+                value={key}
+                placeholder="Clave (ej: Capacidad, Potencia)"
+                class="form-input flex-1"
+                aria-label="Clave de especificación"
+                required
+              />
+              <input
+                type="text"
+                name="specs_value[]"
+                value={value}
+                placeholder="Valor (ej: 1000Wh, 2000W)"
+                class="form-input flex-1"
+                aria-label="Valor de especificación"
+                required
+              />
+              <button
+                type="button"
+                class="btn btn-outline-primary btn-sm text-red-600 border-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 min-h-[44px] min-w-[44px] touch-target"
+                onclick="removeRow(this)"
+                aria-label="Eliminar especificación"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          ))
+        ) : (
+          <div class="admin-dynamic-row flex items-center gap-3" role="listitem" data-index="0">
             <input
               type="text"
               name="specs_key[]"
-              value={key}
               placeholder="Clave (ej: Capacidad, Potencia)"
               class="form-input flex-1"
               aria-label="Clave de especificación"
@@ -261,24 +374,24 @@ const currencyOptions = [
             <input
               type="text"
               name="specs_value[]"
-              value={value}
               placeholder="Valor (ej: 1000Wh, 2000W)"
               class="form-input flex-1"
               aria-label="Valor de especificación"
               required
             />
-            <button type="button" class="btn btn-outline-primary btn-sm text-red-600 border-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 min-h-[44px] min-w-[44px] touch-target" onclick="removeRow(this)" aria-label="Eliminar especificación">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            <button
+              type="button"
+              class="btn btn-outline-primary btn-sm text-red-600 border-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 min-h-[44px] min-w-[44px] touch-target"
+              onclick="removeRow(this)"
+              aria-label="Eliminar especificación"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
             </button>
           </div>
-        ))
-      ) : (
-        <div class="admin-dynamic-row flex items-center gap-3" role="listitem" data-index="0">
-          <input type="text" name="specs_key[]" placeholder="Clave (ej: Capacidad, Potencia)" class="form-input flex-1" aria-label="Clave de especificación" required />
-          <input type="text" name="specs_value[]" placeholder="Valor (ej: 1000Wh, 2000W)" class="form-input flex-1" aria-label="Valor de especificación" required />
-          <button type="button" class="btn btn-outline-primary btn-sm text-red-600 border-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 min-h-[44px] min-w-[44px] touch-target" onclick="removeRow(this)" aria-label="Eliminar especificación"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
-        </div>
-      )}
+        )
+      }
     </div>
   </fieldset>
 
@@ -286,34 +399,68 @@ const currencyOptions = [
   <fieldset class="admin-form-section space-y-6">
     <legend class="admin-form-section-title flex items-center justify-between">
       Características
-      <button type="button" class="btn btn-outline-primary btn-sm" onclick="addFeatureRow()" aria-label="Agregar característica">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+      <button
+        type="button"
+        class="btn btn-outline-primary btn-sm"
+        onclick="addFeatureRow()"
+        aria-label="Agregar característica"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"
+          ><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg
+        >
         Agregar
       </button>
     </legend>
 
     <div id="features-container" class="space-y-3" role="list" aria-label="Características del producto">
-      {featuresList.length > 0 ? (
-        featuresList.map((feature, index) => (
-          <div class="admin-dynamic-row flex items-center gap-3" role="listitem" data-index={index}>
+      {
+        featuresList.length > 0 ? (
+          featuresList.map((feature, index) => (
+            <div class="admin-dynamic-row flex items-center gap-3" role="listitem" data-index={index}>
+              <input
+                type="text"
+                name="features[]"
+                value={feature}
+                placeholder="Característica (ej: Batería LiFePO4 de larga duración)"
+                class="form-input flex-1"
+                aria-label="Característica del producto"
+                required
+              />
+              <button
+                type="button"
+                class="btn btn-outline-primary btn-sm text-red-600 border-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 min-h-[44px] min-w-[44px] touch-target"
+                onclick="removeRow(this)"
+                aria-label="Eliminar característica"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          ))
+        ) : (
+          <div class="admin-dynamic-row flex items-center gap-3" role="listitem" data-index="0">
             <input
               type="text"
               name="features[]"
-              value={feature}
               placeholder="Característica (ej: Batería LiFePO4 de larga duración)"
               class="form-input flex-1"
               aria-label="Característica del producto"
               required
             />
-            <button type="button" class="btn btn-outline-primary btn-sm text-red-600 border-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 min-h-[44px] min-w-[44px] touch-target" onclick="removeRow(this)" aria-label="Eliminar característica"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
+            <button
+              type="button"
+              class="btn btn-outline-primary btn-sm text-red-600 border-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 min-h-[44px] min-w-[44px] touch-target"
+              onclick="removeRow(this)"
+              aria-label="Eliminar característica"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
-        ))
-      ) : (
-        <div class="admin-dynamic-row flex items-center gap-3" role="listitem" data-index="0">
-          <input type="text" name="features[]" placeholder="Característica (ej: Batería LiFePO4 de larga duración)" class="form-input flex-1" aria-label="Característica del producto" required />
-          <button type="button" class="btn btn-outline-primary btn-sm text-red-600 border-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 min-h-[44px] min-w-[44px] touch-target" onclick="removeRow(this)" aria-label="Eliminar característica"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
-        </div>
-      )}
+        )
+      }
     </div>
   </fieldset>
 
@@ -323,19 +470,30 @@ const currencyOptions = [
     <p class="form-help">Selecciona productos que se mostrarán como recomendados. Mínimo 0, máximo 10.</p>
 
     <div id="related-products-container" class="space-y-3" role="list" aria-label="Productos relacionados">
-      {relatedProductsList.length > 0 ? (
-        relatedProductsList.map((relatedId, index) => (
-          <div class="admin-dynamic-row flex items-center gap-3" role="listitem" data-index={index}>
-            <input type="hidden" name="related_product_ids[]" value={relatedId} />
-            <div class="flex-1 min-w-0">
-              <span class="text-sm text-text-dark dark:text-text-dark">Producto ID: {relatedId}</span>
+      {
+        relatedProductsList.length > 0 ? (
+          relatedProductsList.map((relatedId, index) => (
+            <div class="admin-dynamic-row flex items-center gap-3" role="listitem" data-index={index}>
+              <input type="hidden" name="related_product_ids[]" value={relatedId} />
+              <div class="flex-1 min-w-0">
+                <span class="text-sm text-text-dark dark:text-text-dark">Producto ID: {relatedId}</span>
+              </div>
+              <button
+                type="button"
+                class="btn btn-outline-primary btn-sm text-red-600 border-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 min-h-[44px] min-w-[44px] touch-target"
+                onclick="removeRow(this)"
+                aria-label="Eliminar producto relacionado"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
-            <button type="button" class="btn btn-outline-primary btn-sm text-red-600 border-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 min-h-[44px] min-w-[44px] touch-target" onclick="removeRow(this)" aria-label="Eliminar producto relacionado"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
-          </div>
-        ))
-      ) : (
-        <p class="text-text-light dark:text-text-light-dark">No hay productos relacionados seleccionados.</p>
-      )}
+          ))
+        ) : (
+          <p class="text-text-light dark:text-text-light-dark">No hay productos relacionados seleccionados.</p>
+        )
+      }
     </div>
 
     <div class="admin-related-search">
@@ -350,7 +508,13 @@ const currencyOptions = [
           aria-controls="related-search-results"
           autocomplete="off"
         />
-        <div id="related-search-results" class="absolute top-full left-0 right-0 mt-1 bg-body border border-border rounded-lg shadow-lg max-h-60 overflow-y-auto z-10 hidden" role="listbox" aria-label="Resultados de búsqueda"></div>
+        <div
+          id="related-search-results"
+          class="absolute top-full left-0 right-0 mt-1 bg-body border border-border rounded-lg shadow-lg max-h-60 overflow-y-auto z-10 hidden"
+          role="listbox"
+          aria-label="Resultados de búsqueda"
+        >
+        </div>
       </div>
       <p class="form-help">Escribe al menos 2 caracteres para buscar. Haz clic en un resultado para agregarlo.</p>
     </div>
@@ -363,27 +527,69 @@ const currencyOptions = [
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <div class="admin-form-field">
         <label for="availability" class="form-label">Disponibilidad</label>
-        <select id="availability" name="availability" class={`form-input ${hasError('availability') ? 'border-red-500 focus:border-red-500' : ''}`} aria-invalid={hasError('availability') ? 'true' : 'false'}>
-          {availabilityOptions.map((opt) => (
-            <option value={opt.value} selected={initialAvailability === opt.value}>{opt.label}</option>
-          ))}
+        <select
+          id="availability"
+          name="availability"
+          class={`form-input ${hasError('availability') ? 'border-red-500 focus:border-red-500' : ''}`}
+          aria-invalid={hasError('availability') ? 'true' : 'false'}
+        >
+          {
+            availabilityOptions.map((opt) => (
+              <option value={opt.value} selected={initialAvailability === opt.value}>
+                {opt.label}
+              </option>
+            ))
+          }
         </select>
-        {hasError('availability') && <p id="availability-error" class="form-error" role="alert">{getError('availability')}</p>}
+        {
+          hasError('availability') && (
+            <p id="availability-error" class="form-error" role="alert">
+              {getError('availability')}
+            </p>
+          )
+        }
       </div>
 
       <div class="admin-form-field flex items-center">
-        <input type="checkbox" id="featured" name="featured" value="true" checked={initialFeatured} class="form-checkbox h-5 w-5 text-primary border-border rounded" />
-        <label for="featured" class="ml-3 text-sm font-medium text-text-dark dark:text-text-dark cursor-pointer">Destacado en home</label>
+        <input
+          type="checkbox"
+          id="featured"
+          name="featured"
+          value="true"
+          checked={initialFeatured}
+          class="form-checkbox h-5 w-5 text-primary border-border rounded"
+        />
+        <label for="featured" class="ml-3 text-sm font-medium text-text-dark dark:text-text-dark cursor-pointer"
+          >Destacado en home</label
+        >
       </div>
 
       <div class="admin-form-field flex items-center">
-        <input type="checkbox" id="best_seller" name="best_seller" value="true" checked={initialBestSeller} class="form-checkbox h-5 w-5 text-primary border-border rounded" />
-        <label for="best_seller" class="ml-3 text-sm font-medium text-text-dark dark:text-text-dark cursor-pointer">Best Seller</label>
+        <input
+          type="checkbox"
+          id="best_seller"
+          name="best_seller"
+          value="true"
+          checked={initialBestSeller}
+          class="form-checkbox h-5 w-5 text-primary border-border rounded"
+        />
+        <label for="best_seller" class="ml-3 text-sm font-medium text-text-dark dark:text-text-dark cursor-pointer"
+          >Best Seller</label
+        >
       </div>
 
       <div class="admin-form-field flex items-center">
-        <input type="checkbox" id="kit_only" name="kit_only" value="true" checked={initialKitOnly} class="form-checkbox h-5 w-5 text-primary border-border rounded" />
-        <label for="kit_only" class="ml-3 text-sm font-medium text-text-dark dark:text-text-dark cursor-pointer">Solo para kits</label>
+        <input
+          type="checkbox"
+          id="kit_only"
+          name="kit_only"
+          value="true"
+          checked={initialKitOnly}
+          class="form-checkbox h-5 w-5 text-primary border-border rounded"
+        />
+        <label for="kit_only" class="ml-3 text-sm font-medium text-text-dark dark:text-text-dark cursor-pointer"
+          >Solo para kits</label
+        >
       </div>
     </div>
   </fieldset>
@@ -392,7 +598,9 @@ const currencyOptions = [
   <fieldset class="admin-form-section space-y-6">
     <legend class="admin-form-section-title">Mensaje de WhatsApp</legend>
     <div class="admin-form-field">
-      <label for="whatsapp_message" class="form-label">Mensaje predefinido <span class="text-red-500" aria-hidden="true">*</span></label>
+      <label for="whatsapp_message" class="form-label"
+        >Mensaje predefinido <span class="text-red-500" aria-hidden="true">*</span></label
+      >
       <textarea
         id="whatsapp_message"
         name="whatsapp_message"
@@ -400,9 +608,15 @@ const currencyOptions = [
         rows={3}
         class={`form-input ${hasError('whatsapp_message') ? 'border-red-500 focus:border-red-500' : ''}`}
         aria-describedby={hasError('whatsapp_message') ? 'whatsapp-error' : 'whatsapp-help'}
-        aria-invalid={hasError('whatsapp_message') ? 'true' : 'false'}
-      >{initialWhatsAppMessage}</textarea>
-      {hasError('whatsapp_message') && <p id="whatsapp-error" class="form-error" role="alert">{getError('whatsapp_message')}</p>}
+        aria-invalid={hasError('whatsapp_message') ? 'true' : 'false'}>{initialWhatsAppMessage}</textarea
+      >
+      {
+        hasError('whatsapp_message') && (
+          <p id="whatsapp-error" class="form-error" role="alert">
+            {getError('whatsapp_message')}
+          </p>
+        )
+      }
       <p id="whatsapp-help" class="form-help">Usa {product} como placeholder para el nombre del producto.</p>
     </div>
   </fieldset>
@@ -412,25 +626,60 @@ const currencyOptions = [
     <legend class="admin-form-section-title flex items-center justify-between">
       Etiquetas
       <button type="button" class="btn btn-outline-primary btn-sm" onclick="addTagRow()" aria-label="Agregar etiqueta">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"
+          ><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg
+        >
         Agregar
       </button>
     </legend>
 
     <div id="tags-container" class="space-y-3" role="list" aria-label="Etiquetas">
-      {initialTags.length > 0 ? (
-        initialTags.map((tag, index) => (
-          <div class="admin-dynamic-row flex items-center gap-3" role="listitem" data-index={index}>
-            <input type="text" name="tags[]" value={tag} placeholder="Etiqueta (ej: solar, portátil, respaldo)" class="form-input flex-1" aria-label="Etiqueta" />
-            <button type="button" class="btn btn-outline-primary btn-sm text-red-600 border-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 min-h-[44px] min-w-[44px] touch-target" onclick="removeRow(this)" aria-label="Eliminar etiqueta"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
+      {
+        initialTags.length > 0 ? (
+          initialTags.map((tag, index) => (
+            <div class="admin-dynamic-row flex items-center gap-3" role="listitem" data-index={index}>
+              <input
+                type="text"
+                name="tags[]"
+                value={tag}
+                placeholder="Etiqueta (ej: solar, portátil, respaldo)"
+                class="form-input flex-1"
+                aria-label="Etiqueta"
+              />
+              <button
+                type="button"
+                class="btn btn-outline-primary btn-sm text-red-600 border-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 min-h-[44px] min-w-[44px] touch-target"
+                onclick="removeRow(this)"
+                aria-label="Eliminar etiqueta"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          ))
+        ) : (
+          <div class="admin-dynamic-row flex items-center gap-3" role="listitem" data-index="0">
+            <input
+              type="text"
+              name="tags[]"
+              placeholder="Etiqueta (ej: solar, portátil, respaldo)"
+              class="form-input flex-1"
+              aria-label="Etiqueta"
+            />
+            <button
+              type="button"
+              class="btn btn-outline-primary btn-sm text-red-600 border-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 min-h-[44px] min-w-[44px] touch-target"
+              onclick="removeRow(this)"
+              aria-label="Eliminar etiqueta"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
-        ))
-      ) : (
-        <div class="admin-dynamic-row flex items-center gap-3" role="listitem" data-index="0">
-          <input type="text" name="tags[]" placeholder="Etiqueta (ej: solar, portátil, respaldo)" class="form-input flex-1" aria-label="Etiqueta" />
-          <button type="button" class="btn btn-outline-primary btn-sm text-red-600 border-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 min-h-[44px] min-w-[44px] touch-target" onclick="removeRow(this)" aria-label="Eliminar etiqueta"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
-        </div>
-      )}
+        )
+      }
     </div>
   </fieldset>
 
@@ -441,30 +690,83 @@ const currencyOptions = [
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div class="admin-form-field">
         <label for="seo_title" class="form-label">Título SEO</label>
-        <input type="text" id="seo_title" name="seo_title" value={initialSeoTitle ?? ''} maxlength="60" class={`form-input ${hasError('seo_title') ? 'border-red-500 focus:border-red-500' : ''}`} aria-invalid={hasError('seo_title') ? 'true' : 'false'} />
-        {hasError('seo_title') && <p id="seo-title-error" class="form-error" role="alert">{getError('seo_title')}</p>}
+        <input
+          type="text"
+          id="seo_title"
+          name="seo_title"
+          value={initialSeoTitle ?? ''}
+          maxlength="60"
+          class={`form-input ${hasError('seo_title') ? 'border-red-500 focus:border-red-500' : ''}`}
+          aria-invalid={hasError('seo_title') ? 'true' : 'false'}
+        />
+        {
+          hasError('seo_title') && (
+            <p id="seo-title-error" class="form-error" role="alert">
+              {getError('seo_title')}
+            </p>
+          )
+        }
         <p class="form-help">Máximo 60 caracteres. Vacío = usa nombre del producto.</p>
       </div>
 
       <div class="admin-form-field">
         <label for="seo_image" class="form-label">Imagen SEO</label>
-        <input type="url" id="seo_image" name="seo_image" value={initialSeoImage ?? ''} class={`form-input ${hasError('seo_image') ? 'border-red-500 focus:border-red-500' : ''}`} aria-invalid={hasError('seo_image') ? 'true' : 'false'} />
-        {hasError('seo_image') && <p id="seo-image-error" class="form-error" role="alert">{getError('seo_image')}</p>}
+        <input
+          type="url"
+          id="seo_image"
+          name="seo_image"
+          value={initialSeoImage ?? ''}
+          class={`form-input ${hasError('seo_image') ? 'border-red-500 focus:border-red-500' : ''}`}
+          aria-invalid={hasError('seo_image') ? 'true' : 'false'}
+        />
+        {
+          hasError('seo_image') && (
+            <p id="seo-image-error" class="form-error" role="alert">
+              {getError('seo_image')}
+            </p>
+          )
+        }
         <p class="form-help">URL de imagen para Open Graph (opcional).</p>
       </div>
     </div>
 
     <div class="admin-form-field">
       <label for="seo_description" class="form-label">Descripción SEO</label>
-      <textarea id="seo_description" name="seo_description" rows={3} maxlength="160" class={`form-input ${hasError('seo_description') ? 'border-red-500 focus:border-red-500' : ''}`} aria-invalid={hasError('seo_description') ? 'true' : 'false'}>{initialSeoDescription ?? ''}</textarea>
-      {hasError('seo_description') && <p id="seo-description-error" class="form-error" role="alert">{getError('seo_description')}</p>}
+      <textarea
+        id="seo_description"
+        name="seo_description"
+        rows={3}
+        maxlength="160"
+        class={`form-input ${hasError('seo_description') ? 'border-red-500 focus:border-red-500' : ''}`}
+        aria-invalid={hasError('seo_description') ? 'true' : 'false'}>{initialSeoDescription ?? ''}</textarea
+      >
+      {
+        hasError('seo_description') && (
+          <p id="seo-description-error" class="form-error" role="alert">
+            {getError('seo_description')}
+          </p>
+        )
+      }
       <p class="form-help">Máximo 160 caracteres. Vacío = usa descripción corta.</p>
     </div>
 
     <div class="admin-form-field">
       <label for="seo_canonical" class="form-label">Canonical URL</label>
-      <input type="url" id="seo_canonical" name="seo_canonical" value={initialSeoCanonical ?? ''} class={`form-input ${hasError('seo_canonical') ? 'border-red-500 focus:border-red-500' : ''}`} aria-invalid={hasError('seo_canonical') ? 'true' : 'false'} />
-      {hasError('seo_canonical') && <p id="seo-canonical-error" class="form-error" role="alert">{getError('seo_canonical')}</p>}
+      <input
+        type="url"
+        id="seo_canonical"
+        name="seo_canonical"
+        value={initialSeoCanonical ?? ''}
+        class={`form-input ${hasError('seo_canonical') ? 'border-red-500 focus:border-red-500' : ''}`}
+        aria-invalid={hasError('seo_canonical') ? 'true' : 'false'}
+      />
+      {
+        hasError('seo_canonical') && (
+          <p id="seo-canonical-error" class="form-error" role="alert">
+            {getError('seo_canonical')}
+          </p>
+        )
+      }
       <p class="form-help">URL canónica para evitar contenido duplicado (opcional).</p>
     </div>
   </fieldset>
@@ -474,20 +776,43 @@ const currencyOptions = [
     <legend class="admin-form-section-title">Batería (solo productos de energía)</legend>
     <div class="admin-form-field">
       <label for="battery_wh" class="form-label">Capacidad (Wh)</label>
-      <input type="number" id="battery_wh" name="battery_wh" value={initialBatteryWh ?? ''} min="1" step="1" class={`form-input ${hasError('battery_wh') ? 'border-red-500 focus:border-red-500' : ''}`} aria-invalid={hasError('battery_wh') ? 'true' : 'false'} />
-      {hasError('battery_wh') && <p id="battery-wh-error" class="form-error" role="alert">{getError('battery_wh')}</p>}
-      <p class="form-help">Capacidad en vatios-hora. Solo para power stations, baterías y kits de batería. Deja vacío si no aplica.</p>
+      <input
+        type="number"
+        id="battery_wh"
+        name="battery_wh"
+        value={initialBatteryWh ?? ''}
+        min="1"
+        step="1"
+        class={`form-input ${hasError('battery_wh') ? 'border-red-500 focus:border-red-500' : ''}`}
+        aria-invalid={hasError('battery_wh') ? 'true' : 'false'}
+      />
+      {
+        hasError('battery_wh') && (
+          <p id="battery-wh-error" class="form-error" role="alert">
+            {getError('battery_wh')}
+          </p>
+        )
+      }
+      <p class="form-help">
+        Capacidad en vatios-hora. Solo para power stations, baterías y kits de batería. Deja vacío si no aplica.
+      </p>
     </div>
   </fieldset>
 
   <!-- Form Actions -->
-  <div class="admin-form-actions flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-6 border-t border-border dark:border-border-dark">
+  <div
+    class="admin-form-actions flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-6 border-t border-border dark:border-border-dark"
+  >
     <a href="/admin/products" class="btn btn-outline-primary min-h-[44px] touch-target">Cancelar</a>
     <div class="flex items-center gap-3 w-full sm:w-auto">
       <button type="submit" class="btn btn-primary min-h-[44px] touch-target flex-1 sm:flex-none" id="submit-btn">
         <span class="btn-text">{isEdit ? 'Actualizar producto' : 'Crear producto'}</span>
         <span class="btn-loading hidden flex items-center gap-2">
-          <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24" aria-hidden="true"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" /><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+          <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24" aria-hidden="true"
+            ><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"
+            ></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+            ></path></svg
+          >
           Guardando...
         </span>
       </button>
@@ -501,7 +826,7 @@ const currencyOptions = [
     const container = document.getElementById(containerId);
     const newRow = template.cloneNode(true);
     // Clear inputs
-    newRow.querySelectorAll('input, select, textarea').forEach(input => {
+    newRow.querySelectorAll('input, select, textarea').forEach((input) => {
       if (input.type !== 'hidden') input.value = '';
     });
     container.appendChild(newRow);
@@ -514,20 +839,21 @@ const currencyOptions = [
       row.remove();
     } else {
       // Clear the last row instead of removing
-      row.querySelectorAll('input, select, textarea').forEach(input => {
+      row.querySelectorAll('input, select, textarea').forEach((input) => {
         if (input.type !== 'hidden') input.value = '';
       });
     }
   }
 
   window.addSpecRow = () => addRow('specs-container', document.querySelector('#specs-container .admin-dynamic-row'));
-  window.addFeatureRow = () => addRow('features-container', document.querySelector('#features-container .admin-dynamic-row'));
+  window.addFeatureRow = () =>
+    addRow('features-container', document.querySelector('#features-container .admin-dynamic-row'));
   window.addTagRow = () => addRow('tags-container', document.querySelector('#tags-container .admin-dynamic-row'));
 
   window.removeRow = removeRow;
 
   // Form submit loading state
-  document.querySelector('.admin-form')?.addEventListener('submit', function() {
+  document.querySelector('.admin-form')?.addEventListener('submit', function () {
     const btn = document.getElementById('submit-btn');
     if (btn) {
       btn.querySelector('.btn-text')?.classList.add('hidden');
@@ -542,7 +868,7 @@ const currencyOptions = [
   const resultsContainer = document.getElementById('related-search-results');
   const relatedContainer = document.getElementById('related-products-container');
 
-  searchInput?.addEventListener('input', function() {
+  searchInput?.addEventListener('input', function () {
     const query = this.value.trim();
     if (searchDebounce) clearTimeout(searchDebounce);
 
@@ -556,12 +882,16 @@ const currencyOptions = [
         const res = await fetch(`/api/admin/products?search=${encodeURIComponent(query)}&limit=10&showArchived=false`);
         const data = await res.json();
         if (data.ok && data.data.products.length > 0) {
-          resultsContainer.innerHTML = data.data.products.map((p) => `
+          resultsContainer.innerHTML = data.data.products
+            .map(
+              (p) => `
             <button type="button" role="option" class="w-full px-3 py-2 text-left hover:bg-body-muted dark:hover:bg-body-muted-dark transition-colors border-b border-border dark:border-border-dark last:border-0" data-id="${p.id}" data-name="${p.name}">
               <span class="font-medium">${p.name}</span>
               <span class="text-xs text-text-light dark:text-text-light-dark ml-2">(${p.slug})</span>
             </button>
-          `).join('');
+          `
+            )
+            .join('');
           resultsContainer.classList.remove('hidden');
         } else {
           resultsContainer.classList.add('hidden');
