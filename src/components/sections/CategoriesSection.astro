@@ -1,9 +1,13 @@
 ---
 /**
- * CategoriesSection — Home category grid (organism), task 5.2.
+ * CategoriesSection — Home category grid / carousel (organism), task 5.2.
  *
  * Calls fetchCategories() (Supabase, SSR) and renders a responsive grid of
- * CategoryCards. Renders nothing when there are no categories
+ * CategoryCards. When the categories exceed the available grid columns, a
+ * tiny vanilla JS enhancement (no dependencies, no autoplay) switches the
+ * grid to a user-driven carousel: native swipe on touch plus previous/next
+ * chevrons overlaid at each end, each shown only when it can actually
+ * scroll. Renders nothing when there are no categories
  * (REQ-HP-002 / SCN-HP-002: no empty containers in the DOM).
  *
  * No props. <h2> section title (REQ-HP-003). Zero framework JS.
@@ -32,16 +36,191 @@ try {
   categories.length > 0 && (
     <section class="section section-deferred" aria-labelledby="categories-title">
       <div class="container">
-        <div class="mb-8 md:mb-10">
-          <h2 id="categories-title" class="section-title">Categorías</h2>
-        </div>
+        <div class="categories-carousel" data-categories-carousel>
+          <div class="mb-8 md:mb-10">
+            <h2 id="categories-title" class="section-title">Categorías</h2>
+          </div>
 
-        <div class="grid grid-cols-2 gap-6 md:grid-cols-4">
-          {categories.map((category) => (
-            <CategoryCard category={category} />
-          ))}
+          <div class="categories-carousel-track-wrap">
+            <div class="categories-carousel-track grid grid-cols-2 gap-6 md:grid-cols-4" data-categories-track>
+              {categories.map((category) => (
+                <div class="categories-carousel-item">
+                  <CategoryCard category={category} />
+                </div>
+              ))}
+            </div>
+
+            <div class="categories-carousel-controls" data-categories-controls>
+              <button
+                type="button"
+                class="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border-2 border-primary bg-white text-primary shadow-md transition hover:bg-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                data-carousel-prev
+                aria-label="Categorías anteriores"
+              >
+                <svg
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="h-5 w-5"
+                >
+                  <path d="M15 18l-6-6 6-6" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                class="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border-2 border-primary bg-white text-primary shadow-md transition hover:bg-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                data-carousel-next
+                aria-label="Más categorías"
+              >
+                <svg
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="h-5 w-5"
+                >
+                  <path d="M9 6l6 6-6 6" />
+                </svg>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </section>
   )
 }
+
+<style>
+  /* Number of grid columns available before the carousel kicks in.
+   * Single source of truth, read from JS via getComputedStyle so the
+   * detection never oscillates between modes. */
+  .categories-carousel {
+    --categories-cols: 2;
+  }
+  @media (min-width: 768px) {
+    .categories-carousel {
+      --categories-cols: 4;
+    }
+  }
+
+  .categories-carousel-controls {
+    display: none;
+  }
+
+  /* Overlay the controls on top of the carousel, one circle at each end. */
+  .categories-carousel-track-wrap {
+    position: relative;
+  }
+  .categories-carousel.carousel-on .categories-carousel-controls {
+    position: absolute;
+    inset-inline: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    z-index: 10;
+  }
+
+  .categories-carousel-track {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* legacy Edge */
+  }
+  .categories-carousel-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Carousel mode: horizontal snap row driven by the user (no autoplay). */
+  .categories-carousel.carousel-on .categories-carousel-track {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 1.5rem;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 0.5rem;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .categories-carousel.carousel-on .categories-carousel-item {
+    flex: 0 0 auto;
+    width: min(82%, 18rem);
+    scroll-snap-align: start;
+    scroll-margin-inline: 0.5rem;
+  }
+  @media (min-width: 640px) {
+    .categories-carousel.carousel-on .categories-carousel-item {
+      width: 18rem;
+    }
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    var root = document.querySelector('[data-categories-carousel]');
+    if (!root) return;
+    var track = root.querySelector('[data-categories-track]');
+    var prev = root.querySelector('[data-carousel-prev]');
+    var next = root.querySelector('[data-carousel-next]');
+    if (!track || !('classList' in root)) return;
+
+    var reducedMotion =
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function gridColumns() {
+      var value = getComputedStyle(root).getPropertyValue('--categories-cols').trim();
+      var n = parseInt(value, 10);
+      return Number.isFinite(n) && n > 0 ? n : 2;
+    }
+
+    // A wrapping grid never overflows horizontally, so compare the item
+    // count against the grid column limit instead of scrollWidth.
+    function hasOverflow() {
+      return track.children.length > gridColumns();
+    }
+
+    function update() {
+      var on = hasOverflow();
+      root.classList.toggle('carousel-on', on);
+      if (prev) prev.disabled = !on;
+      if (next) next.disabled = !on;
+      updateControlVisibility();
+    }
+
+    // Show a chevron only when it can actually scroll: prev appears once
+    // the user scrolls away from the start, next hides at the end.
+    function updateControlVisibility() {
+      var threshold = 8;
+      if (prev) prev.style.visibility = track.scrollLeft <= threshold ? 'hidden' : '';
+      if (next)
+        next.style.visibility =
+          track.scrollLeft + track.clientWidth >= track.scrollWidth - threshold ? 'hidden' : '';
+    }
+    track.addEventListener('scroll', updateControlVisibility, { passive: true });
+
+    function scrollBy(dir) {
+      var amount = Math.max(200, track.clientWidth * 0.8);
+      track.scrollBy({ left: dir * amount, behavior: reducedMotion ? 'auto' : 'smooth' });
+    }
+
+    if (prev) prev.addEventListener('click', function () { scrollBy(-1); });
+    if (next) next.addEventListener('click', function () { scrollBy(1); });
+
+    window.addEventListener('resize', update);
+    if (typeof ResizeObserver === 'function') {
+      var ro = new ResizeObserver(update);
+      ro.observe(track);
+    }
+    window.addEventListener('load', update);
+    update();
+  })();
+</script>
