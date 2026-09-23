@@ -15,9 +15,11 @@ interface Props {
   currentPage: number;
   totalPages: number;
   basePath?: string;
+  /** Optional URL-encoded query string (without leading '?') preserved across pages, e.g. "search=panel". */
+  query?: string;
 }
 
-const { currentPage, totalPages, basePath = '/productos' } = Astro.props;
+const { currentPage, totalPages, basePath = '/productos', query = '' } = Astro.props;
 
 const maxVisiblePages = 5;
 let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
@@ -45,8 +47,8 @@ if (endPage < totalPages) {
 }
 
 const buildPageUrl = (page: number): string => {
-  if (page <= 1) return `${basePath}/`;
-  return `/productos/${page}`;
+  const base = page <= 1 ? `${basePath}/` : `/productos/${page}`;
+  return query ? `${base}?${query}` : base;
 };
 ---
 

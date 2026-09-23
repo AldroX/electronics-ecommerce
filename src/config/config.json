@@ -9,7 +9,7 @@
     "logo_text": "EnergíaTotal"
   },
   "settings": {
-    "search": false,
+    "search": true,
     "sticky_header": true
   },
   "params": {

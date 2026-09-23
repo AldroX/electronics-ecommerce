@@ -27,9 +27,11 @@ interface Props {
       last: string | undefined;
     };
   };
+  /** Optional URL-encoded query string (without leading '?') preserved across pages. */
+  query?: string;
 }
 
-const { page } = Astro.props;
+const { page, query } = Astro.props;
 const { data: products, currentPage, lastPage, total, start, end } = page;
 ---
 
@@ -87,4 +89,4 @@ const { data: products, currentPage, lastPage, total, start, end } = page;
 </div>
 
 <!-- Pagination -->
-{lastPage > 1 && <Pagination currentPage={currentPage} totalPages={lastPage} basePath="/productos" />}
+{lastPage > 1 && <Pagination currentPage={currentPage} totalPages={lastPage} basePath="/productos" query={query} />}
