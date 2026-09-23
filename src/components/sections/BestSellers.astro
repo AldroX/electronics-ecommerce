@@ -10,7 +10,7 @@
  * Zero framework JS.
  */
 import { getBestSellers } from '@/data/helpers/products';
-import ProductCard from '../cards/ProductCard.astro';
+import ProductGrid from '../cards/ProductGrid.astro';
 
 const bestSellers = getBestSellers();
 ---
@@ -20,14 +20,12 @@ const bestSellers = getBestSellers();
     <section class="section section-deferred" aria-labelledby="best-sellers-title">
       <div class="container">
         <div class="mb-8 md:mb-10">
-          <h2 id="best-sellers-title" class="section-title">Más Vendidos</h2>
+          <h2 id="best-sellers-title" class="section-title">
+            Más Vendidos
+          </h2>
         </div>
 
-        <div class="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
-          {bestSellers.map((product) => (
-            <ProductCard product={product} priority={false} />
-          ))}
-        </div>
+        <ProductGrid products={bestSellers} />
       </div>
     </section>
   )

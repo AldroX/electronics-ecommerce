@@ -1,0 +1,23 @@
+[
+  {
+    "id": "testimonial-1",
+    "name": "María G.",
+    "role": "Cliente — casa en San Fernando",
+    "quote": "Compré una power station por WhatsApp y me la entregaron al día siguiente. Me sacó de apuros en el último corte de luz: cargué el celular y mantuve la heladera prendida toda la noche.",
+    "stars": 5
+  },
+  {
+    "id": "testimonial-2",
+    "name": "Luis R.",
+    "role": "Pequeño comercio — kiosco en Vicente López",
+    "quote": "Con el panel solar de 400W bajo el consumo de electricidad del local. El equipo me explicó todo por WhatsApp, sin vueltas, y me ayudaron a elegir el tamaño justo.",
+    "stars": 5
+  },
+  {
+    "id": "testimonial-3",
+    "name": "Ana P.",
+    "role": "Cliente — departamento en CABA",
+    "quote": "Cambié las lámparas por LED y noté la diferencia en la factura. El asesor me respondió todas las dudas hasta que me sentí segura de la compra. Muy recomendables.",
+    "stars": 4
+  }
+]

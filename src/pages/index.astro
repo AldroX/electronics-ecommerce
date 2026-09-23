@@ -2,8 +2,8 @@
 /**
  * Home route `/` — page assembly (task 6.1, WU-5).
  *
- * Renders the 8 sections in spec order (REQ-HP-002):
- *   HeroSection → CategoriesSection → SolutionsSection → FeaturedProducts → BestSellers → OffersSection → KitsSection → TrustSection
+ * Renders the 9 sections in spec order (REQ-HP-002):
+ *   HeroSection → CategoriesSection → SolutionsSection → FeaturedProducts → BestSellers → OffersSection → KitsSection → TrustSection → TestimonialsSection
  *
  * Heading contract (REQ-HP-003):
  *   - exactly one <h1> — owned by HeroSection (page's only h1)
@@ -30,6 +30,7 @@ import BestSellers from '../components/sections/BestSellers.astro';
 import OffersSection from '../components/sections/OffersSection.astro';
 import KitsSection from '../components/sections/KitsSection.astro';
 import TrustSection from '../components/sections/TrustSection.astro';
+import TestimonialsSection from '../components/sections/TestimonialsSection.astro';
 import heroOg from '../assets/img/hero_img.webp';
 ---
 
@@ -42,4 +43,5 @@ import heroOg from '../assets/img/hero_img.webp';
   <OffersSection />
   <KitsSection />
   <TrustSection />
+  <TestimonialsSection />
 </Base>

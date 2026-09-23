@@ -1,0 +1,41 @@
+---
+/**
+ * TestimonialsSection — Home testimonials section (organism), part of the
+ * required component set.
+ *
+ * Shows customer quotes on the landing page as social proof for the
+ * WhatsApp-first buying flow. Reads from src/data/testimonials.json (a
+ * swappable data layer, like products).
+ *
+ * Renders nothing when empty. <h2> section title. Zero framework JS.
+ */
+import type { Testimonial as TestimonialData } from '@/data/types';
+import testimonialsData from '@/data/testimonials.json';
+import Testimonial from './Testimonial.astro';
+
+const testimonials: TestimonialData[] = testimonialsData as unknown as TestimonialData[];
+---
+
+{
+  testimonials.length > 0 && (
+    <section class="section section-deferred bg-light" aria-labelledby="testimonials-title">
+      <div class="container">
+        <div class="mb-8 md:mb-10">
+          <h2 id="testimonials-title" class="section-title">
+            Lo que dicen nuestros clientes
+          </h2>
+          <p class="mt-3 max-w-2xl text-text-light">
+            Cada compra empieza con una consulta por WhatsApp. Esto es lo que cuentan quienes ya eligieron energía de
+            respaldo para su hogar o negocio.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+          {testimonials.map((testimonial) => (
+            <Testimonial testimonial={testimonial} />
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
