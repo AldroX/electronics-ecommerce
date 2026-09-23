@@ -16,6 +16,13 @@ export const SEODataSchema = z.object({
 
 export type SEODataZod = z.infer<typeof SEODataSchema>;
 
+/** Optional descriptive blocks for the product page ("¿Qué es?" / "¿Para qué sirve?" / "¿Quién debería comprarlo?"). */
+export interface ProductDetails {
+  whatIs?: string;
+  purpose?: string;
+  forWhom?: string;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -39,6 +46,12 @@ export interface Product {
   relatedProducts: string[];
   /** Battery capacity in watt-hours, only for products that store energy (power stations, batteries, battery kits). */
   batteryWh?: number;
+  /** Average customer rating (0–5), only when the DB provides it. */
+  rating?: number;
+  /** Number of ratings behind `rating`. */
+  ratingCount?: number;
+  /** Optional descriptive blocks (¿Qué es? / ¿Para qué sirve? / ¿Quién debería comprarlo?). */
+  details?: ProductDetails;
 }
 
 export const ProductSchema = z.object({
@@ -117,6 +130,16 @@ export interface FAQItem {
   question: string;
   /** Plain text with optional inline HTML anchors, e.g. <a href="/guias/...">. */
   answer: string;
+}
+
+export interface Testimonial {
+  id: string;
+  name: string;
+  /** Role/context, e.g. "Cliente — casa en San Fernando". */
+  role: string;
+  quote: string;
+  /** 1–5, decorative only (not a real rating). */
+  stars?: number;
 }
 
 export interface Offer {

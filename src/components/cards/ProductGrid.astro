@@ -1,0 +1,31 @@
+---
+/**
+ * ProductGrid — Responsive product card grid (molecule/organism wrapper).
+ *
+ * Wraps a list of ProductCards in the standard catalog grid (2 → 3 → 4
+ * columns) with lazy-loaded images. Shared by FeaturedProducts,
+ * BestSellers and RelatedProducts so grids stay consistent.
+ *
+ * Renders nothing when `products` is empty. Zero framework JS.
+ */
+import type { Product } from '@/data/types';
+import ProductCard from './ProductCard.astro';
+
+interface Props {
+  products: Product[];
+  /** Above-fold images load eagerly; below-fold sections pass false. */
+  priority?: boolean;
+}
+
+const { products, priority = false } = Astro.props;
+---
+
+{
+  products.length > 0 && (
+    <div class="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
+      {products.map((product) => (
+        <ProductCard product={product} priority={priority} />
+      ))}
+    </div>
+  )
+}
