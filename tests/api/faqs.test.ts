@@ -40,8 +40,11 @@ describe('GET /api/faqs', () => {
   });
 
   it('should return grouped FAQs on happy path', async () => {
-    mockSupabase._mocks.range.mockResolvedValue({
-      data: [mockFAQ, { ...mockFAQ, id: 'faq-456', question: 'Entrega question?' }],
+    mockSupabase._mocks.select.mockResolvedValue({
+      data: [
+        mockFAQ,
+        { ...mockFAQ, id: '123e4567-e89b-12d3-a456-426614174009', question: 'Entrega question?' },
+      ],
       error: null,
       count: 2,
     });
@@ -66,7 +69,7 @@ describe('GET /api/faqs', () => {
   });
 
   it('should return 500 on Supabase error', async () => {
-    mockSupabase._mocks.range.mockResolvedValue({
+    mockSupabase._mocks.select.mockResolvedValue({
       data: null,
       error: { message: 'Database error' },
       count: 0,

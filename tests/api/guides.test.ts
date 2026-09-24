@@ -126,7 +126,13 @@ describe('GET /api/guides/[slug]', () => {
   it('should return guide detail with related guides on happy path', async () => {
     mockSupabase._mocks.single.mockResolvedValue({ data: mockGuide, error: null });
     mockSupabase._mocks.limit.mockResolvedValue({
-      data: [{ id: 'gui-456', title: 'Related Guide', slug: 'related-guide' }],
+      data: [
+        {
+          id: '123e4567-e89b-12d3-a456-426614174008',
+          title: 'Related Guide',
+          slug: 'related-guide',
+        },
+      ],
       error: null,
     });
 
@@ -165,7 +171,7 @@ describe('GET /api/guides/[slug]', () => {
     expect(json.error.code).toBe('VALIDATION_ERROR');
   });
 
-  it('should return 500 on Supabase error', async () => {
+  it('should return 404 on Supabase error (treated as not found)', async () => {
     mockSupabase._mocks.single.mockResolvedValue({
       data: null,
       error: { message: 'Database error' },
@@ -174,8 +180,8 @@ describe('GET /api/guides/[slug]', () => {
     const response = await callGuidesDetail('test-guide');
     const json = await response.json();
 
-    expect(response.status).toBe(500);
+    expect(response.status).toBe(404);
     expect(json.ok).toBe(false);
-    expect(json.error.code).toBe('INTERNAL_ERROR');
+    expect(json.error.code).toBe('NOT_FOUND');
   });
 });

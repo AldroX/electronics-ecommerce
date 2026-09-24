@@ -4,15 +4,22 @@
 /// ============================================================
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { createMockSupabase, createMockContext, resetMocks } from './setup';
+import { getSharedMockSupabase, createMockContext, resetMocks } from './setup';
 
 vi.mock('@/lib/supabase/client', () => {
-  const mockSupabase = createMockSupabase();
+  const mockSupabase = getSharedMockSupabase();
   return {
     default: mockSupabase,
     __mockSupabase: mockSupabase,
   };
 });
+
+// The upload route always uses the service-role client via `createClient`
+// (@supabase/supabase-js), never the default `@/lib/supabase/client` export.
+// Point it at the same mock instance so storage stubs apply.
+vi.mock('@supabase/supabase-js', () => ({
+  createClient: vi.fn(() => getSharedMockSupabase()),
+}));
 
 import supabase from '@/lib/supabase/client';
 const mockSupabase = (supabase as any).__mockSupabase;
