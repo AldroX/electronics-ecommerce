@@ -11,7 +11,9 @@ on:
 
 env:
   NODE_VERSION: "22.x"
-  PNPM_VERSION: "9.x"
+  # pnpm-workspace.yaml uses pnpm 10/11 keys (allowBuilds, minimumReleaseAgeExclude);
+  # pnpm 9 rejects the file ("packages field missing or empty"). Keep CI aligned with the local toolchain.
+  PNPM_VERSION: "11.x"
 
 jobs:
   # ===========================================
