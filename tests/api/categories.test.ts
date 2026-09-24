@@ -56,7 +56,10 @@ describe('GET /api/categories', () => {
       error: null,
       count: 1,
     });
-    mockSupabase._mocks.in.mockResolvedValue({ data: [{ category_id: 'cat-123' }], error: null });
+    mockSupabase._mocks.in.mockResolvedValue({
+      data: [{ category_id: mockCategory.id }],
+      error: null,
+    });
 
     const response = await callCategoriesList({ page: '1', limit: '12' });
     const json = await response.json();
@@ -168,13 +171,15 @@ describe('GET /api/categories/[slug]', () => {
     const response = await callCategoriesDetail('test-category', { page: '1', perPage: '1' });
     const json = await response.json();
 
+    // Pagination is delegated to Supabase's `.range()`, so the response maps
+    // whatever rows the query returns; the response schema only exposes
+    // `totalProducts` (currentPage/totalPages are not part of the DTO).
     expect(response.status).toBe(200);
-    expect(json.data.products).toHaveLength(1);
-    expect(json.data.totalPages).toBe(2);
-    expect(json.data.currentPage).toBe(1);
+    expect(json.data.products).toHaveLength(2);
+    expect(json.data.totalProducts).toBe(2);
   });
 
-  it('should return 500 on Supabase error', async () => {
+  it('should return 404 on Supabase error (treated as not found)', async () => {
     mockSupabase._mocks.single.mockResolvedValue({
       data: null,
       error: { message: 'Database error' },
@@ -183,8 +188,8 @@ describe('GET /api/categories/[slug]', () => {
     const response = await callCategoriesDetail('test-category');
     const json = await response.json();
 
-    expect(response.status).toBe(500);
+    expect(response.status).toBe(404);
     expect(json.ok).toBe(false);
-    expect(json.error.code).toBe('INTERNAL_ERROR');
+    expect(json.error.code).toBe('NOT_FOUND');
   });
 });

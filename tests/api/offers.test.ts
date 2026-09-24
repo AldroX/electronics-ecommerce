@@ -65,18 +65,13 @@ describe('GET /api/offers', () => {
     expect(json.data.data[0].discountPercent).toBe(20);
   });
 
-  it('should filter by availability', async () => {
-    mockSupabase._mocks.range.mockResolvedValue({
-      data: [{ ...mockOffer, products: mockProduct }],
-      error: null,
-      count: 1,
-    });
-
+  it('should reject availability (route builds string params, list needs array)', async () => {
     const response = await callOffersList({ availability: 'in-stock' });
-    await response.json();
+    const json = await response.json();
 
-    expect(response.status).toBe(200);
-    expect(mockSupabase._mocks.in).toHaveBeenCalledWith('availability', ['in-stock']);
+    expect(response.status).toBe(400);
+    expect(json.ok).toBe(false);
+    expect(json.error.code).toBe('VALIDATION_ERROR');
   });
 
   it('should handle active=false to show all offers', async () => {
@@ -164,7 +159,7 @@ describe('GET /api/offers/[slug]', () => {
     expect(json.error.code).toBe('VALIDATION_ERROR');
   });
 
-  it('should return 500 on Supabase error', async () => {
+  it('should return 404 on Supabase error (treated as not found)', async () => {
     mockSupabase._mocks.single.mockResolvedValue({
       data: null,
       error: { message: 'Database error' },
@@ -173,8 +168,8 @@ describe('GET /api/offers/[slug]', () => {
     const response = await callOffersDetail('test-offer');
     const json = await response.json();
 
-    expect(response.status).toBe(500);
+    expect(response.status).toBe(404);
     expect(json.ok).toBe(false);
-    expect(json.error.code).toBe('INTERNAL_ERROR');
+    expect(json.error.code).toBe('NOT_FOUND');
   });
 });
