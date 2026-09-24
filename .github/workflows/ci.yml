@@ -174,20 +174,15 @@ jobs:
           name: dist
           path: dist/
 
-      - name: Start preview server
-        run: |
-          nohup pnpm preview --port 4321 > preview.log 2>&1 &
-          sleep 10
+      - name: Run Playwright E2E tests
+        run: pnpm e2e
+        # Playwright boots `pnpm preview` itself via webServer (config);
+        # the spawned process inherits the Supabase env vars from this step.
         env:
           PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
           PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           ANALYTICS_HMAC_SECRET: ${{ secrets.ANALYTICS_HMAC_SECRET }}
-
-      - name: Run Playwright E2E tests
-        run: pnpm e2e
-        env:
-          PLAYWRIGHT_BASE_URL: "http://localhost:4321"
 
       - name: Upload Playwright report
         if: always()

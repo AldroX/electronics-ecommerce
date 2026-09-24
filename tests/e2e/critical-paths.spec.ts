@@ -1,12 +1,12 @@
 /// E2E tests for critical user paths
 /// Run: pnpm e2e tests/e2e/critical-paths.spec.ts
 
-import { test, expect, devices } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 
 test.describe('Homepage', () => {
   test('loads successfully with hero section', async ({ page }) => {
     await page.goto('/');
-    await expect(page).toHaveTitle(/Electronics/);
+    await expect(page).toHaveTitle(/Energ/);
 
     // Check hero section
     await expect(page.locator('section').first()).toBeVisible();
@@ -17,15 +17,15 @@ test.describe('Homepage', () => {
     await page.goto('/');
 
     // Check main nav links exist
-    const nav = page.locator('nav, header');
+    const nav = page.locator('header');
     await expect(nav).toBeVisible();
   });
 
   test('has WhatsApp CTA visible', async ({ page }) => {
     await page.goto('/');
 
-    // Check for WhatsApp button/link
-    const whatsapp = page.locator('a[href*="whatsapp"], button:has-text("WhatsApp")');
+    // Check for WhatsApp button/link (site uses wa.me links; header link is hidden on mobile)
+    const whatsapp = page.locator('main a[href^="https://wa.me"]');
     await expect(whatsapp.first()).toBeVisible();
   });
 });
@@ -39,19 +39,24 @@ test.describe('Product Catalog (/productos)', () => {
   test('displays product grid', async ({ page }) => {
     await page.goto('/productos');
 
-    // Wait for products to load
-    await page.waitForSelector('[id="product-grid"], .grid, [class*="grid"]', { timeout: 10000 });
+    // Wait for products to load (grid can be preceded by hidden elements on mobile)
+    await page.waitForSelector('main [class*="grid"], main article', {
+      state: 'attached',
+      timeout: 10000,
+    });
 
     // Check at least one product card
-    const cards = page.locator('[class*="card"], article, [class*="product"]');
+    const cards = page.locator('main article, main [class*="card"], main [class*="product"]');
     await expect(cards.first()).toBeVisible();
   });
 
   test('filters work', async ({ page }) => {
     await page.goto('/productos');
 
-    // Try to find and use a filter
-    const categoryFilter = page.locator('[data-filter="category"], select[name="category"]');
+    // Try to find and use a filter (one chip per category)
+    const categoryFilter = page
+      .locator('[data-filter="category"], select[name="category"]')
+      .first();
     if (await categoryFilter.isVisible()) {
       await categoryFilter.first().click();
       await page.waitForTimeout(500);
@@ -73,20 +78,20 @@ test.describe('Product Detail (/producto/[slug])', () => {
   test('loads product page', async ({ page }) => {
     await page.goto('/producto/panel-solar-450w-monocristalino');
 
-    // Check key elements
+    // Check key elements (price renders as text, e.g. "189,99 US$")
     await expect(page.locator('h1')).toBeVisible();
-    await expect(page.locator('[class*="price"], [class*="Price"]')).toBeVisible();
+    await expect(page.getByText('US$').first()).toBeVisible();
   });
 
   test('has WhatsApp CTA with pre-filled message', async ({ page }) => {
     await page.goto('/producto/panel-solar-450w-monocristalino');
 
-    const whatsappBtn = page.locator('a[href*="whatsapp"], button:has-text("WhatsApp")');
+    const whatsappBtn = page.locator('main a[href^="https://wa.me"]');
     await expect(whatsappBtn.first()).toBeVisible();
 
     // Check href contains pre-filled message
     const href = await whatsappBtn.first().getAttribute('href');
-    expect(href).toContain('whatsapp');
+    expect(href).toContain('wa.me');
   });
 
   test('displays product specs', async ({ page }) => {
@@ -163,15 +168,13 @@ test.describe('Kits (/kits)', () => {
 });
 
 test.describe('Mobile responsiveness', () => {
-  test.use({ ...devices['Pixel 5'] });
-
   test('homepage is usable on mobile', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator('body')).toBeVisible();
 
     // Check no horizontal scroll
     const bodyWidth = await page.evaluate(() => document.body.scrollWidth);
-    expect(bodyWidth).toBeLessThanOrEqual(page.viewportSize().width + 10);
+    expect(bodyWidth).toBeLessThanOrEqual((page.viewportSize()?.width ?? 0) + 10);
   });
 
   test('catalog works on mobile', async ({ page }) => {
