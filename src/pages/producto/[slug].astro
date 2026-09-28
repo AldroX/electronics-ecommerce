@@ -197,7 +197,13 @@ const detailsBlocks: { title: string; text: string }[] = Object.entries(detailLa
         </span>
 
         {/* Inline WhatsApp CTA */}
-        <CTAWhatsApp variant="inline" productName={product.name} messageTemplate={whatsappMessage} class="mt-1 w-fit" />
+        <CTAWhatsApp
+          variant="inline"
+          productName={product.name}
+          productSlug={product.slug}
+          messageTemplate={whatsappMessage}
+          class="mt-1 w-fit"
+        />
       </div>
     </div>
 

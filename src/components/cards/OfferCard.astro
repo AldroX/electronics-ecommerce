@@ -106,6 +106,7 @@ const validUntilFormatted = new Intl.DateTimeFormat('es', {
         <CTAWhatsApp
           variant="inline"
           productName={offer.name}
+          productSlug={offer.productSlug}
           messageTemplate={offer.whatsappMessage.replace('{PRODUCTO}', offer.name)}
           class="w-full"
         />
