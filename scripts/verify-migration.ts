@@ -89,7 +89,7 @@ async function verify() {
       continue;
     }
 
-    const dbSlugs = new Set(dbData.map((d: any) => d[t.slugField]).filter(Boolean));
+    const dbSlugs = new Set<string>(dbData.map((d: any) => d[t.slugField]).filter(Boolean));
     const dbCount = dbData.length;
 
     const missingInDb: string[] = [...jsonSlugs].filter((slug) => !dbSlugs.has(slug));

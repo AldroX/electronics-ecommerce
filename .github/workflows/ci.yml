@@ -11,7 +11,9 @@ on:
 
 env:
   NODE_VERSION: "22.x"
-  PNPM_VERSION: "9.x"
+  # pnpm-workspace.yaml uses pnpm 10/11 keys (allowBuilds, minimumReleaseAgeExclude);
+  # pnpm 9 rejects the file ("packages field missing or empty"). Keep CI aligned with the local toolchain.
+  PNPM_VERSION: "11.x"
 
 jobs:
   # ===========================================
@@ -20,6 +22,7 @@ jobs:
   lint-and-format:
     name: Lint & Format
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -50,6 +53,7 @@ jobs:
   type-check:
     name: TypeScript Check
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -77,6 +81,7 @@ jobs:
   unit-tests:
     name: Unit Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -105,6 +110,7 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     needs: [lint-and-format, type-check, unit-tests]
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -147,6 +153,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     if: github.event_name == 'pull_request'
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -174,20 +181,43 @@ jobs:
           name: dist
           path: dist/
 
-      - name: Start preview server
+      - name: Run Playwright E2E tests
         run: |
-          nohup pnpm preview --port 4321 > preview.log 2>&1 &
-          sleep 10
+          set -euo pipefail
+          # Boot the static preview ourselves (bounded readiness wait).
+          # Playwright's webServer must not manage the process (config uses
+          # reuseExistingServer: true) — pnpm can detach the real child and the
+          # runner would wait on a zombie.
+          pnpm preview --host 127.0.0.1 --port 4321 > preview-e2e.log 2>&1 &
+          PREVIEW_PID=$!
+          cleanup() { kill $PREVIEW_PID 2>/dev/null || true; pkill -f "astro preview" 2>/dev/null || true; }
+          trap cleanup EXIT
+          READY=0
+          for i in $(seq 1 90); do
+            if curl -fsS http://127.0.0.1:4321/ > /dev/null 2>&1; then
+              echo "Preview ready after ${i}s"
+              READY=1
+              break
+            fi
+            if ! kill -0 $PREVIEW_PID 2>/dev/null; then
+              echo "::error::Preview process died early"
+              cat preview-e2e.log
+              exit 1
+            fi
+            sleep 1
+          done
+          if [ "$READY" -ne 1 ]; then
+            echo "::error::Preview never became ready"
+            cat preview-e2e.log
+            exit 1
+          fi
+          pnpm exec playwright test
         env:
+          # Preview serves prerendered pages that call Supabase at runtime.
           PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
           PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           ANALYTICS_HMAC_SECRET: ${{ secrets.ANALYTICS_HMAC_SECRET }}
-
-      - name: Run Playwright E2E tests
-        run: pnpm e2e
-        env:
-          PLAYWRIGHT_BASE_URL: "http://localhost:4321"
 
       - name: Upload Playwright report
         if: always()
@@ -204,6 +234,7 @@ jobs:
     name: Bundle Size Audit
     runs-on: ubuntu-latest
     needs: build
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -259,6 +290,7 @@ jobs:
   security-audit:
     name: Security Audit
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4

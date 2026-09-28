@@ -33,7 +33,7 @@ const mockProducts: Product[] = [
     tags: ['solar', 'panel'],
     seo: { title: 'Panel Solar', description: 'Best panel' },
     batteryWh: 500,
-    relatedProductIds: ['2'],
+    relatedProducts: ['2'],
   },
   {
     id: '2',
@@ -42,7 +42,7 @@ const mockProducts: Product[] = [
     description: 'Deep cycle battery',
     shortDescription: '200Ah LiFePO4',
     price: 599.99,
-    compareAtPrice: null,
+    compareAtPrice: undefined,
     currency: 'USD',
     category: 'respaldo-almacenamiento',
     images: ['@/assets/battery.webp'],
@@ -56,7 +56,7 @@ const mockProducts: Product[] = [
     tags: ['bateria', 'lifepo4'],
     seo: { title: 'Batería LiFePO4', description: 'Best battery' },
     batteryWh: 2560,
-    relatedProductIds: ['1'],
+    relatedProducts: ['1'],
   },
   {
     id: '3',
@@ -78,8 +78,8 @@ const mockProducts: Product[] = [
     whatsappMessage: 'Hola, interesado en LED',
     tags: ['led', 'iluminacion'],
     seo: { title: 'LED Bulb', description: 'Efficient bulb' },
-    batteryWh: null,
-    relatedProductIds: [],
+    batteryWh: undefined,
+    relatedProducts: [],
   },
 ];
 
