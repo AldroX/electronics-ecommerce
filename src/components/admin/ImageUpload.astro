@@ -12,22 +12,24 @@ interface Props {
   fieldName?: string;
 }
 
-const {
-  existingImages = [],
-  maxFiles = 5,
-  maxSizeMB = 5,
-  fieldName = 'images',
-} = Astro.props;
+const { existingImages = [], maxFiles = 5, maxSizeMB = 5, fieldName = 'images' } = Astro.props;
 
 const maxSizeBytes = maxSizeMB * 1024 * 1024;
 ---
 
-<div class="admin-image-upload space-y-4" data-max-files={maxFiles} data-max-size={maxSizeBytes} data-field-name={fieldName}>
+<div
+  class="admin-image-upload space-y-4"
+  data-max-files={maxFiles}
+  data-max-size={maxSizeBytes}
+  data-field-name={fieldName}
+>
   <!-- File Input -->
-  <div class="admin-upload-zone border-2 border-dashed border-border dark:border-border-dark rounded-lg p-8 text-center transition-colors"
-       role="region"
-       aria-label="Zona de carga de imágenes"
-       tabindex="0">
+  <div
+    class="admin-upload-zone border-2 border-dashed border-border dark:border-border-dark rounded-lg p-8 text-center transition-colors"
+    role="region"
+    aria-label="Zona de carga de imágenes"
+    tabindex="0"
+  >
     <input
       type="file"
       id="image-upload-input"
@@ -38,8 +40,18 @@ const maxSizeBytes = maxSizeMB * 1024 * 1024;
       aria-describedby="upload-help"
     />
     <label for="image-upload-input" class="cursor-pointer w-full h-full flex flex-col items-center gap-4">
-      <svg class="w-12 h-12 text-text-light dark:text-text-light-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+      <svg
+        class="w-12 h-12 text-text-light dark:text-text-light-dark"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
       </svg>
       <div>
         <p class="text-lg font-medium text-text-dark dark:text-text-dark">Arrastra y suelta imágenes aquí</p>
@@ -52,65 +64,108 @@ const maxSizeBytes = maxSizeMB * 1024 * 1024;
   </div>
 
   <!-- Existing Images (Edit Mode) -->
-  {existingImages.length > 0 && (
-    <fieldset class="admin-existing-images space-y-4">
-      <legend class="admin-form-section-title">Imágenes actuales</legend>
-      <p class="form-help">Desmarca las imágenes que quieres eliminar. Arrastra para reordenar.</p>
+  {
+    existingImages.length > 0 && (
+      <fieldset class="admin-existing-images space-y-4">
+        <legend class="admin-form-section-title">Imágenes actuales</legend>
+        <p class="form-help">Desmarca las imágenes que quieres eliminar. Arrastra para reordenar.</p>
 
-      <div class="admin-images-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3" role="list" aria-label="Imágenes del producto">
-        {existingImages.map((imageUrl, index) => (
-          <div class="admin-image-item admin-hover-group relative" data-index={index} role="listitem" draggable="true">
-            <input
-              type="hidden"
-              name={`${fieldName}_existing[]`}
-              value={imageUrl}
-            />
-            <input
-              type="checkbox"
-              name={`${fieldName}_keep[]`}
-              value={imageUrl}
-              checked
-              class="sr-only peer"
-              id={`keep-${index}`}
-            />
-            <label for={`keep-${index}`} class="absolute top-2 right-2 z-10 p-1 bg-white/90 dark:bg-gray-900/90 rounded-full shadow-lg opacity-0 admin-hover-show peer-checked:ring-2 peer-checked:ring-red-500 transition-opacity" aria-label="Mantener esta imagen">
-              <svg class="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
-            </label>
-            <img
-              src={imageUrl}
-              alt={`Imagen ${index + 1} del producto`}
-              class="w-full aspect-square object-cover rounded-lg border border-border admin-peer-checked transition-all"
-              loading="lazy"
-            />
-            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2 opacity-0 admin-hover-show transition-opacity">
-              <p class="text-xs text-white truncate">Posición: {index + 1}</p>
+        <div
+          class="admin-images-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3"
+          role="list"
+          aria-label="Imágenes del producto"
+        >
+          {existingImages.map((imageUrl, index) => (
+            <div
+              class="admin-image-item admin-hover-group relative"
+              data-index={index}
+              role="listitem"
+              draggable="true"
+            >
+              <input type="hidden" name={`${fieldName}_existing[]`} value={imageUrl} />
+              <input
+                type="checkbox"
+                name={`${fieldName}_keep[]`}
+                value={imageUrl}
+                checked
+                class="sr-only peer"
+                id={`keep-${index}`}
+              />
+              <label
+                for={`keep-${index}`}
+                class="absolute top-2 right-2 z-10 p-1 bg-white/90 dark:bg-gray-900/90 rounded-full shadow-lg opacity-0 admin-hover-show peer-checked:ring-2 peer-checked:ring-red-500 transition-opacity"
+                aria-label="Mantener esta imagen"
+              >
+                <svg class="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </label>
+              <img
+                src={imageUrl}
+                alt={`Imagen ${index + 1} del producto`}
+                class="w-full aspect-square object-cover rounded-lg border border-border admin-peer-checked transition-all"
+                loading="lazy"
+              />
+              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2 opacity-0 admin-hover-show transition-opacity">
+                <p class="text-xs text-white truncate">Posición: {index + 1}</p>
+              </div>
+              <button
+                type="button"
+                class="absolute top-2 left-2 p-1 bg-white/90 dark:bg-gray-900/90 rounded-full shadow-lg opacity-0 admin-hover-show transition-opacity"
+                onclick="moveImage(this, -1)"
+                aria-label="Mover arriba"
+                disabled={index === 0}
+              >
+                <svg
+                  class="w-5 h-5 text-text-dark dark:text-text-dark"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                class="absolute top-2 right-2 p-1 bg-white/90 dark:bg-gray-900/90 rounded-full shadow-lg opacity-0 admin-hover-show transition-opacity"
+                onclick="moveImage(this, 1)"
+                aria-label="Mover abajo"
+                disabled={index === existingImages.length - 1}
+              >
+                <svg
+                  class="w-5 h-5 text-text-dark dark:text-text-dark"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 14l-7 7m0 0l-7-7m7 7V4"
+                  />
+                </svg>
+              </button>
             </div>
-            <button
-              type="button"
-              class="absolute top-2 left-2 p-1 bg-white/90 dark:bg-gray-900/90 rounded-full shadow-lg opacity-0 admin-hover-show transition-opacity"
-              onclick="moveImage(this, -1)"
-              aria-label="Mover arriba"
-              disabled={index === 0}
-            >
-              <svg class="w-5 h-5 text-text-dark dark:text-text-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
-            </button>
-            <button
-              type="button"
-              class="absolute top-2 right-2 p-1 bg-white/90 dark:bg-gray-900/90 rounded-full shadow-lg opacity-0 admin-hover-show transition-opacity"
-              onclick="moveImage(this, 1)"
-              aria-label="Mover abajo"
-              disabled={index === existingImages.length - 1}
-            >
-              <svg class="w-5 h-5 text-text-dark dark:text-text-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V4" /></svg>
-            </button>
-          </div>
-        ))}
-      </div>
-    </fieldset>
-  )}
+          ))}
+        </div>
+      </fieldset>
+    )
+  }
 
   <!-- New Image Previews -->
-  <div id="new-image-previews" class="admin-new-previews grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 hidden" role="list" aria-label="Nuevas imágenes seleccionadas">
+  <div
+    id="new-image-previews"
+    class="admin-new-previews grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 hidden"
+    role="list"
+    aria-label="Nuevas imágenes seleccionadas"
+  >
     <!-- Previews inserted here by JS -->
   </div>
 
@@ -199,7 +254,9 @@ const maxSizeBytes = maxSizeMB * 1024 * 1024;
       selectedFiles.push(file);
     }
     updatePreviews();
-    announce(`${selectedFiles.length} imagen${selectedFiles.length !== 1 ? 'es' : ''} seleccionada${selectedFiles.length !== 1 ? 's' : ''}.`);
+    announce(
+      `${selectedFiles.length} imagen${selectedFiles.length !== 1 ? 'es' : ''} seleccionada${selectedFiles.length !== 1 ? 's' : ''}.`
+    );
   }
 
   // Drag and drop
@@ -240,7 +297,9 @@ const maxSizeBytes = maxSizeMB * 1024 * 1024;
     URL.revokeObjectURL(selectedFiles[index]?.previewUrl);
     selectedFiles.splice(index, 1);
     updatePreviews();
-    announce(`${selectedFiles.length} imagen${selectedFiles.length !== 1 ? 'es' : ''} restante${selectedFiles.length !== 1 ? 's' : ''}.`);
+    announce(
+      `${selectedFiles.length} imagen${selectedFiles.length !== 1 ? 'es' : ''} restante${selectedFiles.length !== 1 ? 's' : ''}.`
+    );
   };
 
   // Move existing image (reorder)
@@ -275,7 +334,7 @@ const maxSizeBytes = maxSizeMB * 1024 * 1024;
 
   // Cleanup on page unload
   window.addEventListener('beforeunload', () => {
-    selectedFiles.forEach(f => URL.revokeObjectURL(f.previewUrl));
+    selectedFiles.forEach((f) => URL.revokeObjectURL(f.previewUrl));
   });
 </script>
 
@@ -303,7 +362,7 @@ const maxSizeBytes = maxSizeMB * 1024 * 1024;
     opacity: 1;
   }
 
-  .admin-peer-checked:has(input[type="checkbox"]:checked) {
+  .admin-peer-checked:has(input[type='checkbox']:checked) {
     opacity: 0.3;
     filter: grayscale(1);
   }

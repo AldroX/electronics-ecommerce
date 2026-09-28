@@ -164,12 +164,7 @@ const whatsappMessage = offer.whatsappMessage.replace('{PRODUCTO}', offer.name);
 
           {/* CTA row */}
           <div class="offer-cta-row">
-            <CTAWhatsApp
-              variant="inline"
-              productName={offer.name}
-              messageTemplate={whatsappMessage}
-              class="w-full"
-            />
+            <CTAWhatsApp variant="inline" productName={offer.name} messageTemplate={whatsappMessage} class="w-full" />
             <a href={`/producto/${offer.productSlug}`} class="btn btn-primary text-center">Ver producto completo</a>
           </div>
         </div>

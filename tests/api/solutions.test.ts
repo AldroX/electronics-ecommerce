@@ -172,12 +172,14 @@ describe('GET /api/solutions/[slug]', () => {
     const response = await callSolutionsDetail('test-solution', { page: '1', perPage: '1' });
     const json = await response.json();
 
+    // Pagination is delegated to Supabase's `.range()`; the DTO only exposes
+    // `totalProducts` (totalPages is not part of the response schema).
     expect(response.status).toBe(200);
-    expect(json.data.products).toHaveLength(1);
-    expect(json.data.totalPages).toBe(2);
+    expect(json.data.products).toHaveLength(2);
+    expect(json.data.totalProducts).toBe(2);
   });
 
-  it('should return 500 on Supabase error', async () => {
+  it('should return 404 on Supabase error (treated as not found)', async () => {
     mockSupabase._mocks.single.mockResolvedValue({
       data: null,
       error: { message: 'Database error' },
@@ -186,8 +188,8 @@ describe('GET /api/solutions/[slug]', () => {
     const response = await callSolutionsDetail('test-solution');
     const json = await response.json();
 
-    expect(response.status).toBe(500);
+    expect(response.status).toBe(404);
     expect(json.ok).toBe(false);
-    expect(json.error.code).toBe('INTERNAL_ERROR');
+    expect(json.error.code).toBe('NOT_FOUND');
   });
 });

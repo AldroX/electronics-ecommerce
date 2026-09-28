@@ -34,15 +34,27 @@ const titleId = `${dialogId}-title`;
 const messageId = `${dialogId}-message`;
 ---
 
-<dialog id={dialogId} class="admin-confirm-modal" open={open} role="dialog" aria-labelledby={titleId} aria-describedby={messageId} aria-modal="true">
+<dialog
+  id={dialogId}
+  class="admin-confirm-modal"
+  open={open}
+  role="dialog"
+  aria-labelledby={titleId}
+  aria-describedby={messageId}
+  aria-modal="true"
+>
   <form method={method} action={action} class="admin-confirm-modal-content">
     <h2 id={titleId} class="admin-confirm-modal-title">{title}</h2>
     <p id={messageId} class="admin-confirm-modal-message">{message}</p>
 
     <div class="admin-confirm-modal-actions">
-      {cancelHref && (
-        <a href={cancelHref} class="btn btn-outline-primary min-h-[44px] touch-target">{cancelText}</a>
-      )}
+      {
+        cancelHref && (
+          <a href={cancelHref} class="btn btn-outline-primary min-h-[44px] touch-target">
+            {cancelText}
+          </a>
+        )
+      }
       <button
         type="submit"
         class="btn btn-primary min-h-[44px] touch-target bg-red-600 border-red-700 hover:bg-red-700"
@@ -55,7 +67,7 @@ const messageId = `${dialogId}-message`;
 
   <!-- Backdrop click to close (form submission not triggered) -->
   <script is:inline>
-    (function() {
+    (function () {
       const dialog = document.getElementById('${dialogId}');
       if (!dialog) return;
 
@@ -69,12 +81,8 @@ const messageId = `${dialogId}-message`;
       // Close on backdrop click (outside form)
       dialog.addEventListener('click', (e) => {
         const rect = dialog.getBoundingClientRect();
-        const isInDialog = (
-          e.clientX >= rect.left &&
-          e.clientX <= rect.right &&
-          e.clientY >= rect.top &&
-          e.clientY <= rect.bottom
-        );
+        const isInDialog =
+          e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom;
         if (!isInDialog) {
           dialog.close();
         }
@@ -99,7 +107,9 @@ const messageId = `${dialogId}-message`;
 
       // Auto-focus first focusable element on open
       if (dialog.open) {
-        const firstFocusable = dialog.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        const firstFocusable = dialog.querySelector(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
         firstFocusable?.focus();
       }
     })();

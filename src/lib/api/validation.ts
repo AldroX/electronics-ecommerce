@@ -102,7 +102,9 @@ export const ProductAdminListQuerySchema = z.object({
   search: z.string().optional(),
   category: z.string().uuid().optional(),
   availability: z.enum(['in-stock', 'limited', 'out-of-stock']).optional(),
-  sort: z.enum(['name-asc', 'name-desc', 'price-asc', 'price-desc', 'created-desc', 'updated-desc']).default('created-desc'),
+  sort: z
+    .enum(['name-asc', 'name-desc', 'price-asc', 'price-desc', 'created-desc', 'updated-desc'])
+    .default('created-desc'),
   showArchived: z.coerce.boolean().default(false),
 });
 

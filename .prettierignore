@@ -32,6 +32,9 @@ generated-theme.css
 
 # SDD artifacts (contain non-standard syntax)
 .sdd/
+openspec/
+exploration.md
+MIGRATION.md
 
 # Agent skills
 .agents/

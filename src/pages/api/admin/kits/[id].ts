@@ -133,7 +133,8 @@ export const PATCH: APIRoute = async (context) => {
       );
     }
 
-    const updateResult = await ((supabase.from('kits') as any).update(updateData))
+    const updateResult = await (supabase.from('kits') as any)
+      .update(updateData)
       .eq('id', id)
       .select()
       .single();
@@ -148,7 +149,7 @@ export const PATCH: APIRoute = async (context) => {
 
     const data = updateResult.data as KitRow;
 
-    await ((supabase.from('audit_log') as any).insert({
+    await (supabase.from('audit_log') as any).insert({
       actor_id: adminUser.id,
       actor_email: adminUser.email,
       action: 'update',
@@ -158,7 +159,7 @@ export const PATCH: APIRoute = async (context) => {
       new_data: data as any,
       ip_address: context.request.headers.get('x-forwarded-for') ?? null,
       user_agent: context.request.headers.get('user-agent') ?? null,
-    }));
+    });
 
     return new Response(JSON.stringify({ ok: true, data }), {
       status: 200,
@@ -217,7 +218,7 @@ export const DELETE: APIRoute = async (context) => {
       );
     }
 
-    await ((supabase.from('audit_log') as any).insert({
+    await (supabase.from('audit_log') as any).insert({
       actor_id: adminUser.id,
       actor_email: adminUser.email,
       action: 'delete',
@@ -227,7 +228,7 @@ export const DELETE: APIRoute = async (context) => {
       new_data: Object.assign({}, existing, { deleted: true }) as any,
       ip_address: context.request.headers.get('x-forwarded-for') ?? null,
       user_agent: context.request.headers.get('user-agent') ?? null,
-    }));
+    });
 
     const { error } = await supabase.from('kits').delete().eq('id', id);
     if (error) {
