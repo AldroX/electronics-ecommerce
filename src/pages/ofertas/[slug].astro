@@ -13,6 +13,7 @@ import { getAllOffers } from '@/data/helpers/offers';
 import config from '@/config/config.json';
 import Base from '@/layouts/Base.astro';
 import CTAWhatsApp from '@/components/ui/CTAWhatsApp.astro';
+import Breadcrumbs from '@/components/ui/Breadcrumbs.astro';
 
 export const prerender = true;
 
@@ -41,12 +42,16 @@ const pageDescription = offer.seo?.description || offer.description;
 const pageImage = offer.seo?.image || offer.image;
 const canonicalUrl = `${baseUrl}/ofertas/${offer.slug}`;
 
-// Breadcrumb items
+// Breadcrumb items — relative urls for the visible nav, absolute for JSON-LD
 const breadcrumbItems: Array<{ name: string; url?: string }> = [
-  { name: 'Inicio', url: `${baseUrl}/` },
-  { name: 'Ofertas', url: `${baseUrl}/ofertas` },
+  { name: 'Inicio', url: '/' },
+  { name: 'Ofertas', url: '/ofertas' },
   { name: offer.name },
 ];
+
+const breadcrumbJsonLdItems = breadcrumbItems.map((item) =>
+  item.url ? { ...item, url: `${baseUrl}${item.url}` } : item
+);
 
 // Price formatting (matches OfferCard)
 const formatter = new Intl.NumberFormat('es', {
@@ -84,41 +89,12 @@ const whatsappMessage = offer.whatsappMessage.replace('{PRODUCTO}', offer.name);
   description={pageDescription}
   image={pageImage}
   canonical={canonicalUrl}
-  breadcrumbs={breadcrumbItems}
+  breadcrumbs={breadcrumbJsonLdItems}
 >
   <section class="section">
     <div class="container">
       {/* Breadcrumbs */}
-      <nav aria-label="Miga de pan" class="mb-6 text-sm text-text-light">
-        <ol class="flex flex-wrap items-center gap-1.5" role="list">
-          {
-            breadcrumbItems.map((item, index) => {
-              const isLast = index === breadcrumbItems.length - 1;
-              return (
-                <li class="flex items-center gap-1.5">
-                  {index > 0 && (
-                    <span class="text-text-light/50" aria-hidden="true">
-                      /
-                    </span>
-                  )}
-                  {isLast ? (
-                    <span aria-current="page" class="font-medium text-text-dark">
-                      {item.name}
-                    </span>
-                  ) : (
-                    <a
-                      href={item.url}
-                      class="text-primary underline-offset-2 hover:text-primary/80 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-                    >
-                      {item.name}
-                    </a>
-                  )}
-                </li>
-              );
-            })
-          }
-        </ol>
-      </nav>
+      <Breadcrumbs items={breadcrumbItems} />
 
       {/* Offer content */}
       <div class="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
