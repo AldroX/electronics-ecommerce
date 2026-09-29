@@ -56,7 +56,9 @@ const breadcrumbItems: Array<{ name: string; url?: string }> = [
   { name: guide.title },
 ];
 
-const breadcrumbJsonLdItems = breadcrumbItems.map((item) => (item.url ? { ...item, url: `${baseUrl}${item.url}` } : item));
+const breadcrumbJsonLdItems = breadcrumbItems.map((item) =>
+  item.url ? { ...item, url: `${baseUrl}${item.url}` } : item
+);
 
 // WhatsApp CTA message
 const whatsappMessage = `Hola, leí la guía "${guide.title}" y tengo una consulta. ¿Podrían ayudarme?`;

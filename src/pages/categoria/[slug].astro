@@ -49,12 +49,11 @@ const pageDescription = category.seo?.description || category.description;
 const canonicalUrl = `${baseUrl}/categoria/${category.slug}`;
 
 // Breadcrumb items — relative urls for the visible nav, absolute for JSON-LD
-const breadcrumbItems: Array<{ name: string; url?: string }> = [
-  { name: 'Inicio', url: '/' },
-  { name: category.name },
-];
+const breadcrumbItems: Array<{ name: string; url?: string }> = [{ name: 'Inicio', url: '/' }, { name: category.name }];
 
-const breadcrumbJsonLdItems = breadcrumbItems.map((item) => (item.url ? { ...item, url: `${baseUrl}${item.url}` } : item));
+const breadcrumbJsonLdItems = breadcrumbItems.map((item) =>
+  item.url ? { ...item, url: `${baseUrl}${item.url}` } : item
+);
 
 // WhatsApp CTA message
 const whatsappMessage = `Hola, me interesa la categoría ${category.name}. ¿Qué productos me recomiendan?`;
@@ -77,12 +76,7 @@ const productsForCard: Product[] = categoryData.products.map((p: any) => ({
 }));
 ---
 
-<Base
-  meta_title={pageTitle}
-  description={pageDescription}
-  canonical={canonicalUrl}
-  breadcrumbs={breadcrumbJsonLdItems}
->
+<Base meta_title={pageTitle} description={pageDescription} canonical={canonicalUrl} breadcrumbs={breadcrumbJsonLdItems}>
   <section class="section">
     <div class="container">
       {/* Breadcrumbs */}

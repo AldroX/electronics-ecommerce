@@ -53,7 +53,9 @@ const breadcrumbItems: Array<{ name: string; url?: string }> = [
   { name: solution.name },
 ];
 
-const breadcrumbJsonLdItems = breadcrumbItems.map((item) => (item.url ? { ...item, url: `${baseUrl}${item.url}` } : item));
+const breadcrumbJsonLdItems = breadcrumbItems.map((item) =>
+  item.url ? { ...item, url: `${baseUrl}${item.url}` } : item
+);
 
 // WhatsApp CTA message
 const whatsappMessage = `Hola, me interesa la solución ${solution.name}. ¿Qué productos me recomiendan?`;
@@ -72,12 +74,7 @@ const iconMap: Record<string, string> = {
 const iconPath = iconMap[solution.icon] ?? iconMap.home;
 ---
 
-<Base
-  meta_title={pageTitle}
-  description={pageDescription}
-  canonical={canonicalUrl}
-  breadcrumbs={breadcrumbJsonLdItems}
->
+<Base meta_title={pageTitle} description={pageDescription} canonical={canonicalUrl} breadcrumbs={breadcrumbJsonLdItems}>
   <section class="section">
     <div class="container">
       {/* Breadcrumbs */}

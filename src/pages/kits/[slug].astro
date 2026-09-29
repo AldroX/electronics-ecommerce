@@ -73,7 +73,9 @@ const breadcrumbItems: Array<{ name: string; url?: string }> = [
   { name: kit.name },
 ];
 
-const breadcrumbJsonLdItems = breadcrumbItems.map((item) => (item.url ? { ...item, url: `${baseUrl}${item.url}` } : item));
+const breadcrumbJsonLdItems = breadcrumbItems.map((item) =>
+  item.url ? { ...item, url: `${baseUrl}${item.url}` } : item
+);
 
 // WhatsApp CTA message
 const whatsappMessage = `Hola, estoy interesado en ${kit.name}. ¿Está disponible?`;

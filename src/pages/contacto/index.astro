@@ -19,7 +19,9 @@ const baseUrl = config.site.base_url;
 // Breadcrumb items — relative urls for the visible nav, absolute for JSON-LD
 const breadcrumbItems: Array<{ name: string; url?: string }> = [{ name: 'Inicio', url: '/' }, { name: 'Contacto' }];
 
-const breadcrumbJsonLdItems = breadcrumbItems.map((item) => (item.url ? { ...item, url: `${baseUrl}${item.url}` } : item));
+const breadcrumbJsonLdItems = breadcrumbItems.map((item) =>
+  item.url ? { ...item, url: `${baseUrl}${item.url}` } : item
+);
 ---
 
 <Base
