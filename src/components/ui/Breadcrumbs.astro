@@ -1,0 +1,47 @@
+---
+/**
+ * Breadcrumbs — generic breadcrumb navigation.
+ *
+ * Zero framework JS. Receives RELATIVE urls for internal links so navigation
+ * keeps working on any host/deployment. Absolute urls (for schema.org
+ * BreadcrumbList JSON-LD) are owned by Base.astro <head>, not here.
+ *
+ * The last item is the current page: rendered as text, not a link.
+ */
+export interface Props {
+  items: Array<{ name: string; url?: string }>;
+}
+
+const { items } = Astro.props;
+---
+
+<nav aria-label="Miga de pan" class="mb-6 text-sm text-text-light">
+  <ol class="flex flex-wrap items-center gap-1.5" role="list">
+    {
+      items.map((item, index) => {
+        const isLast = index === items.length - 1;
+        return (
+          <li class="flex items-center gap-1.5">
+            {index > 0 && (
+              <span class="text-text-light/50" aria-hidden="true">
+                /
+              </span>
+            )}
+            {isLast ? (
+              <span aria-current="page" class="font-medium text-text-dark">
+                {item.name}
+              </span>
+            ) : (
+              <a
+                href={item.url}
+                class="text-primary underline-offset-2 hover:text-primary/80 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              >
+                {item.name}
+              </a>
+            )}
+          </li>
+        );
+      })
+    }
+  </ol>
+</nav>

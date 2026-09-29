@@ -14,6 +14,7 @@ import config from '@/config/config.json';
 import Base from '@/layouts/Base.astro';
 import ProductCard from '@/components/cards/ProductCard.astro';
 import CTAWhatsApp from '@/components/ui/CTAWhatsApp.astro';
+import Breadcrumbs from '@/components/ui/Breadcrumbs.astro';
 
 export const prerender = true;
 
@@ -45,12 +46,14 @@ const pageTitle = solution.seo?.title || `${solution.name} | ${siteTitle}`;
 const pageDescription = solution.seo?.description || solution.description;
 const canonicalUrl = `${baseUrl}/soluciones/${solution.slug}`;
 
-// Breadcrumb items
+// Breadcrumb items — relative urls for the visible nav, absolute for JSON-LD
 const breadcrumbItems: Array<{ name: string; url?: string }> = [
-  { name: 'Inicio', url: `${baseUrl}/` },
-  { name: 'Soluciones', url: `${baseUrl}/soluciones` },
+  { name: 'Inicio', url: '/' },
+  { name: 'Soluciones', url: '/soluciones' },
   { name: solution.name },
 ];
+
+const breadcrumbJsonLdItems = breadcrumbItems.map((item) => (item.url ? { ...item, url: `${baseUrl}${item.url}` } : item));
 
 // WhatsApp CTA message
 const whatsappMessage = `Hola, me interesa la solución ${solution.name}. ¿Qué productos me recomiendan?`;
@@ -69,40 +72,16 @@ const iconMap: Record<string, string> = {
 const iconPath = iconMap[solution.icon] ?? iconMap.home;
 ---
 
-<Base meta_title={pageTitle} description={pageDescription} canonical={canonicalUrl} breadcrumbs={breadcrumbItems}>
+<Base
+  meta_title={pageTitle}
+  description={pageDescription}
+  canonical={canonicalUrl}
+  breadcrumbs={breadcrumbJsonLdItems}
+>
   <section class="section">
     <div class="container">
       {/* Breadcrumbs */}
-      <nav aria-label="Miga de pan" class="mb-6 text-sm text-text-light">
-        <ol class="flex flex-wrap items-center gap-1.5" role="list">
-          {
-            breadcrumbItems.map((item, index) => {
-              const isLast = index === breadcrumbItems.length - 1;
-              return (
-                <li class="flex items-center gap-1.5">
-                  {index > 0 && (
-                    <span class="text-text-light/50" aria-hidden="true">
-                      /
-                    </span>
-                  )}
-                  {isLast ? (
-                    <span aria-current="page" class="font-medium text-text-dark">
-                      {item.name}
-                    </span>
-                  ) : (
-                    <a
-                      href={item.url}
-                      class="text-primary underline-offset-2 hover:text-primary/80 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-                    >
-                      {item.name}
-                    </a>
-                  )}
-                </li>
-              );
-            })
-          }
-        </ol>
-      </nav>
+      <Breadcrumbs items={breadcrumbItems} />
 
       {/* Solution header */}
       <div class="mt-8 flex flex-col items-center gap-6 text-center">

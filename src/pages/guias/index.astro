@@ -9,53 +9,28 @@
 import Base from '@/layouts/Base.astro';
 import { getAllGuides } from '@/data/helpers/guides';
 import GuiasCard from '@/components/cards/GuiasCard.astro';
+import Breadcrumbs from '@/components/ui/Breadcrumbs.astro';
 import config from '@/config/config.json';
 
 const guides = getAllGuides();
 const siteTitle = config.site.title;
 const baseUrl = config.site.base_url;
 
-const breadcrumbItems = [{ name: 'Inicio', url: `${baseUrl}/` }, { name: 'Guías' }];
+// Breadcrumb items — relative urls for the visible nav, absolute for JSON-LD
+const breadcrumbItems: Array<{ name: string; url?: string }> = [{ name: 'Inicio', url: '/' }, { name: 'Guías' }];
+
+const breadcrumbJsonLdItems = breadcrumbItems.map((item) => (item.url ? { ...item, url: `${baseUrl}${item.url}` } : item));
 ---
 
 <Base
   meta_title={`Guías | ${siteTitle}`}
   description="Guías y consejos prácticos sobre energía solar, baterías y respaldo eléctrico para hogares y negocios."
   canonical={`${baseUrl}/guias`}
-  breadcrumbs={breadcrumbItems}
+  breadcrumbs={breadcrumbJsonLdItems}
 >
   <section class="section">
     <div class="container">
-      <nav aria-label="Miga de pan" class="mb-6 text-sm text-text-light">
-        <ol class="flex flex-wrap items-center gap-1.5" role="list">
-          {
-            breadcrumbItems.map((item, index) => {
-              const isLast = index === breadcrumbItems.length - 1;
-              return (
-                <li class="flex items-center gap-1.5">
-                  {index > 0 && (
-                    <span class="text-text-light/50" aria-hidden="true">
-                      /
-                    </span>
-                  )}
-                  {isLast ? (
-                    <span aria-current="page" class="font-medium text-text-dark">
-                      {item.name}
-                    </span>
-                  ) : (
-                    <a
-                      href={item.url}
-                      class="text-primary underline-offset-2 hover:text-primary/80 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-                    >
-                      {item.name}
-                    </a>
-                  )}
-                </li>
-              );
-            })
-          }
-        </ol>
-      </nav>
+      <Breadcrumbs items={breadcrumbItems} />
 
       <h1 class="text-h2 mb-8">Guías y consejos</h1>
 

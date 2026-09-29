@@ -10,12 +10,16 @@ import Base from '@/layouts/Base.astro';
 import config from '@/config/config.json';
 import { getAllFAQs } from '@/data/helpers/faq';
 import FAQ from '@/components/sections/FAQ.astro';
+import Breadcrumbs from '@/components/ui/Breadcrumbs.astro';
 
 const faqs = getAllFAQs();
 const siteTitle = config.site.title;
 const baseUrl = config.site.base_url;
 
-const breadcrumbItems = [{ name: 'Inicio', url: `${baseUrl}/` }, { name: 'FAQ' }];
+// Breadcrumb items — relative urls for the visible nav, absolute for JSON-LD
+const breadcrumbItems: Array<{ name: string; url?: string }> = [{ name: 'Inicio', url: '/' }, { name: 'FAQ' }];
+
+const breadcrumbJsonLdItems = breadcrumbItems.map((item) => (item.url ? { ...item, url: `${baseUrl}${item.url}` } : item));
 
 // FAQPage JSON-LD (schema.org FAQPage)
 const faqJsonLd = {
@@ -36,43 +40,14 @@ const faqJsonLd = {
   meta_title={`Preguntas frecuentes | ${siteTitle}`}
   description="Respuestas a las dudas más comunes sobre compra, envío, garantía y qué equipo necesitás."
   canonical={`${baseUrl}/faq`}
-  breadcrumbs={breadcrumbItems}
+  breadcrumbs={breadcrumbJsonLdItems}
 >
   <!-- FAQPage JSON-LD structured data -->
   <script type="application/ld+json" is:inline set:html={JSON.stringify(faqJsonLd)} slot="head" />
 
   <section class="section">
     <div class="container">
-      <nav aria-label="Miga de pan" class="mb-6 text-sm text-text-light">
-        <ol class="flex flex-wrap items-center gap-1.5" role="list">
-          {
-            breadcrumbItems.map((item, index) => {
-              const isLast = index === breadcrumbItems.length - 1;
-              return (
-                <li class="flex items-center gap-1.5">
-                  {index > 0 && (
-                    <span class="text-text-light/50" aria-hidden="true">
-                      /
-                    </span>
-                  )}
-                  {isLast ? (
-                    <span aria-current="page" class="font-medium text-text-dark">
-                      {item.name}
-                    </span>
-                  ) : (
-                    <a
-                      href={item.url}
-                      class="text-primary underline-offset-2 hover:text-primary/80 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-                    >
-                      {item.name}
-                    </a>
-                  )}
-                </li>
-              );
-            })
-          }
-        </ol>
-      </nav>
+      <Breadcrumbs items={breadcrumbItems} />
 
       <h1 class="text-h2 mb-8">Preguntas frecuentes</h1>
 
