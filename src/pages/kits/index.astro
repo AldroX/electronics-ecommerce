@@ -9,23 +9,29 @@
 import Base from '@/layouts/Base.astro';
 import { getAllKits } from '@/data/helpers/kits';
 import KitCard from '@/components/cards/KitCard.astro';
+import Breadcrumbs from '@/components/ui/Breadcrumbs.astro';
 import config from '@/config/config.json';
 
 const kits = getAllKits();
 const siteTitle = config.site.title;
 const baseUrl = config.site.base_url;
 
-const breadcrumbItems = [{ name: 'Inicio', url: `${baseUrl}/` }, { name: 'Kits' }];
+// Breadcrumb items — relative urls for the visible nav, absolute for JSON-LD
+const breadcrumbItems: Array<{ name: string; url?: string }> = [{ name: 'Inicio', url: '/' }, { name: 'Kits' }];
+
+const breadcrumbJsonLdItems = breadcrumbItems.map((item) => (item.url ? { ...item, url: `${baseUrl}${item.url}` } : item));
 ---
 
 <Base
   meta_title={`Kits | ${siteTitle}`}
   description={config.metadata.meta_description}
   canonical={`${baseUrl}/kits`}
-  breadcrumbs={breadcrumbItems}
+  breadcrumbs={breadcrumbJsonLdItems}
 >
   <section class="section">
     <div class="container">
+      <Breadcrumbs items={breadcrumbItems} />
+
       <h1 class="text-h2 mb-8">Kits</h1>
       <div class="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
         {kits.map((kit) => <KitCard kit={kit} />)}

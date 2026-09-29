@@ -9,23 +9,29 @@
 import Base from '@/layouts/Base.astro';
 import { getActiveOffers } from '@/data/helpers/offers';
 import OfferCard from '@/components/cards/OfferCard.astro';
+import Breadcrumbs from '@/components/ui/Breadcrumbs.astro';
 import config from '@/config/config.json';
 
 const offers = getActiveOffers();
 const siteTitle = config.site.title;
 const baseUrl = config.site.base_url;
 
-const breadcrumbItems = [{ name: 'Inicio', url: `${baseUrl}/` }, { name: 'Ofertas' }];
+// Breadcrumb items — relative urls for the visible nav, absolute for JSON-LD
+const breadcrumbItems: Array<{ name: string; url?: string }> = [{ name: 'Inicio', url: '/' }, { name: 'Ofertas' }];
+
+const breadcrumbJsonLdItems = breadcrumbItems.map((item) => (item.url ? { ...item, url: `${baseUrl}${item.url}` } : item));
 ---
 
 <Base
   meta_title={`Ofertas de la semana | ${siteTitle}`}
   description="Descubre las mejores ofertas de la semana en energía solar, respaldo eléctrico e iluminación. Precios especiales por tiempo limitado. Asesoramiento gratis por WhatsApp."
   canonical={`${baseUrl}/ofertas`}
-  breadcrumbs={breadcrumbItems}
+  breadcrumbs={breadcrumbJsonLdItems}
 >
   <section class="section">
     <div class="container">
+      <Breadcrumbs items={breadcrumbItems} />
+
       <h1 class="text-h2 mb-8">Ofertas de la semana</h1>
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {offers.map((offer) => <OfferCard offer={offer} href={`/ofertas/${offer.slug}`} />)}
