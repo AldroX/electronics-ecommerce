@@ -21,6 +21,8 @@
     "e2e:ui": "playwright test --ui",
     "e2e:install": "playwright install --with-deps chromium",
     "audit": "pnpm audit --audit-level=moderate",
+    "db:migrate": "tsx scripts/migrate.ts",
+    "db:seed": "tsx scripts/seed.ts",
     "bundle:analyze": "astro build && npx vite-bundle-analyzer dist"
   },
   "dependencies": {
