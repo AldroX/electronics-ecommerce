@@ -10,10 +10,10 @@ on:
     branches: [main, develop]
 
 env:
-  NODE_VERSION: "22.x"
+  NODE_VERSION: '22.x'
   # pnpm-workspace.yaml uses pnpm 10/11 keys (allowBuilds, minimumReleaseAgeExclude);
   # pnpm 9 rejects the file ("packages field missing or empty"). Keep CI aligned with the local toolchain.
-  PNPM_VERSION: "11.x"
+  PNPM_VERSION: '11.x'
 
 jobs:
   # ===========================================
@@ -36,7 +36,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: "pnpm"
+          cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -67,7 +67,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: "pnpm"
+          cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -95,7 +95,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: "pnpm"
+          cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -124,10 +124,28 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: "pnpm"
+          cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Migrate and seed the database
+        # Two independent reasons this step must not run elsewhere: pull_request
+        # carries the same secrets, so any PR would mutate the live project; and
+        # migrate/seed write to the live database, which is an owner decision.
+        # vars.ENABLE_DB_MIGRATION stays unset until that decision is made.
+        if: >-
+          github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.ENABLE_DB_MIGRATION == 'true'
+        run: |
+          pnpm db:migrate
+          pnpm db:seed
+        env:
+          # Supabase's JS client cannot run DDL, so migrations need the direct
+          # (session pooler) connection string, not the project URL.
+          DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
+          PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
+          PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
 
       - name: Build Astro project
         run: pnpm build
@@ -167,7 +185,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: "pnpm"
+          cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -248,7 +266,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: "pnpm"
+          cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -304,7 +322,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: "pnpm"
+          cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
