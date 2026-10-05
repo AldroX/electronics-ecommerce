@@ -24,6 +24,7 @@
     "bundle:analyze": "astro build && npx vite-bundle-analyzer dist"
   },
   "dependencies": {
+    "@astrojs/vercel": "^11.0.11",
     "@supabase/supabase-js": "^2.116.0",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.2.7",
@@ -37,7 +38,6 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
-    "@astrojs/node": "^11.1.5",
     "@astrojs/sitemap": "^3.7.3",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.40.0",

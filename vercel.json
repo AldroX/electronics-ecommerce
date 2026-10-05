@@ -1,17 +1,6 @@
 {
   "framework": "astro",
-  "functions": {
-    "src/pages/api/**/*.ts": {
-      "runtime": "node18"
-    }
-  },
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/index.html",
-      "status": 200
-    }
-  ],
+  "buildCommand": "pnpm build",
   "headers": [
     {
       "source": "/(.*)",
